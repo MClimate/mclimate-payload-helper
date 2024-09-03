@@ -9,9 +9,18 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
+		"plugins": [
+			{ "transform": "typescript-transform-paths" },
+			{ "transform": "typescript-transform-paths", "afterDeclarations": true }
+		],
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
-		"skipLibCheck": true
-	}
+		"skipLibCheck": true,
+		"declaration": true, // Generates .d.ts files
+		"declarationMap": true, // (Optional) Generates sourcemaps for .d.ts files
+		"sourceMap": true // (Optional) Generates sourcemaps for JS files
+	},
+	"include": ["src/**/*.ts"], // Include all .ts files in the src directory
+	"exclude": ["node_modules", "dist"] // Exclude node_modules and output directory
 }
