@@ -1,21 +1,12 @@
 import { commandsReadingHelper } from '@/decoders'
 import { CustomError } from '@/utils'
 import { VickiKeepAliveData, DeviceType } from '@/decoders/payloadParsers/types'
-import { byteArrayParser } from '@/helpers'
+import { byteArrayParser, toBool, decbin } from '@/helpers'
 
 export const vickiPayloadParser = (hexData: string) => {
 	let deviceData = {}
 
 	try {
-		// TODO: export as helper
-		let decbin = (number: number) => {
-			if (number < 0) {
-				number = 0xffffffff + number + 1
-			}
-			const updatedNumber = number.toString(2)
-			return '00000000'.substr(updatedNumber.length) + updatedNumber
-		}
-
 		const handleKeepAliveData = (byteArray: number[]) => {
 			let tmp = ('0' + byteArray[6].toString(16)).substr(-2)
 			let motorRange1 = tmp[1]
@@ -57,19 +48,19 @@ export const vickiPayloadParser = (hexData: string) => {
 				motorRange: motorRange,
 				motorPosition: motorPosition,
 				batteryVoltage: batteryVoltageCalculated,
-				openWindow: !!openWindow,
-				highMotorConsumption: !!highMotorConsumption,
-				lowMotorConsumption: !!lowMotorConsumption,
-				brokenSensor: !!brokenSensor,
-				childLock: !!childLock,
-				calibrationFailed: !!calibrationFailed,
-				attachedBackplate: !!attachedBackplate,
-				perceiveAsOnline: !!perceiveAsOnline,
-				antiFreezeProtection: !!antiFreezeProtection,
+				openWindow: toBool(openWindow),
+				highMotorConsumption: toBool(highMotorConsumption),
+				lowMotorConsumption: toBool(lowMotorConsumption),
+				brokenSensor: toBool(brokenSensor),
+				childLock: toBool(childLock),
+				calibrationFailed: toBool(calibrationFailed),
+				attachedBackplate: toBool(attachedBackplate),
+				perceiveAsOnline: toBool(perceiveAsOnline),
+				antiFreezeProtection: toBool(antiFreezeProtection),
 				valveOpenness: motorRange != 0 ? Math.round((1 - motorPosition / motorRange) * 100) : 0,
 			}
 			if (!deviceData.hasOwnProperty('targetTemperatureFloat')) {
-				keepaliveData.targetTemperatureFloat = parseFloat(byteArray[1].toFixed(2))
+				keepaliveData.targetTemperatureFloat = byteArray[1].toFixed(2)
 			}
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
