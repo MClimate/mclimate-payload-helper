@@ -1,2 +1,2 @@
-export { commandsReadingHelper } from '@/decoders'
+export { uplinkPayloadParser } from '@/decoders/payloadParsers'
 export { CustomError } from '@/utils'
