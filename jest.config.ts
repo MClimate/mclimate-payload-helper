@@ -10,6 +10,7 @@ const jestConfig: JestConfigWithTsJest = {
 			},
 		],
 	},
+	testPathIgnorePatterns: ['/node_modules/', '/dist/'],
 	moduleNameMapper: {
 		'^@/(.*)$': '<rootDir>/src/$1',
 		'^@shared/(.*)$': '<rootDir>/../shared/$1',
