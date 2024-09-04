@@ -16,5 +16,5 @@ export type VickiKeepAliveData = {
 	perceiveAsOnline: boolean
 	antiFreezeProtection: boolean
 	valveOpenness: number
-	targetTemperatureFloat?: number
+	targetTemperatureFloat?: string
 }
