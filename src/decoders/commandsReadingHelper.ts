@@ -1,4 +1,4 @@
-import { DeviceType } from '@/types'
+import { DeviceType } from '@/decoders/payloadParsers/types'
 import { CustomError } from '@/utils'
 
 export const commandsReadingHelper = (hexData: string, payloadLength: number, deviceType: DeviceType) => {
@@ -37,7 +37,6 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 		return commands
 	}
 
-	// Q: do we want to handle this?
 	if (!commands) return
 
 	commands.map((command: string, i: number) => {
@@ -52,7 +51,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '88'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '88'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -63,7 +68,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { decodeKeepalive: true }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '01'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '01'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -74,7 +85,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { decodeKeepalive: true }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '81'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '81'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -87,7 +104,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { deviceVersions: { hardware: Number(hardwareVersion), software: Number(softwareVersion) } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '04'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '04'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -98,7 +121,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { targetTemperatureStep: parseInt(commands[i + 1], 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '05'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '05'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -109,7 +138,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { alarmDuration: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '06'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '06'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -133,7 +168,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { floodEventSendTime: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '09'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '09'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -157,7 +198,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { emergencyOpenings: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '0f'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '0f'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -168,7 +215,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { floodAlarmTime: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '10'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '10'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -179,7 +232,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { workingVoltage: parseInt(commands[i + 1], 16) * 8 + 1600 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '11'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '11'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -194,7 +253,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '12'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '12'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -209,18 +274,23 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 4
 							let enabled = !!parseInt(commands[i + 1], 16)
 							let duration = parseInt(commands[i + 2], 16) * 5
+							// TODO: discuss/test below
 
-							let tmp = ('0' + commands[i + 4].toString(16)).substr(-2)
-							// Q: we should be using slice here not substr; substr is legacy
-							let motorPos2 = ('0' + commands[i + 3].toString(16)).substr(-2)
-							let motorPos1 = tmp[0]
-							let motorPosition = parseInt(`0x${motorPos1}${motorPos2}`, 16)
-							let delta = Number(tmp[1])
+							let motorPos1 = parseInt(commands[i + 4], 16) >> 4 // upper 4 bits of Byte 4
+							let motorPos2 = parseInt(commands[i + 3], 16) & 0xff // lower 8 bits of Byte 3
+							let motorPosition = (motorPos1 << 8) | motorPos2
+							let delta = parseInt(commands[i + 4], 16) & 0x0f // lower 4 bits of Byte 4
 							data = { openWindowParams: { enabled: enabled, duration: duration, motorPosition: motorPosition, delta: delta } }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '13'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '13'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -240,7 +310,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '14'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '14'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -253,7 +329,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '15'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '15'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -276,10 +358,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 								},
 							}
 						}
-
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '16'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '16'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -292,7 +379,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '17'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '17'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -309,7 +402,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '18'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '18'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -322,7 +421,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { joinRetryPeriod: periodInMinutes }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '19'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '19'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -335,7 +440,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { watchDogParams: { wdpC, wdpUc } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '1a'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '1a'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -346,7 +457,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { uplinkType: commands[i + 1] }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '1b'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '1b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -359,7 +476,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { watchDogParams: { wdpC, wdpUc } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '1d'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '1d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -390,12 +513,17 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 4
 							let good_medium = parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16)
 							let medium_bad = parseInt(`${commands[i + 3]}${commands[i + 4]}`, 16)
-
 							let data = { boundaryLevels: { good_medium: Number(good_medium), medium_bad: Number(medium_bad) } }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '1f'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '1f'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -422,7 +550,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '21'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '21'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -435,7 +569,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '22'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '22'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -465,35 +605,52 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							let good_zone = parseInt(commands[i + 1], 16)
 							let medium_zone = parseInt(commands[i + 2], 16)
 							let bad_zone = parseInt(commands[i + 3], 16)
-
 							let data = {
 								notifyPeriod: { good_zone: Number(good_zone), medium_zone: Number(medium_zone), bad_zone: Number(bad_zone) },
 							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '23'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '23'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
 			case '25':
 				{
 					try {
-						command_len = 3
-						let good_zone = parseInt(commands[i + 1], 16)
-						let medium_zone = parseInt(commands[i + 2], 16)
-						let bad_zone = parseInt(commands[i + 3], 16)
+						let data = {}
+						if (deviceType == DeviceType.Relay16) {
+							command_len = 1
+							data = { overpowerThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+						} else {
+							command_len = 3
+							let good_zone = parseInt(commands[i + 1], 16)
+							let medium_zone = parseInt(commands[i + 2], 16)
+							let bad_zone = parseInt(commands[i + 3], 16)
 
-						let data = {
-							measurementPeriod: {
-								good_zone: Number(good_zone),
-								medium_zone: Number(medium_zone),
-								bad_zone: Number(bad_zone),
-							},
+							data = {
+								measurementPeriod: {
+									good_zone: Number(good_zone),
+									medium_zone: Number(medium_zone),
+									bad_zone: Number(bad_zone),
+								},
+							}
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '25'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '25'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -509,15 +666,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							let duration_good_beeping = parseInt(commands[i + 1], 16)
 							let duration_good_loud = parseInt(commands[i + 2], 16) * 10
 							let duration_good_silent = parseInt(commands[i + 3], 16) * 10
-
 							let duration_medium_beeping = parseInt(commands[i + 4], 16)
 							let duration_medium_loud = parseInt(commands[i + 5], 16) * 10
 							let duration_medium_silent = parseInt(commands[i + 6], 16) * 10
-
 							let duration_bad_beeping = parseInt(commands[i + 7], 16)
 							let duration_bad_loud = parseInt(commands[i + 8], 16) * 10
 							let duration_bad_silent = parseInt(commands[i + 9], 16) * 10
-
 							let data = {
 								buzzerNotification: {
 									duration_good_beeping: Number(duration_good_beeping),
@@ -531,11 +685,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									duration_bad_silent: Number(duration_bad_silent),
 								},
 							}
-
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '27'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '27'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -554,7 +713,6 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							let coefficient = parseInt(commands[i + 1], 16)
 							let period = parseInt(commands[i + 2], 16)
 							let data = { proportionalAlgorithmParameters: { coefficient: Number(coefficient), period: Number(period) } }
-
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 15
@@ -562,17 +720,14 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							let green_good = parseInt(commands[i + 2], 16)
 							let blue_good = parseInt(commands[i + 3], 16)
 							let duration_good = parseInt(`${commands[i + 4]}${commands[i + 5]}`, 16) * 10
-
 							let red_medium = parseInt(commands[i + 6], 16)
 							let green_medium = parseInt(commands[i + 7], 16)
 							let blue_medium = parseInt(commands[i + 8], 16)
 							let duration_medium = parseInt(`${commands[i + 9]}${commands[i + 10]}`, 16) * 10
-
 							let red_bad = parseInt(commands[i + 11], 16)
 							let green_bad = parseInt(commands[i + 12], 16)
 							let blue_bad = parseInt(commands[i + 13], 16)
 							let duration_bad = parseInt(`${commands[i + 14]}${commands[i + 15]}`, 16) * 10
-
 							let data = {
 								ledNotification: {
 									red_good: Number(red_good),
@@ -589,11 +744,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									duration_bad: Number(duration_bad),
 								},
 							}
-
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '29'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '29'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -622,7 +782,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '2b'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '2b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -633,7 +799,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { targetTemperature: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '2f'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '2f'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -644,7 +816,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { manualTargetTemperatureUpdate: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '30'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '30'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -659,10 +837,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 1
 							data = { heatingStatus: parseInt(commands[i + 1], 16) }
 						}
-
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '32'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '32'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -679,7 +862,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '34'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '34'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -701,7 +890,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '36'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '36'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -712,7 +907,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { automaticHeatingStatus: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '38'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '38'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -723,7 +924,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { sensorMode: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '3a'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '3a'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -741,7 +948,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '3d'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '3d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -755,7 +968,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '3e'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '3e'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -772,7 +991,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
-						throw new CustomError(`Failed to process command '3f'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '3f'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -783,7 +1008,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { piRunPeriod: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '40'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '40'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -794,7 +1025,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { currentTemperatureVisibility: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '41'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '41'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -805,7 +1042,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { tempHysteresis: parseInt(commands[i + 1], 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '42'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '42'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -816,7 +1059,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { humidityVisibility: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '43'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '43'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -827,7 +1076,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { extSensorTemperature: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '44'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '44'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -844,7 +1099,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '45'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '45'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -855,11 +1116,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let enabled = !!parseInt(commands[i + 1], 16)
 						let duration = parseInt(commands[i + 2], 16) * 5
 						let delta = parseInt(commands[i + 3], 16) / 10
-
 						let data = { openWindowPrecisely: { enabled: enabled, duration: duration, delta: delta } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '46'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '46'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -876,7 +1142,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '47'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '47'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -887,7 +1159,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { forceAttach: !!parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '48'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '48'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -904,7 +1182,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '49'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '49'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -912,14 +1196,19 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 3
-
 						let activatedTemperature = parseInt(commands[i + 1], 16) / 10
 						let deactivatedTemperature = parseInt(commands[i + 2], 16) / 10
 						let targetTemperature = parseInt(commands[i + 3], 16)
 						let data = { antiFreezeParams: { activatedTemperature, deactivatedTemperature, targetTemperature } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '4a'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '4a'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -939,7 +1228,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '4b'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '4b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -959,7 +1254,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '4d'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '4d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -976,7 +1277,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '4f'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '4f'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -989,7 +1296,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '50'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '50'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1006,10 +1319,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 2
 							data = { targetTemperature: parseInt(`0x${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
 						}
-
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '51'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '51'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1020,7 +1338,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { targetTemperatureFloat: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '52'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '52'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1031,7 +1355,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { targetTemperatureStep: parseInt(commands[i + 1], 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '53'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '53'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1049,7 +1379,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '54'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '54'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1063,7 +1399,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '55'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '55'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1077,7 +1419,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '57'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '57'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1091,7 +1439,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '59'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '59'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1110,7 +1464,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '5b'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '5b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1124,7 +1484,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '5d'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '5d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1141,7 +1507,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '5f'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '5f'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1157,7 +1529,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '60'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '60'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1179,7 +1557,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '61'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '61'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1198,7 +1582,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '62'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '62'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1209,10 +1599,25 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { occFunction: parseInt(commands[i + 1], 16) }
+						} else if (deviceType == DeviceType.Relay16) {
+							command_len = 3
+							data = {
+								overpowerEvents: {
+									events: parseInt(commands[i + 1], 16),
+									power: (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
+								},
+							}
 						}
+
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '63'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '63'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1231,7 +1636,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '65'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '65'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1245,7 +1656,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '69'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '69'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1259,7 +1676,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '6b'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '6b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1278,7 +1701,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '6d'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '6d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1292,7 +1721,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '6e'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '6e'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1306,7 +1741,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '70'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '70'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1320,7 +1761,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '71'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '71'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1334,7 +1781,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '72'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '72'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1348,7 +1801,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '73'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '73'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1367,7 +1826,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '74'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '74'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1381,7 +1846,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '75'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '75'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1392,7 +1863,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { measurementBlindTime: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '80'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '80'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1404,11 +1881,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let chart = Number(bin[5])
 						let digital_value = Number(bin[6])
 						let emoji = Number(bin[7])
-
 						let data = { imagesVisibility: { chart, digital_value, emoji } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command '83'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command '83'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1419,7 +1901,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { relayState: parseInt(commands[i + 1], 16) === 0x01 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						throw new CustomError(`Failed to process command 'b1'`, hexData, command, deviceType, e as Error)
+						throw new CustomError({
+							message: `Failed to process command 'b1'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -1431,7 +1919,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					let data = { fuota: { fuota_address, fuota_address_raw } }
 					Object.assign(resultToPass, { ...resultToPass }, { ...data })
 				} catch (e) {
-					throw new CustomError(`Failed to process command 'a0'`, hexData, command, deviceType, e as Error)
+					throw new CustomError({
+						message: `Failed to process command 'a0'`,
+						hexData,
+						command,
+						deviceType,
+						originalError: e as Error,
+					})
 				}
 			}
 			default:
