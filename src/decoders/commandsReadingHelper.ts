@@ -624,16 +624,23 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '25':
 				{
 					try {
-						command_len = 3
-						let good_zone = parseInt(commands[i + 1], 16)
-						let medium_zone = parseInt(commands[i + 2], 16)
-						let bad_zone = parseInt(commands[i + 3], 16)
-						let data = {
-							measurementPeriod: {
-								good_zone: Number(good_zone),
-								medium_zone: Number(medium_zone),
-								bad_zone: Number(bad_zone),
-							},
+						let data = {}
+						if (deviceType == DeviceType.Relay16) {
+							command_len = 1
+							data = { overpowerThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+						} else {
+							command_len = 3
+							let good_zone = parseInt(commands[i + 1], 16)
+							let medium_zone = parseInt(commands[i + 2], 16)
+							let bad_zone = parseInt(commands[i + 3], 16)
+
+							data = {
+								measurementPeriod: {
+									good_zone: Number(good_zone),
+									medium_zone: Number(medium_zone),
+									bad_zone: Number(bad_zone),
+								},
+							}
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1592,7 +1599,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { occFunction: parseInt(commands[i + 1], 16) }
+						} else if (deviceType == DeviceType.Relay16) {
+							command_len = 3
+							data = {
+								overpowerEvents: {
+									events: parseInt(commands[i + 1], 16),
+									power: (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
+								},
+							}
 						}
+
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
