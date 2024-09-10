@@ -1,7 +1,7 @@
 import { uplinkPayloadParser } from '@/decoders/payloadParsers'
 import { DeviceType } from '@/decoders/payloadParsers/types'
 
-describe.only('Vicki payload decoder', () => {
+describe('Vicki payload decoder', () => {
 	test('simple keepalive', () => {
 		expect(uplinkPayloadParser('811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual({
 			reason: 129,
@@ -202,6 +202,18 @@ describe('Open/Close payload decoder', () => {
 			sensorTemperature: 15,
 			deviceVersions: { hardware: 13, software: 10 },
 			keepAliveTime: 15,
+		})
+	})
+
+	test('keepalive with undefined response of command', () => {
+		expect(uplinkPayloadParser('0413109902120F01C2009600000101', DeviceType.OpenCloseSensor)).toStrictEqual({
+			event: 'keepalive',
+			status: 1,
+			counter: 1,
+			batteryVoltage: 3.152,
+			thermistorProperlyConnected: true,
+			sensorTemperature: 15,
+			deviceVersions: { hardware: 13, software: 10 },
 		})
 	})
 })
