@@ -1,38 +1,54 @@
 import { DeviceType } from '@/decoders/payloadParsers/types'
-import { vickiPayloadParser, AQISensorPayloadParser, CO2DisplayLitePayloadParser } from '@/decoders/payloadParsers'
+import {
+	vickiPayloadParser,
+	AQISensorPayloadParser,
+	CO2DisplayLitePayloadParser,
+	CO2DisplayPayloadParser,
+	CO2SensorPayloadParser,
+	FanCoilThermostatPayloadParser,
+	ThermostatPayloadParser,
+	WirelessThermostatPayloadParser,
+	ButtonPayloadParser,
+	DskDevicePayloadParser,
+	htDisplayLitePayloadParser,
+	htSensorPayloadParser,
+	openCloseSensorPayloadParser,
+	tFloodPayloadParser,
+	tValvePayloadParser,
+} from '@/decoders/payloadParsers'
 
 export const uplinkPayloadParser = (hexData: string, deviceType: DeviceType) => {
 	switch (deviceType) {
 		case DeviceType.Vicki:
 			return vickiPayloadParser(hexData)
-		// case DeviceType.HTSensor:
-		// 	return htSensorPayloadParser(hexData)
-		// case DeviceType.TFlood:
-		// 	return tFloodPayloadParser(hexData)
+		case DeviceType.HTSensor:
+			return htSensorPayloadParser(hexData)
+		case DeviceType.TFlood:
+			return tFloodPayloadParser(hexData)
 		case DeviceType.AQISensor:
 			return AQISensorPayloadParser(hexData)
-		// case DeviceType.TValve:
-		// 	return tValvePayloadParser(hexData)
-		// case DeviceType.CO2Sensor:
-		// 	return CO2SensorPayloadParser(hexData)
-		// case DeviceType.Thermostat:
-		// 	return ThermostatPayloadParser(hexData)
-		// case DeviceType.MCButton:
-		// 	return ButtonPayloadParser(hexData)
-		// case DeviceType.OpenCloseSensor:
-		// 	return OpenCloseSensorPayloadParser(hexData)
-		// case DeviceType.DskDevice:
-		// 	return DskDevicePayloadParser(hexData)
-		// case DeviceType.WirelessThermostat:
-		// 	return WirelessThermostatPayloadParser(hexData)
-		// case DeviceType.CO2Display:
-		// 	return CO2DisplayPayloadParser(hexData)
-		// case DeviceType.FanCoilThermostat:
-		// 	return FanCoilThermostatPayloadParser(hexData)
+		case DeviceType.TValve:
+			return tValvePayloadParser(hexData)
+		case DeviceType.CO2Sensor:
+			return CO2SensorPayloadParser(hexData)
+		case DeviceType.Thermostat:
+			return ThermostatPayloadParser(hexData)
+		case DeviceType.MCButton:
+			return ButtonPayloadParser(hexData)
+		case DeviceType.OpenCloseSensor:
+			return openCloseSensorPayloadParser(hexData)
+		case DeviceType.DskDevice:
+			return DskDevicePayloadParser(hexData)
+		case DeviceType.WirelessThermostat:
+			return WirelessThermostatPayloadParser(hexData)
+		case DeviceType.CO2Display:
+			return CO2DisplayPayloadParser(hexData)
+		case DeviceType.FanCoilThermostat:
+			return FanCoilThermostatPayloadParser(hexData)
 		case DeviceType.CO2DisplayLite:
 			return CO2DisplayLitePayloadParser(hexData)
-		// case DeviceType.HTDisplayLite:
-		// 	return htDisplayLitePayloadParser(hexData)
+		case DeviceType.HTDisplayLite:
+			return htDisplayLitePayloadParser(hexData)
 		// case DeviceType.Relay16:
 		// 	return relay16PayloadParser(hexData)
 		default:
