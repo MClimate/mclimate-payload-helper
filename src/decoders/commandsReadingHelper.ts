@@ -812,8 +812,14 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '30':
 				{
 					try {
-						command_len = 1
-						let data = { manualTargetTemperatureUpdate: parseInt(commands[i + 1], 16) }
+						let data;
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 2
+							data = { manualTargetTemperatureUpdate: ((parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)) / 10 }
+						}else{
+							command_len = 1
+							data = { manualTargetTemperatureUpdate: parseInt(commands[i + 1], 16) }
+						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
