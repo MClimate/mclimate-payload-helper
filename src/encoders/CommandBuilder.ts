@@ -1,4 +1,4 @@
-import { BaseCommand, GeneralCommands } from '@/encoders'
+import { BaseCommand, GeneralCommands, VickiCommands } from '@/encoders'
 
 // types
 import {
@@ -18,6 +18,33 @@ import {
 	SetLightIntensityVisibilityParams,
 	SetCo2ImagesVisibilityParams,
 	SetPIRPeriodParams,
+	SetOpenWindowParams,
+	SetInternalAlgoParamsParams,
+	SetOperationalModeParams,
+	SetTargetTemperatureParams,
+	SetExternalTemperatureParams,
+	SetInternalAlgoTdiffParamsParams,
+	SetPrimaryOperationalModeParams,
+	SetBatteryRangesBoundariesParams,
+	SetBatteryRangesOverVoltageParams,
+	SetOvacParams,
+	SetProportionalAlgorithmParametersParams,
+	SetTemperatureControlAlgorithmParams,
+	SetMotorPositionOnlyParams,
+	SetTargetTemperatureAndMotorPositionParams,
+	SetChildLockBehaviorParams,
+	SetProportionalGainParams,
+	SetExternalTemperatureFloatParams,
+	SetIntegralGainParams,
+	SetPiRunPeriodParams,
+	SetTemperatureHysteresisParams,
+	SetOpenWindowPreciselyParams,
+	SetForceAttachParams,
+	SetAntiFreezeParamsParams,
+	SetMaxAllowedIntegralValueParams,
+	SetValveOpennessInPercentageParams,
+	SetValveOpennessRangeInPercentageParams,
+	SetTemperatureOffsetParams,
 } from '@/encoders/types'
 
 export class CommandBuilder {
@@ -121,7 +148,7 @@ export class CommandBuilder {
 				} else if (this.device_type === 'fan_coil_thermostat') {
 					return FanCoilThermostatCommands.setTargetTemperature(params)
 				}
-				return VickiCommands.setTargetTemperature(params)
+				return VickiCommands.setTargetTemperature(params as SetTargetTemperatureParams)
 			}
 
 			case 'GetTargetTemperature': {
@@ -132,7 +159,7 @@ export class CommandBuilder {
 				if (this.device_type === 'wireless_thermostat') {
 					return WirelessThermostatCommands.setTemperatureHysteresis(params)
 				}
-				return VickiCommands.setTemperatureHysteresis(params)
+				return VickiCommands.setTemperatureHysteresis(params as SetTemperatureHysteresisParams)
 			}
 
 			case 'GetTemperatureHysteresis': {
@@ -255,207 +282,203 @@ export class CommandBuilder {
 			// ------------------------------------------------ VICKI COMMANDS ------------------------------------------------
 
 			case 'ForceClose': {
-				return VickiCommands.forceClose(params)
+				return VickiCommands.forceClose()
 			}
 
 			case 'RecalibrateMotor': {
-				return VickiCommands.recalibrateMotor(params)
+				return VickiCommands.recalibrateMotor()
 			}
 
 			case 'SetOpenWindow': {
-				return VickiCommands.setOpenWindow(params)
+				return VickiCommands.setOpenWindow(params as SetOpenWindowParams)
 			}
 
 			case 'GetOpenWindowParams': {
-				return VickiCommands.getOpenWindowParams(params)
+				return VickiCommands.getOpenWindowParams()
 			}
 
 			case 'SetInternalAlgoParams': {
-				return VickiCommands.setInternalAlgoParams(params)
+				return VickiCommands.setInternalAlgoParams(params as SetInternalAlgoParamsParams)
 			}
 
 			case 'GetInternalAlgoParams': {
-				return VickiCommands.getInternalAlgoParams(params)
+				return VickiCommands.getInternalAlgoParams()
 			}
 
 			case 'SetOperationalMode': {
-				return VickiCommands.setOperationalMode(params)
+				return VickiCommands.setOperationalMode(params as SetOperationalModeParams)
 			}
 
 			case 'GetOperationalMode': {
-				return VickiCommands.getOperationalMode(params)
+				return VickiCommands.getOperationalMode()
 			}
 
 			case 'SetExternalTemperature': {
-				return VickiCommands.setExternalTemperature(params)
+				return VickiCommands.setExternalTemperature(params as SetExternalTemperatureParams)
 			}
 
 			case 'GetExternalTemperature': {
-				return VickiCommands.getExternalTemperature(params)
+				return VickiCommands.getExternalTemperature()
 			}
 
 			case 'SetExternalTemperatureFloat': {
-				return VickiCommands.setExternalTemperatureFloat(params)
+				return VickiCommands.setExternalTemperatureFloat(params as SetExternalTemperatureFloatParams)
 			}
 
 			case 'SetInternalAlgoTdiffParams': {
-				return VickiCommands.setInternalAlgoTdiffParams(params)
+				return VickiCommands.setInternalAlgoTdiffParams(params as SetInternalAlgoTdiffParamsParams)
 			}
 
 			case 'GetInternalAlgoTdiffParams': {
-				return VickiCommands.getInternalAlgoTdiffParams(params)
+				return VickiCommands.getInternalAlgoTdiffParams()
 			}
 
 			case 'SetPrimaryOperationalMode': {
-				return VickiCommands.setPrimaryOperationalMode(params)
+				return VickiCommands.setPrimaryOperationalMode(params as SetPrimaryOperationalModeParams)
 			}
 
 			case 'GetPrimaryOperationalMode': {
-				return VickiCommands.getPrimaryOperationalMode(params)
+				return VickiCommands.getPrimaryOperationalMode()
 			}
 
 			case 'SetBatteryRangesBoundaries': {
-				return VickiCommands.setBatteryRangesBoundaries(params)
+				return VickiCommands.setBatteryRangesBoundaries(params as SetBatteryRangesBoundariesParams)
 			}
 
 			case 'GetBatteryRangesBoundaries': {
-				return VickiCommands.getBatteryRangesBoundaries(params)
+				return VickiCommands.getBatteryRangesBoundaries()
 			}
 
 			case 'SetBatteryRangesOverVoltage': {
-				return VickiCommands.setBatteryRangesOverVoltage(params)
+				return VickiCommands.setBatteryRangesOverVoltage(params as SetBatteryRangesOverVoltageParams)
 			}
 
 			case 'GetBatteryRangesOverVoltage': {
-				return VickiCommands.getBatteryRangesOverVoltage(params)
+				return VickiCommands.getBatteryRangesOverVoltage()
 			}
 
 			case 'SetOvac': {
-				return VickiCommands.setOvac(params)
+				return VickiCommands.setOvac(params as SetOvacParams)
 			}
 
 			case 'GetOvac': {
-				return VickiCommands.getOvac(params)
+				return VickiCommands.getOvac()
 			}
 
 			case 'SetProportionalAlgorithmParameters': {
-				return VickiCommands.setProportionalAlgorithmParameters(params)
+				return VickiCommands.setProportionalAlgorithmParameters(params as SetProportionalAlgorithmParametersParams)
 			}
 
 			case 'GetProportionalAlgorithmParameters': {
-				return VickiCommands.getProportionalAlgorithmParameters(params)
+				return VickiCommands.getProportionalAlgorithmParameters()
 			}
 
 			case 'SetTemperatureControlAlgorithm': {
-				return VickiCommands.setTemperatureControlAlgorithm(params)
+				return VickiCommands.setTemperatureControlAlgorithm(params as SetTemperatureControlAlgorithmParams)
 			}
 
 			case 'GetTemperatureControlAlgorithm': {
-				return VickiCommands.getTemperatureControlAlgorithm(params)
+				return VickiCommands.getTemperatureControlAlgorithm()
 			}
 
 			case 'SetMotorPositionOnly': {
-				return VickiCommands.setMotorPositionOnly(params)
+				return VickiCommands.setMotorPositionOnly(params as SetMotorPositionOnlyParams)
 			}
 
 			case 'DeviceReset': {
-				return VickiCommands.deviceReset(params)
+				return VickiCommands.deviceReset()
 			}
 
 			case 'SetTargetTemperatureAndMotorPosition': {
-				return VickiCommands.setTargetTemperatureAndMotorPosition(params)
+				return VickiCommands.setTargetTemperatureAndMotorPosition(params as SetTargetTemperatureAndMotorPositionParams)
 			}
 
 			case 'SetChildLockBehavior': {
-				return VickiCommands.setChildLockBehavior(params)
+				return VickiCommands.setChildLockBehavior(params as SetChildLockBehaviorParams)
 			}
 
 			case 'GetChildLockBehavior': {
-				return VickiCommands.getChildLockBehavior(params)
+				return VickiCommands.getChildLockBehavior()
 			}
 
 			case 'SetProportionalGain': {
-				return VickiCommands.setProportionalGain(params)
+				return VickiCommands.setProportionalGain(params as SetProportionalGainParams)
 			}
 
 			case 'GetProportionalGain': {
-				return VickiCommands.getProportionalGain(params)
+				return VickiCommands.getProportionalGain()
 			}
 
 			case 'SetIntegralGain': {
-				return VickiCommands.setIntegralGain(params)
+				return VickiCommands.setIntegralGain(params as SetIntegralGainParams)
 			}
 
 			case 'GetIntegralGain': {
-				return VickiCommands.getIntegralGain(params)
+				return VickiCommands.getIntegralGain()
 			}
 
 			case 'GetIntegralValue': {
-				return VickiCommands.getIntegralValue(params)
+				return VickiCommands.getIntegralValue()
 			}
 
 			case 'SetPiRunPeriod': {
-				return VickiCommands.setPiRunPeriod(params)
+				return VickiCommands.setPiRunPeriod(params as SetPiRunPeriodParams)
 			}
 
 			case 'GetPiRunPeriod': {
-				return VickiCommands.getPiRunPeriod(params)
+				return VickiCommands.getPiRunPeriod()
 			}
 
 			case 'SetOpenWindowPrecisely': {
-				return VickiCommands.setOpenWindowPrecisely(params)
+				return VickiCommands.setOpenWindowPrecisely(params as SetOpenWindowPreciselyParams)
 			}
 
 			case 'GetOpenWindowPrecisely': {
-				return VickiCommands.getOpenWindowPrecisely(params)
+				return VickiCommands.getOpenWindowPrecisely()
 			}
 
 			case 'SetForceAttach': {
-				return VickiCommands.setForceAttach(params)
+				return VickiCommands.setForceAttach(params as SetForceAttachParams)
 			}
 
 			case 'GetForceAttach': {
-				return VickiCommands.getForceAttach(params)
+				return VickiCommands.getForceAttach()
 			}
 
 			case 'SetAntiFreezeParams': {
-				return VickiCommands.setAntiFreezeParams(params)
+				return VickiCommands.setAntiFreezeParams(params as SetAntiFreezeParamsParams)
 			}
 
 			case 'GetAntiFreezeParams': {
-				return VickiCommands.getAntiFreezeParams(params)
+				return VickiCommands.getAntiFreezeParams()
 			}
 
 			case 'SetMaxAllowedIntegralValue': {
-				return VickiCommands.setMaxAllowedIntegralValue(params)
+				return VickiCommands.setMaxAllowedIntegralValue(params as SetMaxAllowedIntegralValueParams)
 			}
 
 			case 'GetMaxAllowedIntegralValue': {
-				return VickiCommands.getMaxAllowedIntegralValue(params)
+				return VickiCommands.getMaxAllowedIntegralValue()
 			}
 
 			case 'SetValveOpennessInPercentage': {
-				return VickiCommands.setValveOpennessInPercentage(params)
+				return VickiCommands.setValveOpennessInPercentage(params as SetValveOpennessInPercentageParams)
 			}
 
 			case 'SetValveOpennessRangeInPercentage': {
-				return VickiCommands.setValveOpennessRangeInPercentage(params)
+				return VickiCommands.setValveOpennessRangeInPercentage(params as SetValveOpennessRangeInPercentageParams)
 			}
 
 			case 'GetValveOpennessRangeInPercentage': {
-				return VickiCommands.getValveOpennessRangeInPercentage(params)
+				return VickiCommands.getValveOpennessRangeInPercentage()
 			}
 
 			case 'SetTemperatureOffset': {
-				return VickiCommands.setTemperatureOffset(params)
+				return VickiCommands.setTemperatureOffset(params as SetTemperatureOffsetParams)
 			}
 
 			case 'GetTemperatureOffset': {
-				return VickiCommands.getTemperatureOffset(params)
-			}
-
-			case 'GetAllParams': {
-				return VickiCommands.getAllParams(params)
+				return VickiCommands.getTemperatureOffset()
 			}
 
 			// ------------------------------------------------ WIRELESS THERMOSTAT COMMANDS ------------------------------------------------
