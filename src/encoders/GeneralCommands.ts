@@ -1,48 +1,14 @@
 import { BaseCommand } from '@/encoders'
-import { decToHex, dec2hex, CustomError } from '@/utils'
 import { ZodError } from 'zod'
-
-// types and schemas
-import {
-	CustomHexCommandParams,
-	SetKeepAliveParams,
-	SetChildLockParams,
-	SetTemperatureRangeParams,
-	SetJoinRetryPeriodParams,
-	SetUplinkTypeParams,
-	SetWatchDogParams,
-	SetDisplayRefreshPeriodParams,
-	SetDeepSleepModeParams,
-	SetPIRSensorStatusParams,
-	SetPIRSensorSensitivityParams,
-	SetCurrentTemperatureVisibilityParams,
-	SetHumidityVisibilityParams,
-	SetLightIntensityVisibilityParams,
-	SetCo2ImagesVisibilityParams,
-	SetPIRPeriodParams,
-	customHexCommandSchema,
-	setKeepAliveSchema,
-	setChildLockSchema,
-	setJoinRetryPeriodSchema,
-	setTemperatureRangeSchema,
-	setUplinkTypeSchema,
-	setWatchDogParamsSchema,
-	setDisplayRefreshPeriodSchema,
-	setDeepSleepModeSchema,
-	setPIRSensorStatusSchema,
-	setPIRSensorSensitivitySchema,
-	setCurrentTemperatureVisibilitySchema,
-	setHumidityVisibilitySchema,
-	setLightIntensityVisibilitySchema,
-	setCo2ImagesVisibilitySchema,
-	setPIRPeriodSchema,
-} from '@/encoders/types'
+import { CustomError, decToHex, dec2hex } from '@/utils'
+import { GeneralCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
 export class GeneralCommands {
-	static sendCustomHexCommand({ command }: CustomHexCommandParams) {
+	static sendCustomHexCommand(params: GeneralCommandTypes.CustomHexCommandParams) {
 		try {
-			customHexCommandSchema.parse({ command })
-			return new BaseCommand('SendCustomHexCommand', command)
+			DeviceCommandSchemas.GeneralCommandSchemas.customHexCommand.parse(params)
+			// TODO: fix below - to string?
+			return new BaseCommand('SendCustomHexCommand', params.command)
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -60,9 +26,10 @@ export class GeneralCommands {
 		}
 	}
 
-	static setKeepAlive({ time }: SetKeepAliveParams) {
+	static setKeepAlive(params: GeneralCommandTypes.SetKeepAliveParams) {
 		try {
-			setKeepAliveSchema.parse({ time })
+			DeviceCommandSchemas.GeneralCommandSchemas.setKeepAlive.parse(params)
+			const { time } = params
 			return new BaseCommand('SetKeepAlive', 0x02, decToHex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -89,10 +56,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetDeviceVersion', 0x04)
 	}
 
-	static setChildLock({ enabled }: SetChildLockParams) {
+	static setChildLock(params: GeneralCommandTypes.SetChildLockParams) {
 		try {
-			setChildLockSchema.parse({ enabled })
-			const enabledValue = enabled ? 1 : 0
+			DeviceCommandSchemas.GeneralCommandSchemas.setChildLock.parse(params)
+			const enabledValue = params.enabled ? 1 : 0
 			return new BaseCommand('SetChildLock', 0x07, decToHex(enabledValue))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -115,9 +82,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetChildLock', 0x14)
 	}
 
-	static setTemperatureRange({ min, max }: SetTemperatureRangeParams) {
+	static setTemperatureRange(params: GeneralCommandTypes.SetTemperatureRangeParams) {
 		try {
-			setTemperatureRangeSchema.parse({ min, max })
+			DeviceCommandSchemas.GeneralCommandSchemas.setTemperatureRange.parse(params)
+			const { min, max } = params
 			return new BaseCommand('SetTemperatureRange', 0x08, decToHex(min), decToHex(max))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -139,10 +107,10 @@ export class GeneralCommands {
 	static getTemperatureRange() {
 		return new BaseCommand('GetTemperatureRange', 0x15)
 	}
-
-	static setJoinRetryPeriod({ period }: SetJoinRetryPeriodParams) {
+	static setJoinRetryPeriod(params: GeneralCommandTypes.SetJoinRetryPeriodParams) {
 		try {
-			setJoinRetryPeriodSchema.parse({ period })
+			DeviceCommandSchemas.GeneralCommandSchemas.setJoinRetryPeriod.parse(params)
+			const { period } = params
 			const periodToPass = (period * 60) / 5
 			return new BaseCommand('SetJoinRetryPeriod', 0x10, decToHex(periodToPass))
 		} catch (e) {
@@ -166,9 +134,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetJoinRetryPeriod', 0x19)
 	}
 
-	static setUplinkType({ type }: SetUplinkTypeParams) {
+	static setUplinkType(params: GeneralCommandTypes.SetUplinkTypeParams) {
 		try {
-			setUplinkTypeSchema.parse({ type })
+			DeviceCommandSchemas.GeneralCommandSchemas.setUplinkType.parse(params)
+			const { type } = params
 			return new BaseCommand('SetUplinkType', 0x11, type.toString())
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -191,9 +160,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetUplinkType', 0x1b)
 	}
 
-	static setWatchDogParams({ confirmedUplinks, unconfirmedUplinks }: SetWatchDogParams) {
+	static setWatchDogParams(params: GeneralCommandTypes.SetWatchDogParams) {
 		try {
-			setWatchDogParamsSchema.parse({ confirmedUplinks, unconfirmedUplinks })
+			DeviceCommandSchemas.GeneralCommandSchemas.setWatchDogParams.parse(params)
+			const { confirmedUplinks, unconfirmedUplinks } = params
 			return new BaseCommand('SetWatchDogParams', 0x1c, decToHex(confirmedUplinks), decToHex(unconfirmedUplinks))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -216,9 +186,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetWatchDogParams', 0x1d)
 	}
 
-	static setDisplayRefreshPeriod({ period }: SetDisplayRefreshPeriodParams) {
+	static setDisplayRefreshPeriod(params: GeneralCommandTypes.SetDisplayRefreshPeriodParams) {
 		try {
-			setDisplayRefreshPeriodSchema.parse({ period })
+			DeviceCommandSchemas.GeneralCommandSchemas.setDisplayRefreshPeriod.parse(params)
+			const { period } = params
 			return new BaseCommand('SetDisplayRefreshPeriod', 0x33, decToHex(period))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -241,9 +212,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetDisplayRefreshPeriod', 0x34)
 	}
 
-	static setDeepSleepMode({ state }: SetDeepSleepModeParams) {
+	static setDeepSleepMode(params: GeneralCommandTypes.SetDeepSleepModeParams) {
 		try {
-			setDeepSleepModeSchema.parse({ state })
+			DeviceCommandSchemas.GeneralCommandSchemas.setDeepSleepMode.parse(params)
+			const { state } = params
 			return new BaseCommand('SetDeepSleepMode', 0x3b, decToHex(state))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -262,9 +234,10 @@ export class GeneralCommands {
 		}
 	}
 
-	static setPIRSensorStatus({ state }: SetPIRSensorStatusParams) {
+	static setPIRSensorStatus(params: GeneralCommandTypes.SetPIRSensorStatusParams) {
 		try {
-			setPIRSensorStatusSchema.parse({ state })
+			DeviceCommandSchemas.GeneralCommandSchemas.setPIRSensorStatus.parse(params)
+			const { state } = params
 			return new BaseCommand('SetPIRSensorStatus', 0x3c, decToHex(state))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -287,9 +260,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetPIRSensorStatus', 0x3d)
 	}
 
-	static setPIRSensorSensitivity({ sensitivity }: SetPIRSensorSensitivityParams) {
+	static setPIRSensorSensitivity(params: GeneralCommandTypes.SetPIRSensorSensitivityParams) {
 		try {
-			setPIRSensorSensitivitySchema.parse({ sensitivity })
+			DeviceCommandSchemas.GeneralCommandSchemas.setPIRSensorSensitivity.parse(params)
+			const { sensitivity } = params
 			return new BaseCommand('SetPIRSensorSensitivity', 0x3e, decToHex(sensitivity))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -312,9 +286,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetPIRSensorSensitivity', 0x3f)
 	}
 
-	static setCurrentTemperatureVisibility({ state }: SetCurrentTemperatureVisibilityParams) {
+	static setCurrentTemperatureVisibility(params: GeneralCommandTypes.SetCurrentTemperatureVisibilityParams) {
 		try {
-			setCurrentTemperatureVisibilitySchema.parse({ state })
+			DeviceCommandSchemas.GeneralCommandSchemas.setCurrentTemperatureVisibility.parse(params)
+			const { state } = params
 			return new BaseCommand('SetCurrentTemperatureVisibility', 0x40, decToHex(state))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -337,9 +312,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetCurrentTemperatureVisibility', 0x41)
 	}
 
-	static setHumidityVisibility({ state }: SetHumidityVisibilityParams) {
+	static setHumidityVisibility(params: GeneralCommandTypes.SetHumidityVisibilityParams) {
 		try {
-			setHumidityVisibilitySchema.parse({ state })
+			DeviceCommandSchemas.GeneralCommandSchemas.setHumidityVisibility.parse(params)
+			const { state } = params
 			return new BaseCommand('SetHumidityVisibility', 0x42, decToHex(state))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -362,9 +338,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetHumidityVisibility', 0x43)
 	}
 
-	static setLightIntensityVisibility({ state }: SetLightIntensityVisibilityParams) {
+	static setLightIntensityVisibility(params: GeneralCommandTypes.SetLightIntensityVisibilityParams) {
 		try {
-			setLightIntensityVisibilitySchema.parse({ state })
+			DeviceCommandSchemas.GeneralCommandSchemas.setLightIntensityVisibility.parse(params)
+			const { state } = params
 			return new BaseCommand('SetLightIntensityVisibility', 0x44, decToHex(state))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -387,9 +364,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetLightIntensityVisibility', 0x45)
 	}
 
-	static setCo2ImagesVisibility({ chart, digital_value, emoji }: SetCo2ImagesVisibilityParams) {
+	static setCo2ImagesVisibility(params: GeneralCommandTypes.SetCo2ImagesVisibilityParams) {
 		try {
-			setCo2ImagesVisibilitySchema.parse({ chart, digital_value, emoji })
+			DeviceCommandSchemas.GeneralCommandSchemas.setCo2ImagesVisibility.parse(params)
+			const { chart, digital_value, emoji } = params
 			const chartValue = chart ? 1 : 0
 			const digitalValue = digital_value ? 1 : 0
 			const emojiValue = emoji ? 1 : 0
@@ -419,10 +397,10 @@ export class GeneralCommands {
 	static getCo2ImagesVisibility() {
 		return new BaseCommand('GetCo2ImagesVisibility', 0x83)
 	}
-
-	static setPIRInitPeriod({ time }: SetPIRPeriodParams) {
+	static setPIRInitPeriod(params: GeneralCommandTypes.SetPIRPeriodParams) {
 		try {
-			setPIRPeriodSchema.parse({ time })
+			DeviceCommandSchemas.GeneralCommandSchemas.setPIRPeriod.parse(params)
+			const { time } = params
 			return new BaseCommand('SetPIRInitPeriod', 0x46, decToHex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -445,9 +423,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetPIRInitPeriod', 0x47)
 	}
 
-	static setPIRMeasurementPeriod({ time }: SetPIRPeriodParams) {
+	static setPIRMeasurementPeriod(params: GeneralCommandTypes.SetPIRPeriodParams) {
 		try {
-			setPIRPeriodSchema.parse({ time })
+			DeviceCommandSchemas.GeneralCommandSchemas.setPIRPeriod.parse(params)
+			const { time } = params
 			return new BaseCommand('SetPIRMeasurementPeriod', 0x48, decToHex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -470,9 +449,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetPIRMeasurementPeriod', 0x49)
 	}
 
-	static setPIRCheckPeriod({ time }: SetPIRPeriodParams) {
+	static setPIRCheckPeriod(params: GeneralCommandTypes.SetPIRPeriodParams) {
 		try {
-			setPIRPeriodSchema.parse({ time })
+			DeviceCommandSchemas.GeneralCommandSchemas.setPIRPeriod.parse(params)
+			const { time } = params
 			return new BaseCommand('SetPIRCheckPeriod', 0x4a, dec2hex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -495,9 +475,10 @@ export class GeneralCommands {
 		return new BaseCommand('GetPIRCheckPeriod', 0x4b)
 	}
 
-	static setPIRBlindPeriod({ time }: SetPIRPeriodParams) {
+	static setPIRBlindPeriod(params: GeneralCommandTypes.SetPIRPeriodParams) {
 		try {
-			setPIRPeriodSchema.parse({ time })
+			DeviceCommandSchemas.GeneralCommandSchemas.setPIRPeriod.parse(params)
+			const { time } = params
 			return new BaseCommand('SetPIRBlindPeriod', 0x4c, dec2hex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {

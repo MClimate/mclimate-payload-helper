@@ -1,82 +1,21 @@
 import { BaseCommand } from '@/encoders'
 import { decToHex, dec2hex, CustomError, isFloat, dec2hex3bytes } from '@/utils'
 import { ZodError } from 'zod'
-
-import {
-	SetOpenWindowParams,
-	SetInternalAlgoParamsParams,
-	SetOperationalModeParams,
-	SetTargetTemperatureParams,
-	SetExternalTemperatureParams,
-	SetInternalAlgoTdiffParamsParams,
-	SetPrimaryOperationalModeParams,
-	SetBatteryRangesBoundariesParams,
-	SetBatteryRangesOverVoltageParams,
-	SetOvacParams,
-	SetProportionalAlgorithmParametersParams,
-	SetTemperatureControlAlgorithmParams,
-	SetMotorPositionOnlyParams,
-	SetTargetTemperatureAndMotorPositionParams,
-	SetChildLockBehaviorParams,
-	SetProportionalGainParams,
-	SetExternalTemperatureFloatParams,
-	SetIntegralGainParams,
-	SetPiRunPeriodParams,
-	SetTemperatureHysteresisParams,
-	SetOpenWindowPreciselyParams,
-	SetForceAttachParams,
-	SetAntiFreezeParamsParams,
-	SetMaxAllowedIntegralValueParams,
-	SetValveOpennessInPercentageParams,
-	SetValveOpennessRangeInPercentageParams,
-	SetTemperatureOffsetParams,
-	setOpenWindowSchema,
-	setInternalAlgoParamsSchema,
-	setOperationalModeSchema,
-	setTargetTemperatureSchema,
-	setExternalTemperatureSchema,
-	setInternalAlgoTdiffParamsSchema,
-	setPrimaryOperationalModeSchema,
-	setBatteryRangesBoundariesSchema,
-	setBatteryRangesOverVoltageSchema,
-	setOvacSchema,
-	setProportionalAlgorithmParametersSchema,
-	setTemperatureControlAlgorithmSchema,
-	setMotorPositionOnlySchema,
-	setTargetTemperatureAndMotorPositionSchema,
-	setChildLockBehaviorSchema,
-	setProportionalGainSchema,
-	setExternalTemperatureFloatSchema,
-	setIntegralGainSchema,
-	setPiRunPeriodSchema,
-	setTemperatureHysteresisSchema,
-	setOpenWindowPreciselySchema,
-	setForceAttachSchema,
-	setAntiFreezeParamsSchema,
-	setMaxAllowedIntegralValueSchema,
-	setValveOpennessInPercentageSchema,
-	setValveOpennessRangeInPercentageSchema,
-	setTemperatureOffsetSchema,
-} from '@/encoders/types/'
+import { VickiCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
 export class VickiCommands {
 	static recalibrateMotor() {
 		return new BaseCommand('RecalibrateMotor', 0x03)
 	}
 
-	// TODO: test below command
-	static setOpenWindow(params: SetOpenWindowParams) {
+	static setOpenWindow(params: VickiCommandTypes.SetOpenWindowParams) {
 		try {
-			setOpenWindowSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setOpenWindow.parse(params)
 			const { enabled, delta, closeTime, motorPosition } = params
 			const enabledValue = enabled ? 1 : 0
 			const closeTimeValue = Math.floor(closeTime / 5)
-
-			// Motor position: must fit within a 12-bit value, split into two parts
-			const motorPositionHigh = (motorPosition >> 8) & 0x0f // Top 4 bits
-			const motorPositionLow = motorPosition & 0xff // Bottom 8 bits
-
-			// Delta: ensure it's just 4 bits
+			const motorPositionHigh = (motorPosition >> 8) & 0x0f
+			const motorPositionLow = motorPosition & 0xff
 			const deltaValue = delta & 0x0f
 
 			return new BaseCommand(
@@ -113,9 +52,9 @@ export class VickiCommands {
 		return new BaseCommand('ForceClose', 0x0b)
 	}
 
-	static setInternalAlgoParams(params: SetInternalAlgoParamsParams) {
+	static setInternalAlgoParams(params: VickiCommandTypes.SetInternalAlgoParamsParams) {
 		try {
-			setInternalAlgoParamsSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setInternalAlgoParams.parse(params)
 			const { period, pFirstLast, pNext } = params
 			return new BaseCommand('SetInternalAlgoParams', 0x0c, decToHex(period), decToHex(pFirstLast), decToHex(pNext))
 		} catch (e) {
@@ -139,9 +78,9 @@ export class VickiCommands {
 		return new BaseCommand('GetInternalAlgoParams', 0x16)
 	}
 
-	static setOperationalMode(params: SetOperationalModeParams) {
+	static setOperationalMode(params: VickiCommandTypes.SetOperationalModeParams) {
 		try {
-			setOperationalModeSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setOperationalMode.parse(params)
 			return new BaseCommand('SetOperationalMode', 0x0d, params.mode)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -164,9 +103,9 @@ export class VickiCommands {
 		return new BaseCommand('GetOperationalMode', 0x18)
 	}
 
-	static setTargetTemperature(params: SetTargetTemperatureParams) {
+	static setTargetTemperature(params: VickiCommandTypes.SetTargetTemperatureParams) {
 		try {
-			setTargetTemperatureSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setTargetTemperature.parse(params)
 			const { targetTemperature } = params
 
 			if (isFloat(targetTemperature)) {
@@ -191,9 +130,9 @@ export class VickiCommands {
 		}
 	}
 
-	static setExternalTemperature(params: SetExternalTemperatureParams) {
+	static setExternalTemperature(params: VickiCommandTypes.SetExternalTemperatureParams) {
 		try {
-			setExternalTemperatureSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setExternalTemperature.parse(params)
 			return new BaseCommand('SetExternalTemperature', 0x0f, decToHex(params.temp))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -216,9 +155,9 @@ export class VickiCommands {
 		return new BaseCommand('GetExternalTemperature', 0x44)
 	}
 
-	static setInternalAlgoTdiffParams(params: SetInternalAlgoTdiffParamsParams) {
+	static setInternalAlgoTdiffParams(params: VickiCommandTypes.SetInternalAlgoTdiffParamsParams) {
 		try {
-			setInternalAlgoTdiffParamsSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setInternalAlgoTdiffParams.parse(params)
 			return new BaseCommand('SetInternalAlgoTdiffParams', 0x1a, decToHex(params.cold), decToHex(params.warm))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -241,9 +180,9 @@ export class VickiCommands {
 		return new BaseCommand('GetInternalAlgoTdiffParams', 0x17)
 	}
 
-	static setPrimaryOperationalMode(params: SetPrimaryOperationalModeParams) {
+	static setPrimaryOperationalMode(params: VickiCommandTypes.SetPrimaryOperationalModeParams) {
 		try {
-			setPrimaryOperationalModeSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setPrimaryOperationalMode.parse(params)
 			return new BaseCommand('SetPrimaryOperationalMode', 0x1e, params.mode)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -266,9 +205,9 @@ export class VickiCommands {
 		return new BaseCommand('GetPrimaryOperationalMode', 0x1f)
 	}
 
-	static setBatteryRangesBoundaries(params: SetBatteryRangesBoundariesParams) {
+	static setBatteryRangesBoundaries(params: VickiCommandTypes.SetBatteryRangesBoundariesParams) {
 		try {
-			setBatteryRangesBoundariesSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setBatteryRangesBoundaries.parse(params)
 			return new BaseCommand(
 				'SetBatteryRangesBoundaries',
 				0x20,
@@ -297,9 +236,9 @@ export class VickiCommands {
 		return new BaseCommand('GetBatteryRangesBoundaries', 0x21)
 	}
 
-	static setBatteryRangesOverVoltage(params: SetBatteryRangesOverVoltageParams) {
+	static setBatteryRangesOverVoltage(params: VickiCommandTypes.SetBatteryRangesOverVoltageParams) {
 		try {
-			setBatteryRangesOverVoltageSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setBatteryRangesOverVoltage.parse(params)
 			return new BaseCommand(
 				'SetBatteryRangesOverVoltage',
 				0x22,
@@ -329,9 +268,9 @@ export class VickiCommands {
 		return new BaseCommand('GetBatteryRangesOverVoltage', 0x23)
 	}
 
-	static setOvac(params: SetOvacParams) {
+	static setOvac(params: VickiCommandTypes.SetOvacParams) {
 		try {
-			setOvacSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setOvac.parse(params)
 			return new BaseCommand('SetOvac', 0x26, decToHex(params.ovac))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -354,9 +293,9 @@ export class VickiCommands {
 		return new BaseCommand('GetOvac', 0x27)
 	}
 
-	static setProportionalAlgorithmParameters(params: SetProportionalAlgorithmParametersParams) {
+	static setProportionalAlgorithmParameters(params: VickiCommandTypes.SetProportionalAlgorithmParametersParams) {
 		try {
-			setProportionalAlgorithmParametersSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setProportionalAlgorithmParameters.parse(params)
 			return new BaseCommand(
 				'SetProportionalAlgorithmParameters',
 				0x2a,
@@ -384,9 +323,9 @@ export class VickiCommands {
 		return new BaseCommand('GetProportionalAlgorithmParameters', 0x29)
 	}
 
-	static setTemperatureControlAlgorithm(params: SetTemperatureControlAlgorithmParams) {
+	static setTemperatureControlAlgorithm(params: VickiCommandTypes.SetTemperatureControlAlgorithmParams) {
 		try {
-			setTemperatureControlAlgorithmSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setTemperatureControlAlgorithm.parse(params)
 			return new BaseCommand('SetTemperatureControlAlgorithm', 0x2c, params.algorithm)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -409,9 +348,9 @@ export class VickiCommands {
 		return new BaseCommand('GetTemperatureControlAlgorithm', 0x2b)
 	}
 
-	static setMotorPositionOnly(params: SetMotorPositionOnlyParams) {
+	static setMotorPositionOnly(params: VickiCommandTypes.SetMotorPositionOnlyParams) {
 		try {
-			setMotorPositionOnlySchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setMotorPositionOnly.parse(params)
 			return new BaseCommand('SetMotorPositionOnly', 0x2d, dec2hex(params.position))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -434,9 +373,9 @@ export class VickiCommands {
 		return new BaseCommand('deviceReset', 0x30)
 	}
 
-	static setTargetTemperatureAndMotorPosition(params: SetTargetTemperatureAndMotorPositionParams) {
+	static setTargetTemperatureAndMotorPosition(params: VickiCommandTypes.SetTargetTemperatureAndMotorPositionParams) {
 		try {
-			setTargetTemperatureAndMotorPositionSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setTargetTemperatureAndMotorPosition.parse(params)
 			return new BaseCommand(
 				'SetTargetTemperatureAndMotorPosition',
 				0x31,
@@ -460,9 +399,9 @@ export class VickiCommands {
 		}
 	}
 
-	static setChildLockBehavior(params: SetChildLockBehaviorParams) {
+	static setChildLockBehavior(params: VickiCommandTypes.SetChildLockBehaviorParams) {
 		try {
-			setChildLockBehaviorSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setChildLockBehavior.parse(params)
 			return new BaseCommand('SetChildLockBehavior', 0x35, decToHex(params.behavior))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -485,9 +424,9 @@ export class VickiCommands {
 		return new BaseCommand('GetChildLockBehavior', 0x34)
 	}
 
-	static setProportionalGain(params: SetProportionalGainParams) {
+	static setProportionalGain(params: VickiCommandTypes.SetProportionalGainParams) {
 		try {
-			setProportionalGainSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setProportionalGain.parse(params)
 			const kp = Math.round(params.proportionalGain * 131072)
 			return new BaseCommand('SetProportionalGain', 0x37, dec2hex3bytes(kp))
 		} catch (e) {
@@ -511,9 +450,9 @@ export class VickiCommands {
 		return new BaseCommand('GetProportionalGain', 0x36)
 	}
 
-	static setExternalTemperatureFloat(params: SetExternalTemperatureFloatParams) {
+	static setExternalTemperatureFloat(params: VickiCommandTypes.SetExternalTemperatureFloatParams) {
 		try {
-			setExternalTemperatureFloatSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setExternalTemperatureFloat.parse(params)
 			return new BaseCommand('SetExternalTemperatureFloat', 0x3c, dec2hex(params.temp * 10))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -532,9 +471,9 @@ export class VickiCommands {
 		}
 	}
 
-	static setIntegralGain(params: SetIntegralGainParams) {
+	static setIntegralGain(params: VickiCommandTypes.SetIntegralGainParams) {
 		try {
-			setIntegralGainSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setIntegralGain.parse(params)
 			const ki = Math.round(params.integralGain * 131072)
 			return new BaseCommand('SetIntegralGain', 0x3e, dec2hex3bytes(ki))
 		} catch (e) {
@@ -562,9 +501,9 @@ export class VickiCommands {
 		return new BaseCommand('GetIntegralValue', 0x3f)
 	}
 
-	static setPiRunPeriod(params: SetPiRunPeriodParams) {
+	static setPiRunPeriod(params: VickiCommandTypes.SetPiRunPeriodParams) {
 		try {
-			setPiRunPeriodSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setPiRunPeriod.parse(params)
 			return new BaseCommand('SetPiRunPeriod', 0x41, decToHex(params.period))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -587,9 +526,9 @@ export class VickiCommands {
 		return new BaseCommand('GetPiRunPeriod', 0x40)
 	}
 
-	static setTemperatureHysteresis(params: SetTemperatureHysteresisParams) {
+	static setTemperatureHysteresis(params: VickiCommandTypes.SetTemperatureHysteresisParams) {
 		try {
-			setTemperatureHysteresisSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setTemperatureHysteresis.parse(params)
 			return new BaseCommand('SetTemperatureHysteresis', 0x43, decToHex(params.hysteresis * 10))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -612,9 +551,9 @@ export class VickiCommands {
 		return new BaseCommand('GetTemperatureHysteresis', 0x42)
 	}
 
-	static setOpenWindowPrecisely(params: SetOpenWindowPreciselyParams) {
+	static setOpenWindowPrecisely(params: VickiCommandTypes.SetOpenWindowPreciselyParams) {
 		try {
-			setOpenWindowPreciselySchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setOpenWindowPrecisely.parse(params)
 			const enabledValue = params.enabled ? 1 : 0
 			const duration = Math.floor(params.duration / 5)
 			const delta = params.delta * 10
@@ -646,9 +585,9 @@ export class VickiCommands {
 		return new BaseCommand('GetOpenWindowPrecisely', 0x46)
 	}
 
-	static setForceAttach(params: SetForceAttachParams) {
+	static setForceAttach(params: VickiCommandTypes.SetForceAttachParams) {
 		try {
-			setForceAttachSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setForceAttach.parse(params)
 			const enabledValue = params.enabled ? 1 : 0
 			return new BaseCommand('SetForceAttach', 0x47, decToHex(enabledValue))
 		} catch (e) {
@@ -672,9 +611,9 @@ export class VickiCommands {
 		return new BaseCommand('GetForceAttach', 0x48)
 	}
 
-	static setAntiFreezeParams(params: SetAntiFreezeParamsParams) {
+	static setAntiFreezeParams(params: VickiCommandTypes.SetAntiFreezeParamsParams) {
 		try {
-			setAntiFreezeParamsSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setAntiFreezeParams.parse(params)
 			return new BaseCommand(
 				'SetAntiFreezeParams',
 				0x49,
@@ -703,9 +642,9 @@ export class VickiCommands {
 		return new BaseCommand('GetAntiFreezeParams', 0x4a)
 	}
 
-	static setMaxAllowedIntegralValue(params: SetMaxAllowedIntegralValueParams) {
+	static setMaxAllowedIntegralValue(params: VickiCommandTypes.SetMaxAllowedIntegralValueParams) {
 		try {
-			setMaxAllowedIntegralValueSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setMaxAllowedIntegralValue.parse(params)
 			return new BaseCommand('SetMaxAllowedIntegralValue', 0x4c, dec2hex(params.value * 10))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -728,9 +667,9 @@ export class VickiCommands {
 		return new BaseCommand('GetMaxAllowedIntegralValue', 0x4d)
 	}
 
-	static setValveOpennessInPercentage(params: SetValveOpennessInPercentageParams) {
+	static setValveOpennessInPercentage(params: VickiCommandTypes.SetValveOpennessInPercentageParams) {
 		try {
-			setValveOpennessInPercentageSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setValveOpennessInPercentage.parse(params)
 			return new BaseCommand('SetValveOpennessInPercentage', 0x4e, decToHex(params.value))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -749,9 +688,9 @@ export class VickiCommands {
 		}
 	}
 
-	static setValveOpennessRangeInPercentage(params: SetValveOpennessRangeInPercentageParams) {
+	static setValveOpennessRangeInPercentage(params: VickiCommandTypes.SetValveOpennessRangeInPercentageParams) {
 		try {
-			setValveOpennessRangeInPercentageSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setValveOpennessRangeInPercentage.parse(params)
 			return new BaseCommand(
 				'SetValveOpennessRangeInPercentage',
 				0x4f,
@@ -779,9 +718,9 @@ export class VickiCommands {
 		return new BaseCommand('GetValveOpennessRangeInPercentage', 0x50)
 	}
 
-	static setTemperatureOffset(params: SetTemperatureOffsetParams) {
+	static setTemperatureOffset(params: VickiCommandTypes.SetTemperatureOffsetParams) {
 		try {
-			setTemperatureOffsetSchema.parse(params)
+			DeviceCommandSchemas.VickiCommandSchemas.setTemperatureOffset.parse(params)
 			const value = Math.round((params.value + 4.928) / 0.176)
 			return new BaseCommand('SetTemperatureOffset', 0x53, decToHex(value))
 		} catch (e) {
