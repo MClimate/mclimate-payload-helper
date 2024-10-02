@@ -1,7 +1,5 @@
 import { z } from 'zod'
 
-// TODO: check if types are correct
-
 /* ---------------------------------------GENERAL COMMANDS--------------------------------------- */
 
 const GeneralCommandSchemas = {
@@ -179,7 +177,7 @@ const VickiCommandSchemas = {
 		max: z.number(),
 	}),
 	setTemperatureOffset: z.object({
-		value: z.number().min(-5).max(5),
+		value: z.number(),
 	}),
 }
 
@@ -238,7 +236,7 @@ const Relay16CommandSchemas = {
 		state: z.number(),
 	}),
 	setRelayState: z.object({
-		state: z.number(),
+		state: z.boolean(),
 	}),
 }
 
@@ -250,6 +248,87 @@ export namespace Relay16CommandTypes {
 	export type SetRelayRecoveryStateParams = z.infer<typeof Relay16CommandSchemas.setRelayRecoveryState>
 	export type SetRelayStateParams = z.infer<typeof Relay16CommandSchemas.setRelayState>
 }
+
+// ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
+
+const TValveCommandSchemas = {
+	setOpenCloseTime: z.object({
+		openingTime: z.number(),
+		closingTime: z.number(),
+	}),
+	setLED: z.object({
+		ledId: z.number(),
+		behavior: z.number(),
+		seconds: z.number(),
+	}),
+	setBuzzer: z.object({
+		volume: z.number(),
+		frequency: z.number(),
+		activeTime: z.number(),
+		onTime: z.number(),
+		offTime: z.number(),
+	}),
+	setEmergencyOpenings: z.object({
+		maxOpenings: z.number(),
+	}),
+	setManualControl: z.object({
+		enableOpen: z.boolean(),
+		enableClose: z.boolean(),
+	}),
+	setFloodAlarmTime: z.object({
+		time: z.number(),
+	}),
+	setKeepAliveTValve: z.object({
+		time: z.number(),
+	}),
+	setWorkingVoltage: z.object({
+		voltage: z.number(),
+	}),
+	setValveState: z.object({
+		state: z.number(),
+	}),
+	setOpenCloseTimeExtended: z.object({
+		openingTime: z.number(),
+		closingTime: z.number(),
+	}),
+	setSingleTimeValveState: z.object({
+		state: z.number(),
+		time: z.number(),
+	}),
+	setDeviceFloodSensor: z.object({
+		enabled: z.boolean(),
+	}),
+	setJoinRetryPeriodTValve: z.object({
+		period: z.number(),
+	}),
+	setUplinkTypeTValve: z.object({
+		type: z.string(),
+	}),
+	setWatchDogTValveParams: z.object({
+		confirmedUplinks: z.number(),
+		unconfirmedUplinks: z.number(),
+	}),
+}
+
+export namespace TValveCommandTypes {
+	export type SetOpenCloseTimeParams = z.infer<typeof TValveCommandSchemas.setOpenCloseTime>
+	export type SetLEDParams = z.infer<typeof TValveCommandSchemas.setLED>
+	export type SetBuzzerParams = z.infer<typeof TValveCommandSchemas.setBuzzer>
+	export type SetEmergencyOpeningsParams = z.infer<typeof TValveCommandSchemas.setEmergencyOpenings>
+	export type SetManualControlParams = z.infer<typeof TValveCommandSchemas.setManualControl>
+	export type SetFloodAlarmTimeParams = z.infer<typeof TValveCommandSchemas.setFloodAlarmTime>
+	export type SetKeepAliveParams = z.infer<typeof TValveCommandSchemas.setKeepAliveTValve>
+	export type SetWorkingVoltageParams = z.infer<typeof TValveCommandSchemas.setWorkingVoltage>
+	export type SetValveStateParams = z.infer<typeof TValveCommandSchemas.setValveState>
+	export type SetOpenCloseTimeExtendedParams = z.infer<typeof TValveCommandSchemas.setOpenCloseTimeExtended>
+	export type SetSingleTimeValveStateParams = z.infer<typeof TValveCommandSchemas.setSingleTimeValveState>
+	export type SetDeviceFloodSensorParams = z.infer<typeof TValveCommandSchemas.setDeviceFloodSensor>
+	export type SetJoinRetryPeriodTValveParams = z.infer<typeof TValveCommandSchemas.setJoinRetryPeriodTValve>
+	export type SetUplinkTypeTValveParams = z.infer<typeof TValveCommandSchemas.setUplinkTypeTValve>
+	export type SetWatchDogTValveParams = z.infer<typeof TValveCommandSchemas.setWatchDogTValveParams>
+}
+
+// TODO: check from here
 
 /* --------------------------------------- FAN COIL THERMOSTAT COMMANDS --------------------------------------- */
 
@@ -386,96 +465,16 @@ export namespace FanCoilThermostatCommandTypes {
 	export type SetDeltaTemperature2and3Params = z.infer<typeof FanCoilThermostatCommandSchemas.setDeltaTemperature2and3>
 }
 
-// ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
-
-const TValveCommandSchemas = {
-	setOpenCloseTime: z.object({
-		openingTime: z.number(),
-		closingTime: z.number(),
-	}),
-	setLED: z.object({
-		ledId: z.number(),
-		behavior: z.number(),
-		seconds: z.number(),
-	}),
-	setBuzzer: z.object({
-		volume: z.number(),
-		frequency: z.number(),
-		activeTime: z.number(),
-		onTime: z.number(),
-		offTime: z.number(),
-	}),
-	setEmergencyOpenings: z.object({
-		maxOpenings: z.number(),
-	}),
-	setManualControl: z.object({
-		enableOpen: z.boolean(),
-		enableClose: z.boolean(),
-	}),
-	setFloodAlarmTime: z.object({
-		time: z.number(),
-	}),
-	setKeepAliveTValve: z.object({
-		time: z.number(),
-	}),
-	setWorkingVoltage: z.object({
-		voltage: z.number(),
-	}),
-	setValveState: z.object({
-		state: z.number(),
-	}),
-	setOpenCloseTimeExtended: z.object({
-		openingTime: z.number(),
-		closingTime: z.number(),
-	}),
-	setSingleTimeValveState: z.object({
-		state: z.number(),
-		time: z.number(),
-	}),
-	setDeviceFloodSensor: z.object({
-		enabled: z.boolean(),
-	}),
-	setJoinRetryPeriodTValve: z.object({
-		period: z.number(),
-	}),
-	setUplinkTypeTValve: z.object({
-		type: z.string(),
-	}),
-	setWatchDogTValveParams: z.object({
-		confirmedUplinks: z.number(),
-		unconfirmedUplinks: z.number(),
-	}),
-}
-
-export namespace TValveCommandTypes {
-	export type SetOpenCloseTimeParams = z.infer<typeof TValveCommandSchemas.setOpenCloseTime>
-	export type SetLEDParams = z.infer<typeof TValveCommandSchemas.setLED>
-	export type SetBuzzerParams = z.infer<typeof TValveCommandSchemas.setBuzzer>
-	export type SetEmergencyOpeningsParams = z.infer<typeof TValveCommandSchemas.setEmergencyOpenings>
-	export type SetManualControlParams = z.infer<typeof TValveCommandSchemas.setManualControl>
-	export type SetFloodAlarmTimeParams = z.infer<typeof TValveCommandSchemas.setFloodAlarmTime>
-	export type SetKeepAliveParams = z.infer<typeof TValveCommandSchemas.setKeepAliveTValve>
-	export type SetWorkingVoltageParams = z.infer<typeof TValveCommandSchemas.setWorkingVoltage>
-	export type SetValveStateParams = z.infer<typeof TValveCommandSchemas.setValveState>
-	export type SetOpenCloseTimeExtendedParams = z.infer<typeof TValveCommandSchemas.setOpenCloseTimeExtended>
-	export type SetSingleTimeValveStateParams = z.infer<typeof TValveCommandSchemas.setSingleTimeValveState>
-	export type SetDeviceFloodSensorParams = z.infer<typeof TValveCommandSchemas.setDeviceFloodSensor>
-	export type SetJoinRetryPeriodTValveParams = z.infer<typeof TValveCommandSchemas.setJoinRetryPeriodTValve>
-	export type SetUplinkTypeTValveParams = z.infer<typeof TValveCommandSchemas.setUplinkTypeTValve>
-	export type SetWatchDogTValveParams = z.infer<typeof TValveCommandSchemas.setWatchDogTValveParams>
-}
-
 // ------------------------------------------------ AQI LED COMMANDS ------------------------------------------------
 
-// TODO: check if below ranges are correct?
 const AQICommandSchemas = {
 	setAqiLed: z.object({
-		redBehavior: z.number().min(1).max(4),
-		redDuration: z.number().min(0),
-		greenBehavior: z.number().min(1).max(4),
-		greenDuration: z.number().min(0),
-		blueBehavior: z.number().min(1).max(4),
-		blueDuration: z.number().min(0),
+		redBehavior: z.number(),
+		redDuration: z.number(),
+		greenBehavior: z.number(),
+		greenDuration: z.number(),
+		blueBehavior: z.number(),
+		blueDuration: z.number(),
 	}),
 }
 
@@ -486,13 +485,13 @@ export namespace AQICommandTypes {
 /* --------------------------------------- T-FLOOD COMMANDS --------------------------------------- */
 const TFloodCommandSchemas = {
 	setFloodAlarmTime: z.object({
-		time: z.number().min(0),
+		time: z.number(),
 	}),
 	setKeepAlive: z.object({
-		time: z.number().min(0),
+		time: z.number(),
 	}),
 	setFloodEventSendTime: z.object({
-		time: z.number().min(0),
+		time: z.number(),
 	}),
 	setFloodEventUplinkType: z.object({
 		type: z.string(),
@@ -509,16 +508,16 @@ export namespace TFloodCommandTypes {
 /* --------------------------------------- TRING THERMOSTAT COMMANDS --------------------------------------- */
 const TringThermostatCommandSchemas = {
 	setThermostatTarget: z.object({
-		target: z.number().min(0),
+		target: z.number(),
 	}),
 	setThermostatConfig: z.object({
-		time: z.number().min(0),
-		temp_span: z.number().min(0),
-		temp_sampling: z.number().min(0),
-		target: z.number().min(0),
+		time: z.number(),
+		temp_span: z.number(),
+		temp_sampling: z.number(),
+		target: z.number(),
 	}),
 	setKeepAlive: z.object({
-		time: z.number().min(0),
+		time: z.number(),
 	}),
 }
 
