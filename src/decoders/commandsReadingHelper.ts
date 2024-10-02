@@ -39,6 +39,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 
 	if (!commands) return
 
+	// NOTE: make sure to add a break statement after each case!!!
 	commands.map((command: string, i: number) => {
 		switch (command.toLowerCase()) {
 			case '00':
@@ -157,7 +158,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { deviceVersions: { hardware: Number(hardwareVersion), software: Number(softwareVersion) } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						console.log(e)
+						throw new CustomError({
+							message: `Failed to process command '07'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -187,7 +194,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data = { openCloseTimeExtended: { openingTime: Number(openingTime), closingTime: Number(closingTime) } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
-						console.log(e)
+						throw new CustomError({
+							message: `Failed to process command '0e'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
 				}
 				break
@@ -812,11 +825,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '30':
 				{
 					try {
-						let data;
+						let data
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 2
-							data = { manualTargetTemperatureUpdate: ((parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)) / 10 }
-						}else{
+							data = {
+								manualTargetTemperatureUpdate: ((parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)) / 10,
+							}
+						} else {
 							command_len = 1
 							data = { manualTargetTemperatureUpdate: parseInt(commands[i + 1], 16) }
 						}
@@ -1744,6 +1759,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { occupancySensorStatusSetPoint: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.Relay16) {
+							command_len = 2
+							data = { overheatingRecoveryTime: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1764,6 +1782,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { occupancySensorStatus: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.Relay16) {
+							command_len = 2
+							data = { overvoltageRecoveryTime: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1784,6 +1805,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { dewPointSensorStatus: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.Relay16) {
+							command_len = 1
+							data = { overcurrentRecoveryTemp: parseInt(commands[i + 1], 16) }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1804,6 +1828,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { filterAlarm: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.Relay16) {
+							command_len = 1
+							data = { overpowerRecoveryTemp: parseInt(commands[i + 1], 16) }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1917,23 +1944,81 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
-			case 'a0': {
-				try {
-					command_len = 4
-					let fuota_address = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}${commands[i + 4]}`, 16)
-					let fuota_address_raw = `${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}${commands[i + 4]}`
-					let data = { fuota: { fuota_address, fuota_address_raw } }
-					Object.assign(resultToPass, { ...resultToPass }, { ...data })
-				} catch (e) {
-					throw new CustomError({
-						message: `Failed to process command 'a0'`,
-						hexData,
-						command,
-						deviceType,
-						originalError: e as Error,
-					})
+			case 'a0':
+				{
+					try {
+						command_len = 4
+						let fuota_address = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}${commands[i + 4]}`, 16)
+						let fuota_address_raw = `${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}${commands[i + 4]}`
+						let data = { fuota: { fuota_address, fuota_address_raw } }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command 'a0'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
 				}
-			}
+				break
+
+			case '5a':
+				{
+					try {
+						command_len = 1
+						let data = { afterOverheatingProtectionRecovery: parseInt(commands[i + 1], 16) }
+
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '5a'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '5c':
+				{
+					try {
+						command_len = 1
+						let data = { ledIndicationMode: parseInt(commands[i + 1], 16) }
+
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '5c'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '5d':
+				{
+					try {
+						command_len = 1
+						let data = { manualChangeRelayState: parseInt(commands[i + 1], 16) }
+
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '5d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+
 			default:
 				decodeKeepalive(commands, payloadLength, deviceType)
 				commands.splice(i, commands.length)
