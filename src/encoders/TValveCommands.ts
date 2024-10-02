@@ -3,14 +3,12 @@ import { decToHex, dec2hex, CustomError } from '@/utils'
 import { ZodError } from 'zod'
 import { TValveCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-// TODO: resolve errors below
-
 export class TValveCommands {
 	static setOpenCloseTime(params: TValveCommandTypes.SetOpenCloseTimeParams) {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setOpenCloseTime.parse(params)
 			const { openingTime, closingTime } = params
-			return new BaseCommand('SetOpenCloseTime', 0x01, openingTime, closingTime)
+			return new BaseCommand('SetOpenCloseTime', 0x01, decToHex(openingTime), decToHex(closingTime))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -32,13 +30,7 @@ export class TValveCommands {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setLED.parse(params)
 			const { ledId, behavior, seconds } = params
-			return new BaseCommand(
-				'SetLED',
-				0x02,
-				parseInt(ledId).toString(16),
-				parseInt(behavior).toString(16),
-				parseInt(seconds).toString(16),
-			)
+			return new BaseCommand('SetLED', 0x02, decToHex(ledId), decToHex(behavior), decToHex(seconds))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -60,16 +52,16 @@ export class TValveCommands {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setBuzzer.parse(params)
 			const { volume, frequency, activeTime, onTime, offTime } = params
-			const byte = parseInt(volume).toString(2).padStart(4, '0') + parseInt(frequency).toString(2).padStart(4, '0')
+			const byte = volume.toString(2).padStart(4, '0') + frequency.toString(2).padStart(4, '0')
 			const volumeAndFreq = parseInt(byte, 2).toString(16)
 
 			return new BaseCommand(
 				'SetBuzzer',
 				0x03,
 				volumeAndFreq,
-				parseInt(activeTime).toString(16),
-				parseInt(onTime / 10).toString(16),
-				parseInt(offTime / 10).toString(16),
+				decToHex(activeTime),
+				decToHex(onTime / 10),
+				decToHex(offTime / 10),
 			)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -92,7 +84,7 @@ export class TValveCommands {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setEmergencyOpenings.parse(params)
 			const { maxOpenings } = params
-			return new BaseCommand('SetEmergencyOpenings', 0x04, parseInt(maxOpenings).toString(16))
+			return new BaseCommand('SetEmergencyOpenings', 0x04, decToHex(maxOpenings))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -141,7 +133,7 @@ export class TValveCommands {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setFloodAlarmTime.parse(params)
 			const { time } = params
-			return new BaseCommand('SetFloodAlarmTime', 0x06, parseInt(time).toString(16))
+			return new BaseCommand('SetFloodAlarmTime', 0x06, decToHex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -167,7 +159,7 @@ export class TValveCommands {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setKeepAliveTValve.parse(params)
 			const { time } = params
-			return new BaseCommand('SetKeepAlive', 0x07, parseInt(time).toString(16))
+			return new BaseCommand('SetKeepAlive', 0x07, decToHex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -194,7 +186,7 @@ export class TValveCommands {
 			DeviceCommandSchemas.TValveCommandSchemas.setWorkingVoltage.parse(params)
 			let { voltage } = params
 			voltage = (voltage - 1600) / 8
-			return new BaseCommand('SetWorkingVoltage', 0x09, parseInt(voltage).toString(16))
+			return new BaseCommand('SetWorkingVoltage', 0x09, decToHex(voltage))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -319,7 +311,7 @@ export class TValveCommands {
 			DeviceCommandSchemas.TValveCommandSchemas.setJoinRetryPeriodTValve.parse(params)
 			const { period } = params
 			const periodToPass = (period * 60) / 5
-			return new BaseCommand('SetJoinRetryPeriod', 0x15, parseInt(periodToPass).toString(16))
+			return new BaseCommand('SetJoinRetryPeriod', 0x15, decToHex(periodToPass))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
