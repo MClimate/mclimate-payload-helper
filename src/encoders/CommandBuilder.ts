@@ -1,50 +1,37 @@
-import { BaseCommand, GeneralCommands, VickiCommands } from '@/encoders'
+import {
+	BaseCommand,
+	GeneralCommands,
+	Relay16Commands,
+	VickiCommands,
+	FanCoilThermostatCommands,
+	TValveCommands,
+	TFloodCommands,
+	TringThermostatCommands,
+	WirelessThermostatCommands,
+	CO2SensorCommands,
+	CO2DisplayCommands,
+	DskDeviceCommands,
+	OpenCloseSensorCommands,
+	ButtonCommands,
+	SetAqiLed,
+} from '@/encoders'
 
 // types
 import {
-	CustomHexCommandParams,
-	SetKeepAliveParams,
-	SetChildLockParams,
-	SetTemperatureRangeParams,
-	SetJoinRetryPeriodParams,
-	SetUplinkTypeParams,
-	SetWatchDogParams,
-	SetDisplayRefreshPeriodParams,
-	SetDeepSleepModeParams,
-	SetPIRSensorStatusParams,
-	SetPIRSensorSensitivityParams,
-	SetCurrentTemperatureVisibilityParams,
-	SetHumidityVisibilityParams,
-	SetLightIntensityVisibilityParams,
-	SetCo2ImagesVisibilityParams,
-	SetPIRPeriodParams,
-	SetOpenWindowParams,
-	SetInternalAlgoParamsParams,
-	SetOperationalModeParams,
-	SetTargetTemperatureParams,
-	SetExternalTemperatureParams,
-	SetInternalAlgoTdiffParamsParams,
-	SetPrimaryOperationalModeParams,
-	SetBatteryRangesBoundariesParams,
-	SetBatteryRangesOverVoltageParams,
-	SetOvacParams,
-	SetProportionalAlgorithmParametersParams,
-	SetTemperatureControlAlgorithmParams,
-	SetMotorPositionOnlyParams,
-	SetTargetTemperatureAndMotorPositionParams,
-	SetChildLockBehaviorParams,
-	SetProportionalGainParams,
-	SetExternalTemperatureFloatParams,
-	SetIntegralGainParams,
-	SetPiRunPeriodParams,
-	SetTemperatureHysteresisParams,
-	SetOpenWindowPreciselyParams,
-	SetForceAttachParams,
-	SetAntiFreezeParamsParams,
-	SetMaxAllowedIntegralValueParams,
-	SetValveOpennessInPercentageParams,
-	SetValveOpennessRangeInPercentageParams,
-	SetTemperatureOffsetParams,
+	GeneralCommandTypes,
+	Relay16CommandTypes,
+	VickiCommandTypes,
+	FanCoilThermostatCommandTypes,
+	TValveCommandTypes,
+	TFloodCommandTypes,
+	TringThermostatCommandTypes,
+	WirelessThermostatCommandTypes,
+	CO2SensorCommandTypes,
+	CO2DisplayCommandTypes,
+	DSKDeviceCommandTypes,
+	OpenCloseSensorCommandTypes,
+	ButtonCommandTypes,
+	AQICommandTypes,
 } from '@/encoders/types'
 
 export class CommandBuilder {
@@ -59,18 +46,18 @@ export class CommandBuilder {
 			// ------------------------------------------------ GENERAL COMMANDS ------------------------------------------------
 
 			case 'SendCustomHexCommand': {
-				return GeneralCommands.sendCustomHexCommand(params as CustomHexCommandParams)
+				return GeneralCommands.sendCustomHexCommand(params as GeneralCommandTypes.CustomHexCommandParams)
 			}
 
 			case 'SetKeepAlive': {
 				if (this.device_type === 't_valve') {
-					return TValveCommands.setKeepAlive(params as SetKeepAliveParams)
+					return TValveCommands.setKeepAlive(params as TValveCommandTypes.SetKeepAliveParams)
 				} else if (this.device_type === 't_flood') {
-					return TFloodCommands.setKeepAlive(params as SetKeepAliveParams)
+					return TFloodCommands.setKeepAlive(params as TFloodCommandTypes.SetKeepAliveParams)
 				} else if (this.device_type === 'thermostat') {
-					return TringThermostatCommands.setKeepAlive(params as SetKeepAliveParams)
+					return TringThermostatCommands.setKeepAlive(params as TringThermostatCommandTypes.SetKeepAliveParams)
 				}
-				return GeneralCommands.setKeepAlive(params as SetKeepAliveParams)
+				return GeneralCommands.setKeepAlive(params as GeneralCommandTypes.SetKeepAliveParams)
 			}
 
 			case 'GetKeepAliveTime': {
@@ -85,7 +72,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetTemperatureRange': {
-				return GeneralCommands.setTemperatureRange(params as SetTemperatureRangeParams)
+				return GeneralCommands.setTemperatureRange(params as GeneralCommandTypes.SetTemperatureRangeParams)
 			}
 
 			case 'GetTemperatureRange': {
@@ -94,9 +81,9 @@ export class CommandBuilder {
 
 			case 'SetUplinkType': {
 				if (this.device_type === 't_valve') {
-					return TValveCommands.setUplinkType(params as SetUplinkTypeParams)
+					return TValveCommands.setUplinkType(params as TValveCommandTypes.SetUplinkTypeTValveParams)
 				}
-				return GeneralCommands.setUplinkType(params as SetUplinkTypeParams)
+				return GeneralCommands.setUplinkType(params as GeneralCommandTypes.SetUplinkTypeParams)
 			}
 
 			case 'GetUplinkType': {
@@ -108,9 +95,9 @@ export class CommandBuilder {
 
 			case 'SetJoinRetryPeriod': {
 				if (this.device_type === 't_valve') {
-					return TValveCommands.setJoinRetryPeriod(params as SetJoinRetryPeriodParams)
+					return TValveCommands.setJoinRetryPeriod(params as TValveCommandTypes.SetJoinRetryPeriodTValveParams)
 				}
-				return GeneralCommands.setJoinRetryPeriod(params as SetJoinRetryPeriodParams)
+				return GeneralCommands.setJoinRetryPeriod(params as GeneralCommandTypes.SetJoinRetryPeriodParams)
 			}
 
 			case 'GetJoinRetryPeriod': {
@@ -125,14 +112,14 @@ export class CommandBuilder {
 			}
 
 			case 'SetChildLock': {
-				return GeneralCommands.setChildLock(params as SetChildLockParams)
+				return GeneralCommands.setChildLock(params as GeneralCommandTypes.SetChildLockParams)
 			}
 
 			case 'SetWatchDogParams': {
 				if (this.device_type === 't_valve') {
-					return TValveCommands.setWatchDogParams(params as SetWatchDogParams)
+					return TValveCommands.setWatchDogParams(params as TValveCommandTypes.SetWatchDogTValveParams)
 				}
-				return GeneralCommands.setWatchDogParams(params as SetWatchDogParams)
+				return GeneralCommands.setWatchDogParams(params as GeneralCommandTypes.SetWatchDogParams)
 			}
 
 			case 'GetWatchDogParams': {
@@ -144,22 +131,28 @@ export class CommandBuilder {
 
 			case 'SetTargetTemperature': {
 				if (this.device_type === 'wireless_thermostat') {
-					return WirelessThermostatCommands.setTargetTemperature(params)
+					return WirelessThermostatCommands.setTargetTemperature(
+						params as WirelessThermostatCommandTypes.SetTargetTemperatureParams,
+					)
 				} else if (this.device_type === 'fan_coil_thermostat') {
-					return FanCoilThermostatCommands.setTargetTemperature(params)
+					return FanCoilThermostatCommands.setTargetTemperature(
+						params as FanCoilThermostatCommandTypes.SetTargetTemperatureFanCoilParams,
+					)
 				}
-				return VickiCommands.setTargetTemperature(params as SetTargetTemperatureParams)
+				return VickiCommands.setTargetTemperature(params as VickiCommandTypes.SetTargetTemperatureParams)
 			}
 
 			case 'GetTargetTemperature': {
-				return WirelessThermostatCommands.getTargetTemperature(params)
+				return WirelessThermostatCommands.getTargetTemperature()
 			}
 
 			case 'SetTemperatureHysteresis': {
 				if (this.device_type === 'wireless_thermostat') {
-					return WirelessThermostatCommands.setTemperatureHysteresis(params)
+					return WirelessThermostatCommands.setTemperatureHysteresis(
+						params as WirelessThermostatCommandTypes.SetTemperatureHysteresisParams,
+					)
 				}
-				return VickiCommands.setTemperatureHysteresis(params as SetTemperatureHysteresisParams)
+				return VickiCommands.setTemperatureHysteresis(params as VickiCommandTypes.SetTemperatureHysteresisParams)
 			}
 
 			case 'GetTemperatureHysteresis': {
@@ -171,9 +164,13 @@ export class CommandBuilder {
 
 			case 'SetTargetTemperatureStep': {
 				if (this.device_type === 'wireless_thermostat') {
-					return WirelessThermostatCommands.setTargetTemperatureStep(params)
+					return WirelessThermostatCommands.setTargetTemperatureStep(
+						params as WirelessThermostatCommandTypes.SetTargetTemperatureStepParams,
+					)
 				}
-				return FanCoilThermostatCommands.setTargetTemperatureStep(params)
+				return FanCoilThermostatCommands.setTargetTemperatureStep(
+					params as FanCoilThermostatCommandTypes.SetTargetTemperatureStepParams,
+				)
 			}
 
 			case 'GetTargetTemperatureStep': {
@@ -182,15 +179,16 @@ export class CommandBuilder {
 				}
 				return FanCoilThermostatCommands.getTargetTemperatureStep()
 			}
-
 			// --------------- DISPLAY COMMANDS ---------------
 
 			case 'SetDeepSleepMode': {
-				return GeneralCommands.setDeepSleepMode(params as SetDeepSleepModeParams)
+				return GeneralCommands.setDeepSleepMode(params as GeneralCommandTypes.SetDeepSleepModeParams)
 			}
 
 			case 'SetCurrentTemperatureVisibility': {
-				return GeneralCommands.setCurrentTemperatureVisibility(params as SetCurrentTemperatureVisibilityParams)
+				return GeneralCommands.setCurrentTemperatureVisibility(
+					params as GeneralCommandTypes.SetCurrentTemperatureVisibilityParams,
+				)
 			}
 
 			case 'GetCurrentTemperatureVisibility': {
@@ -198,7 +196,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetHumidityVisibility': {
-				return GeneralCommands.setHumidityVisibility(params as SetHumidityVisibilityParams)
+				return GeneralCommands.setHumidityVisibility(params as GeneralCommandTypes.SetHumidityVisibilityParams)
 			}
 
 			case 'GetHumidityVisibility': {
@@ -206,7 +204,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetLightIntensityVisibility': {
-				return GeneralCommands.setLightIntensityVisibility(params as SetLightIntensityVisibilityParams)
+				return GeneralCommands.setLightIntensityVisibility(params as GeneralCommandTypes.SetLightIntensityVisibilityParams)
 			}
 
 			case 'GetLightIntensityVisibility': {
@@ -214,7 +212,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetDisplayRefreshPeriod': {
-				return GeneralCommands.setDisplayRefreshPeriod(params as SetDisplayRefreshPeriodParams)
+				return GeneralCommands.setDisplayRefreshPeriod(params as GeneralCommandTypes.SetDisplayRefreshPeriodParams)
 			}
 
 			case 'GetDisplayRefreshPeriod': {
@@ -222,7 +220,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetCo2ImagesVisibility': {
-				return GeneralCommands.setCo2ImagesVisibility(params as SetCo2ImagesVisibilityParams)
+				return GeneralCommands.setCo2ImagesVisibility(params as GeneralCommandTypes.SetCo2ImagesVisibilityParams)
 			}
 
 			case 'GetCo2ImagesVisibility': {
@@ -232,7 +230,7 @@ export class CommandBuilder {
 			// --------------- PIR COMMANDS ---------------
 
 			case 'SetPIRSensorStatus': {
-				return GeneralCommands.setPIRSensorStatus(params as SetPIRSensorStatusParams)
+				return GeneralCommands.setPIRSensorStatus(params as GeneralCommandTypes.SetPIRSensorStatusParams)
 			}
 
 			case 'GetPIRSensorStatus': {
@@ -240,7 +238,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetPIRSensorSensitivity': {
-				return GeneralCommands.setPIRSensorSensitivity(params as SetPIRSensorSensitivityParams)
+				return GeneralCommands.setPIRSensorSensitivity(params as GeneralCommandTypes.SetPIRSensorSensitivityParams)
 			}
 
 			case 'GetPIRSensorSensitivity': {
@@ -248,7 +246,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetPIRInitPeriod': {
-				return GeneralCommands.setPIRInitPeriod(params as SetPIRPeriodParams)
+				return GeneralCommands.setPIRInitPeriod(params as GeneralCommandTypes.SetPIRPeriodParams)
 			}
 
 			case 'GetPIRInitPeriod': {
@@ -256,7 +254,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetPIRMeasurementPeriod': {
-				return GeneralCommands.setPIRMeasurementPeriod(params as SetPIRPeriodParams)
+				return GeneralCommands.setPIRMeasurementPeriod(params as GeneralCommandTypes.SetPIRPeriodParams)
 			}
 
 			case 'GetPIRMeasurementPeriod': {
@@ -264,7 +262,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetPIRCheckPeriod': {
-				return GeneralCommands.setPIRCheckPeriod(params as SetPIRPeriodParams)
+				return GeneralCommands.setPIRCheckPeriod(params as GeneralCommandTypes.SetPIRPeriodParams)
 			}
 
 			case 'GetPIRCheckPeriod': {
@@ -272,7 +270,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetPIRBlindPeriod': {
-				return GeneralCommands.setPIRBlindPeriod(params as SetPIRPeriodParams)
+				return GeneralCommands.setPIRBlindPeriod(params as GeneralCommandTypes.SetPIRPeriodParams)
 			}
 
 			case 'GetPIRBlindPeriod': {
@@ -290,7 +288,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetOpenWindow': {
-				return VickiCommands.setOpenWindow(params as SetOpenWindowParams)
+				return VickiCommands.setOpenWindow(params as VickiCommandTypes.SetOpenWindowParams)
 			}
 
 			case 'GetOpenWindowParams': {
@@ -298,7 +296,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetInternalAlgoParams': {
-				return VickiCommands.setInternalAlgoParams(params as SetInternalAlgoParamsParams)
+				return VickiCommands.setInternalAlgoParams(params as VickiCommandTypes.SetInternalAlgoParamsParams)
 			}
 
 			case 'GetInternalAlgoParams': {
@@ -306,7 +304,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetOperationalMode': {
-				return VickiCommands.setOperationalMode(params as SetOperationalModeParams)
+				return VickiCommands.setOperationalMode(params as VickiCommandTypes.SetOperationalModeParams)
 			}
 
 			case 'GetOperationalMode': {
@@ -314,7 +312,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetExternalTemperature': {
-				return VickiCommands.setExternalTemperature(params as SetExternalTemperatureParams)
+				return VickiCommands.setExternalTemperature(params as VickiCommandTypes.SetExternalTemperatureParams)
 			}
 
 			case 'GetExternalTemperature': {
@@ -322,11 +320,11 @@ export class CommandBuilder {
 			}
 
 			case 'SetExternalTemperatureFloat': {
-				return VickiCommands.setExternalTemperatureFloat(params as SetExternalTemperatureFloatParams)
+				return VickiCommands.setExternalTemperatureFloat(params as VickiCommandTypes.SetExternalTemperatureFloatParams)
 			}
 
 			case 'SetInternalAlgoTdiffParams': {
-				return VickiCommands.setInternalAlgoTdiffParams(params as SetInternalAlgoTdiffParamsParams)
+				return VickiCommands.setInternalAlgoTdiffParams(params as VickiCommandTypes.SetInternalAlgoTdiffParamsParams)
 			}
 
 			case 'GetInternalAlgoTdiffParams': {
@@ -334,7 +332,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetPrimaryOperationalMode': {
-				return VickiCommands.setPrimaryOperationalMode(params as SetPrimaryOperationalModeParams)
+				return VickiCommands.setPrimaryOperationalMode(params as VickiCommandTypes.SetPrimaryOperationalModeParams)
 			}
 
 			case 'GetPrimaryOperationalMode': {
@@ -342,7 +340,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetBatteryRangesBoundaries': {
-				return VickiCommands.setBatteryRangesBoundaries(params as SetBatteryRangesBoundariesParams)
+				return VickiCommands.setBatteryRangesBoundaries(params as VickiCommandTypes.SetBatteryRangesBoundariesParams)
 			}
 
 			case 'GetBatteryRangesBoundaries': {
@@ -350,7 +348,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetBatteryRangesOverVoltage': {
-				return VickiCommands.setBatteryRangesOverVoltage(params as SetBatteryRangesOverVoltageParams)
+				return VickiCommands.setBatteryRangesOverVoltage(params as VickiCommandTypes.SetBatteryRangesOverVoltageParams)
 			}
 
 			case 'GetBatteryRangesOverVoltage': {
@@ -358,7 +356,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetOvac': {
-				return VickiCommands.setOvac(params as SetOvacParams)
+				return VickiCommands.setOvac(params as VickiCommandTypes.SetOvacParams)
 			}
 
 			case 'GetOvac': {
@@ -366,7 +364,9 @@ export class CommandBuilder {
 			}
 
 			case 'SetProportionalAlgorithmParameters': {
-				return VickiCommands.setProportionalAlgorithmParameters(params as SetProportionalAlgorithmParametersParams)
+				return VickiCommands.setProportionalAlgorithmParameters(
+					params as VickiCommandTypes.SetProportionalAlgorithmParametersParams,
+				)
 			}
 
 			case 'GetProportionalAlgorithmParameters': {
@@ -374,7 +374,9 @@ export class CommandBuilder {
 			}
 
 			case 'SetTemperatureControlAlgorithm': {
-				return VickiCommands.setTemperatureControlAlgorithm(params as SetTemperatureControlAlgorithmParams)
+				return VickiCommands.setTemperatureControlAlgorithm(
+					params as VickiCommandTypes.SetTemperatureControlAlgorithmParams,
+				)
 			}
 
 			case 'GetTemperatureControlAlgorithm': {
@@ -382,7 +384,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetMotorPositionOnly': {
-				return VickiCommands.setMotorPositionOnly(params as SetMotorPositionOnlyParams)
+				return VickiCommands.setMotorPositionOnly(params as VickiCommandTypes.SetMotorPositionOnlyParams)
 			}
 
 			case 'DeviceReset': {
@@ -390,11 +392,13 @@ export class CommandBuilder {
 			}
 
 			case 'SetTargetTemperatureAndMotorPosition': {
-				return VickiCommands.setTargetTemperatureAndMotorPosition(params as SetTargetTemperatureAndMotorPositionParams)
+				return VickiCommands.setTargetTemperatureAndMotorPosition(
+					params as VickiCommandTypes.SetTargetTemperatureAndMotorPositionParams,
+				)
 			}
 
 			case 'SetChildLockBehavior': {
-				return VickiCommands.setChildLockBehavior(params as SetChildLockBehaviorParams)
+				return VickiCommands.setChildLockBehavior(params as VickiCommandTypes.SetChildLockBehaviorParams)
 			}
 
 			case 'GetChildLockBehavior': {
@@ -402,7 +406,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetProportionalGain': {
-				return VickiCommands.setProportionalGain(params as SetProportionalGainParams)
+				return VickiCommands.setProportionalGain(params as VickiCommandTypes.SetProportionalGainParams)
 			}
 
 			case 'GetProportionalGain': {
@@ -410,7 +414,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetIntegralGain': {
-				return VickiCommands.setIntegralGain(params as SetIntegralGainParams)
+				return VickiCommands.setIntegralGain(params as VickiCommandTypes.SetIntegralGainParams)
 			}
 
 			case 'GetIntegralGain': {
@@ -422,7 +426,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetPiRunPeriod': {
-				return VickiCommands.setPiRunPeriod(params as SetPiRunPeriodParams)
+				return VickiCommands.setPiRunPeriod(params as VickiCommandTypes.SetPiRunPeriodParams)
 			}
 
 			case 'GetPiRunPeriod': {
@@ -430,7 +434,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetOpenWindowPrecisely': {
-				return VickiCommands.setOpenWindowPrecisely(params as SetOpenWindowPreciselyParams)
+				return VickiCommands.setOpenWindowPrecisely(params as VickiCommandTypes.SetOpenWindowPreciselyParams)
 			}
 
 			case 'GetOpenWindowPrecisely': {
@@ -438,7 +442,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetForceAttach': {
-				return VickiCommands.setForceAttach(params as SetForceAttachParams)
+				return VickiCommands.setForceAttach(params as VickiCommandTypes.SetForceAttachParams)
 			}
 
 			case 'GetForceAttach': {
@@ -446,7 +450,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetAntiFreezeParams': {
-				return VickiCommands.setAntiFreezeParams(params as SetAntiFreezeParamsParams)
+				return VickiCommands.setAntiFreezeParams(params as VickiCommandTypes.SetAntiFreezeParamsParams)
 			}
 
 			case 'GetAntiFreezeParams': {
@@ -454,7 +458,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetMaxAllowedIntegralValue': {
-				return VickiCommands.setMaxAllowedIntegralValue(params as SetMaxAllowedIntegralValueParams)
+				return VickiCommands.setMaxAllowedIntegralValue(params as VickiCommandTypes.SetMaxAllowedIntegralValueParams)
 			}
 
 			case 'GetMaxAllowedIntegralValue': {
@@ -462,11 +466,13 @@ export class CommandBuilder {
 			}
 
 			case 'SetValveOpennessInPercentage': {
-				return VickiCommands.setValveOpennessInPercentage(params as SetValveOpennessInPercentageParams)
+				return VickiCommands.setValveOpennessInPercentage(params as VickiCommandTypes.SetValveOpennessInPercentageParams)
 			}
 
 			case 'SetValveOpennessRangeInPercentage': {
-				return VickiCommands.setValveOpennessRangeInPercentage(params as SetValveOpennessRangeInPercentageParams)
+				return VickiCommands.setValveOpennessRangeInPercentage(
+					params as VickiCommandTypes.SetValveOpennessRangeInPercentageParams,
+				)
 			}
 
 			case 'GetValveOpennessRangeInPercentage': {
@@ -474,7 +480,7 @@ export class CommandBuilder {
 			}
 
 			case 'SetTemperatureOffset': {
-				return VickiCommands.setTemperatureOffset(params as SetTemperatureOffsetParams)
+				return VickiCommands.setTemperatureOffset(params as VickiCommandTypes.SetTemperatureOffsetParams)
 			}
 
 			case 'GetTemperatureOffset': {
@@ -484,549 +490,596 @@ export class CommandBuilder {
 			// ------------------------------------------------ WIRELESS THERMOSTAT COMMANDS ------------------------------------------------
 
 			case 'SetHeatingStatus': {
-				return WirelessThermostatCommands.setHeatingStatus(params)
+				return WirelessThermostatCommands.setHeatingStatus(params as WirelessThermostatCommandTypes.SetHeatingStatusParams)
 			}
 
 			case 'GetHeatingStatus': {
-				return WirelessThermostatCommands.getHeatingStatus(params)
+				return WirelessThermostatCommands.getHeatingStatus()
 			}
 
 			case 'SetTargetSendDelay': {
-				return WirelessThermostatCommands.setTargetSendDelay(params)
+				return WirelessThermostatCommands.setTargetSendDelay(
+					params as WirelessThermostatCommandTypes.SetTargetSendDelayParams,
+				)
 			}
 
 			case 'GetTargetSendDelay': {
-				return WirelessThermostatCommands.getTargetSendDelay(params)
+				return WirelessThermostatCommands.getTargetSendDelay()
 			}
 
 			case 'SetAutomaticHeatingStatus': {
-				return WirelessThermostatCommands.setAutomaticHeatingStatus(params)
+				return WirelessThermostatCommands.setAutomaticHeatingStatus(
+					params as WirelessThermostatCommandTypes.SetAutomaticHeatingStatusParams,
+				)
 			}
 
 			case 'GetAutomaticHeatingStatus': {
-				return WirelessThermostatCommands.getAutomaticHeatingStatus(params)
+				return WirelessThermostatCommands.getAutomaticHeatingStatus()
 			}
 
 			case 'SetSensorMode': {
-				return WirelessThermostatCommands.setSensorMode(params)
+				return WirelessThermostatCommands.setSensorMode(params as WirelessThermostatCommandTypes.SetSensorModeParams)
 			}
 
 			case 'GetSensorMode': {
-				return WirelessThermostatCommands.getSensorMode(params)
+				return WirelessThermostatCommands.getSensorMode()
 			}
 
 			case 'SetTargetTemperaturePrecisely': {
-				return WirelessThermostatCommands.setTargetTemperaturePrecisely(params)
+				return WirelessThermostatCommands.setTargetTemperaturePrecisely(
+					params as WirelessThermostatCommandTypes.SetTargetTemperaturePreciselyParams,
+				)
 			}
 
 			case 'GetTargetTemperaturePrecisely': {
-				return WirelessThermostatCommands.getTargetTemperaturePrecisely(params)
+				return WirelessThermostatCommands.getTargetTemperaturePrecisely()
 			}
 
 			// ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
 
 			case 'SetOpenCloseTime': {
-				return TValveCommands.setOpenCloseTime(params)
+				return TValveCommands.setOpenCloseTime(params as TValveCommandTypes.SetOpenCloseTimeParams)
 			}
 
 			case 'SetLed': {
-				return TValveCommands.setLED(params)
+				return TValveCommands.setLED(params as TValveCommandTypes.SetLEDParams)
 			}
 
 			case 'SetBuzzer': {
-				return TValveCommands.setBuzzer(params)
+				return TValveCommands.setBuzzer(params as TValveCommandTypes.SetBuzzerParams)
 			}
 
 			case 'SetEmergencyOpenings': {
-				return TValveCommands.setEmergencyOpenings(params)
+				return TValveCommands.setEmergencyOpenings(params as TValveCommandTypes.SetEmergencyOpeningsParams)
 			}
 
 			case 'GetEmergencyOpenings': {
-				return TValveCommands.getEmergencyOpenings(params)
+				return TValveCommands.getEmergencyOpenings()
 			}
 
 			case 'SetManualControl': {
-				return TValveCommands.setManualControl(params)
+				return TValveCommands.setManualControl(params as TValveCommandTypes.SetManualControlParams)
 			}
 
 			case 'RequestFullData': {
-				return TValveCommands.requestFullData(params)
+				return TValveCommands.requestFullData()
 			}
 
 			case 'SetWorkingVoltage': {
-				return TValveCommands.setWorkingVoltage(params)
+				return TValveCommands.setWorkingVoltage(params as TValveCommandTypes.SetWorkingVoltageParams)
 			}
 
 			case 'GetWorkingVoltage': {
-				return TValveCommands.getWorkingVoltage(params)
+				return TValveCommands.getWorkingVoltage()
 			}
 
 			case 'SetDeviceFloodSensor': {
-				return TValveCommands.setDeviceFloodSensor(params)
+				return TValveCommands.setDeviceFloodSensor(params as TValveCommandTypes.SetDeviceFloodSensorParams)
 			}
 
 			case 'GetDeviceFloodSensor': {
-				return TValveCommands.getDeviceFloodSensor(params)
+				return TValveCommands.getDeviceFloodSensor()
 			}
 
 			case 'SetFloodAlarmTime': {
-				return TValveCommands.setFloodAlarmTime(params)
+				return TValveCommands.setFloodAlarmTime(params as TValveCommandTypes.SetFloodAlarmTimeParams)
 			}
 
 			case 'GetFloodAlarmTime': {
-				return TValveCommands.getFloodAlarmTime(params)
+				return TValveCommands.getFloodAlarmTime()
 			}
 
 			case 'SetValveState': {
-				return TValveCommands.setValveState(params)
+				return TValveCommands.setValveState(params as TValveCommandTypes.SetValveStateParams)
 			}
 
 			case 'SetOpenCloseTimeExtended': {
-				return TValveCommands.setOpenCloseTimeExtended(params)
+				return TValveCommands.setOpenCloseTimeExtended(params as TValveCommandTypes.SetOpenCloseTimeExtendedParams)
 			}
 
 			case 'GetOpenCloseTimeExtended': {
-				return TValveCommands.getOpenCloseTimeExtended(params)
+				return TValveCommands.getOpenCloseTimeExtended()
 			}
 
 			case 'SetSingleTimeValveState': {
-				return TValveCommands.setSingleTimeValveState(params)
+				return TValveCommands.setSingleTimeValveState(params as TValveCommandTypes.SetSingleTimeValveStateParams)
 			}
 
 			// ------------------------------------------------ T-FLOOD COMMANDS ------------------------------------------------
 
 			case 'GetTemperature': {
-				return TFloodCommands.getTemperature(params)
+				return TFloodCommands.getTemperature()
 			}
 
 			case 'SetFloodAlarmTime': {
-				return TFloodCommands.setFloodAlarmTime(params)
+				return TFloodCommands.setFloodAlarmTime(params as TFloodCommandTypes.SetFloodAlarmTimeParams)
 			}
 
 			case 'GetFloodAlarmTime': {
-				return TFloodCommands.getFloodAlarmTime(params)
+				return TFloodCommands.getFloodAlarmTime()
 			}
 
 			case 'SetFloodEventSendTime': {
-				return TFloodCommands.setFloodEventSendTime(params)
+				return TFloodCommands.setFloodEventSendTime(params as TFloodCommandTypes.SetFloodEventSendTimeParams)
 			}
 
 			case 'GetFloodEventSendTime': {
-				return TFloodCommands.getFloodEventSendTime(params)
+				return TFloodCommands.getFloodEventSendTime()
 			}
 
 			case 'SetFloodEventUplinkType': {
-				return TFloodCommands.setFloodEventUplinkType(params)
+				return TFloodCommands.setFloodEventUplinkType(params as TFloodCommandTypes.SetFloodEventUplinkTypeParams)
 			}
 
 			case 'GetFloodEventUplinkType': {
-				return TFloodCommands.getFloodEventUplinkType(params)
+				return TFloodCommands.getFloodEventUplinkType()
 			}
 
 			// ------------------------------------------------ AQI COMMANDS ------------------------------------------------
 
 			case 'SetAqiLed': {
-				return new SetAqiLed(params)
+				return new SetAqiLed(params as AQICommandTypes.SetAqiLedParams)
 			}
 
 			// ------------------------------------------------ C02 COMMANDS ------------------------------------------------
 
 			case 'SetCo2BoundaryLevels': {
-				return CO2SensorCommands.setCo2BoundaryLevels(params)
+				return CO2SensorCommands.setCo2BoundaryLevels(params as CO2SensorCommandTypes.SetCo2BoundaryLevelsParams)
 			}
 
 			case 'GetCo2BoundaryLevels': {
-				return CO2SensorCommands.getCo2BoundaryLevels(params)
+				return CO2SensorCommands.getCo2BoundaryLevels()
 			}
 
 			case 'SetCo2AutoZeroValue': {
-				return CO2SensorCommands.setCo2AutoZeroValue(params)
+				return CO2SensorCommands.setCo2AutoZeroValue(params as CO2SensorCommandTypes.SetCo2AutoZeroValueParams)
 			}
 
 			case 'GetCo2AutoZeroValue': {
-				return CO2SensorCommands.getCo2AutoZeroValue(params)
+				return CO2SensorCommands.getCo2AutoZeroValue()
 			}
 
 			case 'SetNotifyPeriod': {
-				return CO2SensorCommands.setNotifyPeriod(params)
+				return CO2SensorCommands.setNotifyPeriod(params as CO2SensorCommandTypes.SetNotifyPeriodParams)
 			}
 
 			case 'GetNotifyPeriod': {
-				return CO2SensorCommands.getNotifyPeriod(params)
+				return CO2SensorCommands.getNotifyPeriod()
 			}
 
 			case 'SetCo2MeasurementPeriod': {
-				return CO2SensorCommands.setCo2MeasurementPeriod(params)
+				return CO2SensorCommands.setCo2MeasurementPeriod(params as CO2SensorCommandTypes.SetCo2MeasurementPeriodParams)
 			}
 
 			case 'GetCo2MeasurementPeriod': {
-				return CO2SensorCommands.getCo2MeasurementPeriod(params)
+				return CO2SensorCommands.getCo2MeasurementPeriod()
 			}
 
 			case 'SetBuzzerNotification': {
-				return CO2SensorCommands.setBuzzerNotification(params)
+				return CO2SensorCommands.setBuzzerNotification(params as CO2SensorCommandTypes.SetBuzzerNotificationParams)
 			}
 
 			case 'GetBuzzerNotification': {
-				return CO2SensorCommands.getBuzzerNotification(params)
+				return CO2SensorCommands.getBuzzerNotification()
 			}
 
 			case 'SetCo2Led': {
-				return CO2SensorCommands.setCo2Led(params)
+				return CO2SensorCommands.setCo2Led(params as CO2SensorCommandTypes.SetCo2LedParams)
 			}
 
 			case 'GetCo2Led': {
-				return CO2SensorCommands.getCo2Led(params)
+				return CO2SensorCommands.getCo2Led()
 			}
 
 			case 'SetCo2AutoZeroPeriod': {
-				return CO2SensorCommands.setCo2AutoZeroPeriod(params)
+				return CO2SensorCommands.setCo2AutoZeroPeriod(params as CO2SensorCommandTypes.SetCo2AutoZeroPeriodParams)
 			}
 
 			case 'GetCo2AutoZeroPeriod': {
-				return CO2SensorCommands.getCo2AutoZeroPeriod(params)
+				return CO2SensorCommands.getCo2AutoZeroPeriod()
 			}
 
 			// ------------------------------------------------ C02 DISPLAY COMMANDS ------------------------------------------------
 
 			case 'SetCo2MeasurementBlindTime': {
-				return CO2DisplayCommands.SetCo2MeasurementBlindTime(params)
+				return CO2DisplayCommands.setCo2MeasurementBlindTime(
+					params as CO2DisplayCommandTypes.SetCo2MeasurementBlindTimeParams,
+				)
 			}
 
 			case 'GetCo2MeasurementBlindTime': {
-				return CO2DisplayCommands.getCo2MeasurementBlindTime(params)
+				return CO2DisplayCommands.getCo2MeasurementBlindTime()
 			}
 
 			// ------------------------------------------------ TRING THERMOSTAT COMMANDS ------------------------------------------------
 
 			case 'SetThermostatTarget': {
-				return TringThermostatCommands.setThermostatTarget(params)
+				return TringThermostatCommands.setThermostatTarget(params as TringThermostatCommandTypes.SetThermostatTargetParams)
 			}
 
 			case 'SetThermostatConfig': {
-				return TringThermostatCommands.setThermostatConfig(params)
+				return TringThermostatCommands.setThermostatConfig(params as TringThermostatCommandTypes.SetThermostatConfigParams)
 			}
 
 			// ------------------------------------------------ DSK DEVICE COMMANDS ------------------------------------------------
 
 			case 'SetVrvStatus': {
-				return DskDeviceCommands.setVrvStatus(params)
+				return DskDeviceCommands.setVrvStatus(params as DSKDeviceCommandTypes.SetVrvStatusParams)
 			}
 
 			case 'GetVrvStatus': {
-				return DskDeviceCommands.getVrvStatus(params)
+				return DskDeviceCommands.getVrvStatus()
 			}
 
 			case 'SetVrvOnTime': {
-				return DskDeviceCommands.setVrvOnTime(params)
+				return DskDeviceCommands.setVrvOnTime(params as DSKDeviceCommandTypes.SetVrvOnTimeParams)
 			}
 
 			case 'GetVrvOnTime': {
-				return DskDeviceCommands.getVrvOnTime(params)
+				return DskDeviceCommands.getVrvOnTime()
 			}
 
 			case 'SetVrvOffTime': {
-				return DskDeviceCommands.setVrvOffTime(params)
+				return DskDeviceCommands.setVrvOffTime(params as DSKDeviceCommandTypes.SetVrvOffTimeParams)
 			}
 
 			case 'GetVrvOffTime': {
-				return DskDeviceCommands.getVrvOffTime(params)
+				return DskDeviceCommands.getVrvOffTime()
 			}
 
 			// ------------------------------------------------ OPEN CLOSE SENSOR COMMANDS ------------------------------------------------
 
 			case 'SetNotificationBlindTime': {
-				return OpenCloseSensorCommands.setNotificationBlindTime(params)
+				return OpenCloseSensorCommands.setNotificationBlindTime(
+					params as OpenCloseSensorCommandTypes.SetNotificationBlindTimeParams,
+				)
 			}
 
 			case 'GetNotificationBlindTime': {
-				return OpenCloseSensorCommands.getNotificationBlindTime(params)
+				return OpenCloseSensorCommands.getNotificationBlindTime()
 			}
 
 			// ------------------------------------------------ BUTTON COMMANDS ------------------------------------------------
 
 			case 'SetSendEventLater': {
-				return ButtonCommands.setSendEventLater(params)
+				return ButtonCommands.setSendEventLater(params as ButtonCommandTypes.SetSendEventLaterParams)
 			}
 
 			case 'GetSendEventLater': {
-				return ButtonCommands.getSendEventLater(params)
+				return ButtonCommands.getSendEventLater()
 			}
 
 			// ------------------------------------------------ FAN COIL THERMOSTAT COMMANDS ------------------------------------------------
 
 			case 'SetKeysLock': {
-				return FanCoilThermostatCommands.setKeysLock(params)
+				return FanCoilThermostatCommands.setKeysLock(params as FanCoilThermostatCommandTypes.SetKeysLockParams)
 			}
 
 			case 'GetKeysLock': {
-				return FanCoilThermostatCommands.getKeysLock(params)
+				return FanCoilThermostatCommands.getKeysLock()
 			}
 
 			case 'SetFanCoilTarget': {
-				return FanCoilThermostatCommands.setFanCoilTarget(params)
+				return FanCoilThermostatCommands.setFanCoilTarget(params as FanCoilThermostatCommandTypes.SetFanCoilTargetParams)
+			}
+
+			case 'SetTargetTemperature': {
+				return FanCoilThermostatCommands.setTargetTemperature(
+					params as FanCoilThermostatCommandTypes.SetTargetTemperatureFanCoilParams,
+				)
 			}
 
 			case 'SetValveOpenCloseTime': {
-				return FanCoilThermostatCommands.setValveOpenCloseTime(params)
+				return FanCoilThermostatCommands.setValveOpenCloseTime(
+					params as FanCoilThermostatCommandTypes.SetValveOpenCloseTimeParams,
+				)
 			}
 
 			case 'GetValveOpenCloseTime': {
-				return FanCoilThermostatCommands.getValveOpenCloseTime(params)
+				return FanCoilThermostatCommands.getValveOpenCloseTime()
 			}
 
 			case 'SetExtAutomaticTemperatureControl': {
-				return FanCoilThermostatCommands.setExtAutomaticTemperatureControl(params)
+				return FanCoilThermostatCommands.setExtAutomaticTemperatureControl(
+					params as FanCoilThermostatCommandTypes.SetExtAutomaticTemperatureControlParams,
+				)
 			}
 
 			case 'GetExtAutomaticTemperatureControl': {
-				return FanCoilThermostatCommands.getExtAutomaticTemperatureControl(params)
+				return FanCoilThermostatCommands.getExtAutomaticTemperatureControl()
 			}
 
 			case 'SetFanSpeed': {
-				return FanCoilThermostatCommands.setFanSpeed(params)
+				return FanCoilThermostatCommands.setFanSpeed(params as FanCoilThermostatCommandTypes.SetFanSpeedParams)
 			}
 
 			case 'GetFanSpeed': {
-				return FanCoilThermostatCommands.getFanSpeed(params)
+				return FanCoilThermostatCommands.getFanSpeed()
 			}
 
 			case 'SetFanSpeedLimit': {
-				return FanCoilThermostatCommands.setFanSpeedLimit(params)
+				return FanCoilThermostatCommands.setFanSpeedLimit(params as FanCoilThermostatCommandTypes.SetFanSpeedLimitParams)
 			}
 
 			case 'GetFanSpeedLimit': {
-				return FanCoilThermostatCommands.getFanSpeedLimit(params)
+				return FanCoilThermostatCommands.getFanSpeedLimit()
 			}
 
 			case 'SetEcmVoltageRange': {
-				return FanCoilThermostatCommands.setEcmVoltageRange(params)
+				return FanCoilThermostatCommands.setEcmVoltageRange(
+					params as FanCoilThermostatCommandTypes.SetEcmVoltageRangeParams,
+				)
 			}
 
 			case 'GetEcmVoltageRange': {
-				return FanCoilThermostatCommands.getEcmVoltageRange(params)
+				return FanCoilThermostatCommands.getEcmVoltageRange()
 			}
 
 			case 'SetEcmStartUpTime': {
-				return FanCoilThermostatCommands.setEcmStartUpTime(params)
+				return FanCoilThermostatCommands.setEcmStartUpTime(params as FanCoilThermostatCommandTypes.SetEcmStartUpTimeParams)
 			}
 
 			case 'GetEcmStartUpTime': {
-				return FanCoilThermostatCommands.getEcmStartUpTime(params)
+				return FanCoilThermostatCommands.getEcmStartUpTime()
 			}
 
 			case 'SetEcmRelay': {
-				return FanCoilThermostatCommands.setEcmRelay(params)
+				return FanCoilThermostatCommands.setEcmRelay(params as FanCoilThermostatCommandTypes.SetEcmRelayParams)
 			}
 
 			case 'GetEcmRelay': {
-				return FanCoilThermostatCommands.getEcmRelay(params)
+				return FanCoilThermostatCommands.getEcmRelay()
 			}
 
 			case 'SetFrostProtection': {
-				return FanCoilThermostatCommands.setFrostProtection(params)
+				return FanCoilThermostatCommands.setFrostProtection(
+					params as FanCoilThermostatCommandTypes.SetFrostProtectionParams,
+				)
 			}
 
 			case 'GetFrostProtection': {
-				return FanCoilThermostatCommands.getFrostProtection(params)
+				return FanCoilThermostatCommands.getFrostProtection()
 			}
 
 			case 'SetFrostProtectionSettings': {
-				return FanCoilThermostatCommands.setFrostProtectionSettings(params)
+				return FanCoilThermostatCommands.setFrostProtectionSettings(
+					params as FanCoilThermostatCommandTypes.SetFrostProtectionSettingsParams,
+				)
 			}
 
 			case 'GetFrostProtectionSettings': {
-				return FanCoilThermostatCommands.getFrostProtectionSettings(params)
+				return FanCoilThermostatCommands.getFrostProtectionSettings()
 			}
 
 			case 'SetFctOperationalMode': {
-				return FanCoilThermostatCommands.SetFctOperationalMode(params)
+				return FanCoilThermostatCommands.setFctOperationalMode(
+					params as FanCoilThermostatCommandTypes.SetFctOperationalModeParams,
+				)
 			}
 
 			case 'SetAllowedOperationalModes': {
-				return FanCoilThermostatCommands.setAllowedOperationalModes(params)
+				return FanCoilThermostatCommands.setAllowedOperationalModes(
+					params as FanCoilThermostatCommandTypes.SetAllowedOperationalModesParams,
+				)
 			}
 
 			case 'GetAllowedOperationalModes': {
-				return FanCoilThermostatCommands.getAllowedOperationalModes(params)
+				return FanCoilThermostatCommands.getAllowedOperationalModes()
 			}
 
 			case 'SetCoolingSetpointNotOccupied': {
-				return FanCoilThermostatCommands.setCoolingSetpointNotOccupied(params)
+				return FanCoilThermostatCommands.setCoolingSetpointNotOccupied(
+					params as FanCoilThermostatCommandTypes.SetCoolingSetpointNotOccupiedParams,
+				)
 			}
 
 			case 'GetCoolingSetpointNotOccupied': {
-				return FanCoilThermostatCommands.getCoolingSetpointNotOccupied(params)
+				return FanCoilThermostatCommands.getCoolingSetpointNotOccupied()
 			}
 
 			case 'SetHeatingSetpointNotOccupied': {
-				return FanCoilThermostatCommands.setHeatingSetpointNotOccupied(params)
+				return FanCoilThermostatCommands.setHeatingSetpointNotOccupied(
+					params as FanCoilThermostatCommandTypes.SetHeatingSetpointNotOccupiedParams,
+				)
 			}
 
 			case 'GetHeatingSetpointNotOccupied': {
-				return FanCoilThermostatCommands.getHeatingSetpointNotOccupied(params)
+				return FanCoilThermostatCommands.getHeatingSetpointNotOccupied()
 			}
 
 			case 'SetTempSensorCompensation': {
-				return FanCoilThermostatCommands.setTempSensorCompensation(params)
+				return FanCoilThermostatCommands.setTempSensorCompensation(
+					params as FanCoilThermostatCommandTypes.SetTempSensorCompensationParams,
+				)
 			}
 
 			case 'GetTempSensorCompensation': {
-				return FanCoilThermostatCommands.getTempSensorCompensation(params)
+				return FanCoilThermostatCommands.getTempSensorCompensation()
 			}
 
 			case 'SetFanSpeedNotOccupied': {
-				return FanCoilThermostatCommands.setFanSpeedNotOccupied(params)
+				return FanCoilThermostatCommands.setFanSpeedNotOccupied(
+					params as FanCoilThermostatCommandTypes.SetFanSpeedNotOccupiedParams,
+				)
 			}
 
 			case 'GetFanSpeedNotOccupied': {
-				return FanCoilThermostatCommands.getFanSpeedNotOccupied(params)
+				return FanCoilThermostatCommands.getFanSpeedNotOccupied()
 			}
 
 			case 'SetAutomaticChangeover': {
-				return FanCoilThermostatCommands.setAutomaticChangeover(params)
+				return FanCoilThermostatCommands.setAutomaticChangeover(
+					params as FanCoilThermostatCommandTypes.SetAutomaticChangeoverParams,
+				)
 			}
 
 			case 'GetAutomaticChangeover': {
-				return FanCoilThermostatCommands.getAutomaticChangeover(params)
+				return FanCoilThermostatCommands.getAutomaticChangeover()
 			}
 
 			case 'SetWiringDiagram': {
-				return FanCoilThermostatCommands.setWiringDiagram(params)
+				return FanCoilThermostatCommands.setWiringDiagram(params as FanCoilThermostatCommandTypes.SetWiringDiagramParams)
 			}
 
 			case 'GetWiringDiagram': {
-				return FanCoilThermostatCommands.getWiringDiagram(params)
+				return FanCoilThermostatCommands.getWiringDiagram()
 			}
 
 			case 'SetOccFunction': {
-				return FanCoilThermostatCommands.setOccFunction(params)
+				return FanCoilThermostatCommands.setOccFunction(params as FanCoilThermostatCommandTypes.SetOccFunctionParams)
 			}
 
 			case 'GetOccFunction': {
-				return FanCoilThermostatCommands.getOccFunction(params)
+				return FanCoilThermostatCommands.getOccFunction()
 			}
 
 			case 'SetAutomaticChangeoverThreshold': {
-				return FanCoilThermostatCommands.setAutomaticChangeoverThreshold(params)
+				return FanCoilThermostatCommands.setAutomaticChangeoverThreshold(
+					params as FanCoilThermostatCommandTypes.SetAutomaticChangeoverThresholdParams,
+				)
 			}
 
 			case 'GetAutomaticChangeoverThreshold': {
-				return FanCoilThermostatCommands.getAutomaticChangeoverThreshold(params)
+				return FanCoilThermostatCommands.getAutomaticChangeoverThreshold()
 			}
 
 			case 'SetDeviceStatus': {
-				return FanCoilThermostatCommands.setDeviceStatus(params)
+				return FanCoilThermostatCommands.setDeviceStatus(params as FanCoilThermostatCommandTypes.SetDeviceStatusParams)
 			}
 
 			case 'SetReturnOfPowerOperation': {
-				return FanCoilThermostatCommands.setReturnOfPowerOperation(params)
+				return FanCoilThermostatCommands.setReturnOfPowerOperation(
+					params as FanCoilThermostatCommandTypes.SetReturnOfPowerOperationParams,
+				)
 			}
 
 			case 'GetReturnOfPowerOperation': {
-				return FanCoilThermostatCommands.getReturnOfPowerOperation(params)
+				return FanCoilThermostatCommands.getReturnOfPowerOperation()
 			}
 
 			case 'SetDeltaTemperature1': {
-				return FanCoilThermostatCommands.setDeltaTemperature1(params)
+				return FanCoilThermostatCommands.setDeltaTemperature1(
+					params as FanCoilThermostatCommandTypes.SetDeltaTemperature1Params,
+				)
 			}
 
 			case 'GetDeltaTemperature1': {
-				return FanCoilThermostatCommands.getDeltaTemperature1(params)
+				return FanCoilThermostatCommands.getDeltaTemperature1()
 			}
 
 			case 'SetDeltaTemperature2and3': {
-				return FanCoilThermostatCommands.setDeltaTemperature2and3(params)
+				return FanCoilThermostatCommands.setDeltaTemperature2and3(
+					params as FanCoilThermostatCommandTypes.SetDeltaTemperature2and3Params,
+				)
 			}
 
 			case 'GetDeltaTemperature2and3': {
-				return FanCoilThermostatCommands.getDeltaTemperature2and3(params)
+				return FanCoilThermostatCommands.getDeltaTemperature2and3()
 			}
 
 			case 'GetFrostProtectionStatus': {
-				return FanCoilThermostatCommands.getFrostProtectionStatus(params)
+				return FanCoilThermostatCommands.getFrostProtectionStatus()
 			}
 
 			case 'GetOccupancySensorStatusSetPoint': {
-				return FanCoilThermostatCommands.getOccupancySensorStatusSetPoint(params)
+				return FanCoilThermostatCommands.getOccupancySensorStatusSetPoint()
 			}
 
 			case 'GetOccupancySensorStatus': {
-				return FanCoilThermostatCommands.getOccupancySensorStatus(params)
+				return FanCoilThermostatCommands.getOccupancySensorStatus()
 			}
 
 			case 'GetDewPointSensorStatus': {
-				return FanCoilThermostatCommands.getDewPointSensorStatus(params)
+				return FanCoilThermostatCommands.getDewPointSensorStatus()
 			}
 
 			case 'GetFilterAlarm': {
-				return FanCoilThermostatCommands.getFilterAlarm(params)
+				return FanCoilThermostatCommands.getFilterAlarm()
 			}
-
 			// ------------------------------------------------ RELAY 16 / 16ASPM ------------------------------------------------
 
 			case 'SetOverheatingThreshold': {
-				return Relay16Commands.setOverheatingThreshold(params)
+				return Relay16Commands.setOverheatingThreshold(params as Relay16CommandTypes.SetOverheatingThresholdParams)
 			}
 
 			case 'GetOverheatingThreshold': {
-				return Relay16Commands.getOverheatingThreshold(params)
+				return Relay16Commands.getOverheatingThreshold()
 			}
 
 			case 'SetOvervoltageThreshold': {
-				return Relay16Commands.setOvervoltageThreshold(params)
+				return Relay16Commands.setOvervoltageThreshold(params as Relay16CommandTypes.SetOvervoltageThresholdParams)
 			}
 
 			case 'GetOvervoltageThreshold': {
-				return Relay16Commands.getOvervoltageThreshold(params)
+				return Relay16Commands.getOvervoltageThreshold()
 			}
 
 			case 'SetOvercurrentThreshold': {
-				return Relay16Commands.setOvercurrentThreshold(params)
+				return Relay16Commands.setOvercurrentThreshold(params as Relay16CommandTypes.SetOvercurrentThresholdParams)
 			}
 
 			case 'GetOvercurrentThreshold': {
-				return Relay16Commands.getOvercurrentThreshold(params)
+				return Relay16Commands.getOvercurrentThreshold()
 			}
 
 			case 'SetOverpowerThreshold': {
-				return Relay16Commands.setOverpowerThreshold(params)
+				return Relay16Commands.setOverpowerThreshold(params as Relay16CommandTypes.SetOverpowerThresholdParams)
 			}
 
 			case 'GetOverpowerThreshold': {
-				return Relay16Commands.getOverpowerThreshold(params)
+				return Relay16Commands.getOverpowerThreshold()
 			}
 
 			case 'SetRelayRecoveryState': {
-				return Relay16Commands.setRelayRecoveryState(params)
+				return Relay16Commands.setRelayRecoveryState(params as Relay16CommandTypes.SetRelayRecoveryStateParams)
 			}
 
 			case 'GetRelayRecoveryState': {
-				return Relay16Commands.getRelayRecoveryState(params)
+				return Relay16Commands.getRelayRecoveryState()
 			}
 
 			case 'SetRelayState': {
-				return Relay16Commands.setRelayState(params)
+				return Relay16Commands.setRelayState(params as Relay16CommandTypes.SetRelayStateParams)
 			}
 
 			case 'GetRelayState': {
-				return Relay16Commands.getRelayState(params)
+				return Relay16Commands.getRelayState()
 			}
 
 			case 'GetOverheatingEvents': {
-				return Relay16Commands.getOverheatingEvents(params)
+				return Relay16Commands.getOverheatingEvents()
 			}
 
 			case 'GetOvervoltageEvents': {
-				return Relay16Commands.getOvervoltageEvents(params)
+				return Relay16Commands.getOvervoltageEvents()
 			}
 
 			case 'GetOvercurrentEvents': {
-				return Relay16Commands.getOvercurrentEvents(params)
+				return Relay16Commands.getOvercurrentEvents()
 			}
 
 			case 'GetOverpowerEvents': {
-				return Relay16Commands.getOverpowerEvents(params)
+				return Relay16Commands.getOverpowerEvents()
 			}
 
 			default:
