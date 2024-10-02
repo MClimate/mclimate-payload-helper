@@ -138,8 +138,8 @@ export class Relay16Commands {
 		try {
 			DeviceCommandSchemas.Relay16CommandSchemas.setRelayState.parse(params)
 			let { state } = params
-			state = state ? 1 : 0
-			return new BaseCommand('SetRelayState', 0xc1, decToHex(state))
+			const convertedState = state ? 1 : 0
+			return new BaseCommand('SetRelayState', 0xc1, decToHex(convertedState))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
