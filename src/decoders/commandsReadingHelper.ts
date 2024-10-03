@@ -519,8 +519,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							let data = { sendEventLater: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.Relay16) {
-							command_len = 1
-							let data = { overheatingThreshold: parseInt(commands[i + 1], 16) }
+							command_len = 2
+							let data = { overheatingThresholds: {trigger: parseInt(commands[i + 1], 16), recovery: parseInt(commands[i + 2], 16) }}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 4
@@ -554,8 +554,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.Relay16) {
-							command_len = 2
-							let data = { overvoltageThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+							command_len = 3
+							let data = { overvoltageThresholds: {trigger: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16), recovery: parseInt(commands[i + 3], 16)  }}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 2
@@ -639,7 +639,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						let data = {}
 						if (deviceType == DeviceType.Relay16) {
-							command_len = 1
+							command_len = 2
 							data = { overpowerThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
 						} else {
 							command_len = 3
