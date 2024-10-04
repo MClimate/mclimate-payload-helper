@@ -339,8 +339,6 @@ export namespace TValveCommandTypes {
 	export type SetWatchDogTValveParams = z.infer<typeof TValveCommandSchemas.setWatchDogTValveParams>
 }
 
-// TODO: check from here
-
 /* --------------------------------------- FAN COIL THERMOSTAT COMMANDS --------------------------------------- */
 
 const FanCoilThermostatCommandSchemas = {
@@ -476,66 +474,15 @@ export namespace FanCoilThermostatCommandTypes {
 	export type SetDeltaTemperature2and3Params = z.infer<typeof FanCoilThermostatCommandSchemas.setDeltaTemperature2and3>
 }
 
-// ------------------------------------------------ AQI LED COMMANDS ------------------------------------------------
-
-const AQICommandSchemas = {
-	setAqiLed: z.object({
-		redBehavior: z.number(),
-		redDuration: z.number(),
-		greenBehavior: z.number(),
-		greenDuration: z.number(),
-		blueBehavior: z.number(),
-		blueDuration: z.number(),
-	}),
-}
-
-export namespace AQICommandTypes {
-	export type SetAqiLedParams = z.infer<typeof AQICommandSchemas.setAqiLed>
-}
-
-/* --------------------------------------- T-FLOOD COMMANDS --------------------------------------- */
-const TFloodCommandSchemas = {
-	setFloodAlarmTime: z.object({
-		time: z.number(),
-	}),
-	setKeepAlive: z.object({
-		time: z.number(),
-	}),
-	setFloodEventSendTime: z.object({
-		time: z.number(),
-	}),
-	setFloodEventUplinkType: z.object({
-		type: z.string(),
-	}),
-}
-
-export namespace TFloodCommandTypes {
-	export type SetFloodAlarmTimeParams = z.infer<typeof TFloodCommandSchemas.setFloodAlarmTime>
-	export type SetKeepAliveParams = z.infer<typeof TFloodCommandSchemas.setKeepAlive>
-	export type SetFloodEventSendTimeParams = z.infer<typeof TFloodCommandSchemas.setFloodEventSendTime>
-	export type SetFloodEventUplinkTypeParams = z.infer<typeof TFloodCommandSchemas.setFloodEventUplinkType>
-}
-
-/* --------------------------------------- TRING THERMOSTAT COMMANDS --------------------------------------- */
-const TringThermostatCommandSchemas = {
-	setThermostatTarget: z.object({
-		target: z.number(),
-	}),
-	setThermostatConfig: z.object({
-		time: z.number(),
-		temp_span: z.number(),
-		temp_sampling: z.number(),
-		target: z.number(),
-	}),
-	setKeepAlive: z.object({
+/* --------------------------------------- OPEN CLOSE SENSOR COMMANDS --------------------------------------- */
+const OpenCloseSensorCommandSchemas = {
+	setNotificationBlindTime: z.object({
 		time: z.number(),
 	}),
 }
 
-export namespace TringThermostatCommandTypes {
-	export type SetThermostatTargetParams = z.infer<typeof TringThermostatCommandSchemas.setThermostatTarget>
-	export type SetThermostatConfigParams = z.infer<typeof TringThermostatCommandSchemas.setThermostatConfig>
-	export type SetKeepAliveParams = z.infer<typeof TringThermostatCommandSchemas.setKeepAlive>
+export namespace OpenCloseSensorCommandTypes {
+	export type SetNotificationBlindTimeParams = z.infer<typeof OpenCloseSensorCommandSchemas.setNotificationBlindTime>
 }
 
 /* --------------------------------------- WIRELESS THERMOSTAT COMMANDS --------------------------------------- */
@@ -643,6 +590,7 @@ export namespace CO2SensorCommandTypes {
 	export type SetCo2LedParams = z.infer<typeof CO2SensorCommandSchemas.setCo2Led>
 	export type SetCo2AutoZeroPeriodParams = z.infer<typeof CO2SensorCommandSchemas.setCo2AutoZeroPeriod>
 }
+
 /* --------------------------------------- CO2 DISPLAY COMMANDS --------------------------------------- */
 const CO2DisplayCommandSchemas = {
 	setCo2MeasurementBlindTime: z.object({
@@ -652,6 +600,68 @@ const CO2DisplayCommandSchemas = {
 
 export namespace CO2DisplayCommandTypes {
 	export type SetCo2MeasurementBlindTimeParams = z.infer<typeof CO2DisplayCommandSchemas.setCo2MeasurementBlindTime>
+}
+
+// ------------------------------------------------ AQI LED COMMANDS ------------------------------------------------
+
+const AQICommandSchemas = {
+	setAqiLed: z.object({
+		redBehavior: z.number(),
+		redDuration: z.number(),
+		greenBehavior: z.number(),
+		greenDuration: z.number(),
+		blueBehavior: z.number(),
+		blueDuration: z.number(),
+	}),
+}
+
+export namespace AQICommandTypes {
+	export type SetAqiLedParams = z.infer<typeof AQICommandSchemas.setAqiLed>
+}
+
+/* --------------------------------------- T-FLOOD COMMANDS --------------------------------------- */
+const TFloodCommandSchemas = {
+	setFloodAlarmTime: z.object({
+		time: z.number(),
+	}),
+	setKeepAlive: z.object({
+		time: z.number(),
+	}),
+	setFloodEventSendTime: z.object({
+		time: z.number(),
+	}),
+	setFloodEventUplinkType: z.object({
+		type: z.string(),
+	}),
+}
+
+export namespace TFloodCommandTypes {
+	export type SetFloodAlarmTimeParams = z.infer<typeof TFloodCommandSchemas.setFloodAlarmTime>
+	export type SetKeepAliveParams = z.infer<typeof TFloodCommandSchemas.setKeepAlive>
+	export type SetFloodEventSendTimeParams = z.infer<typeof TFloodCommandSchemas.setFloodEventSendTime>
+	export type SetFloodEventUplinkTypeParams = z.infer<typeof TFloodCommandSchemas.setFloodEventUplinkType>
+}
+
+/* --------------------------------------- TRING THERMOSTAT COMMANDS --------------------------------------- */
+const TringThermostatCommandSchemas = {
+	setThermostatTarget: z.object({
+		target: z.number(),
+	}),
+	setThermostatConfig: z.object({
+		time: z.number(),
+		temp_span: z.number(),
+		temp_sampling: z.number(),
+		target: z.number(),
+	}),
+	setKeepAlive: z.object({
+		time: z.number(),
+	}),
+}
+
+export namespace TringThermostatCommandTypes {
+	export type SetThermostatTargetParams = z.infer<typeof TringThermostatCommandSchemas.setThermostatTarget>
+	export type SetThermostatConfigParams = z.infer<typeof TringThermostatCommandSchemas.setThermostatConfig>
+	export type SetKeepAliveParams = z.infer<typeof TringThermostatCommandSchemas.setKeepAlive>
 }
 
 /* --------------------------------------- DSK DEVICE COMMANDS --------------------------------------- */
@@ -671,17 +681,6 @@ export namespace DSKDeviceCommandTypes {
 	export type SetVrvStatusParams = z.infer<typeof DSKDeviceCommandSchemas.setVrvStatus>
 	export type SetVrvOnTimeParams = z.infer<typeof DSKDeviceCommandSchemas.setVrvOnTime>
 	export type SetVrvOffTimeParams = z.infer<typeof DSKDeviceCommandSchemas.setVrvOffTime>
-}
-
-/* --------------------------------------- OPEN CLOSE SENSOR COMMANDS --------------------------------------- */
-const OpenCloseSensorCommandSchemas = {
-	setNotificationBlindTime: z.object({
-		time: z.number(),
-	}),
-}
-
-export namespace OpenCloseSensorCommandTypes {
-	export type SetNotificationBlindTimeParams = z.infer<typeof OpenCloseSensorCommandSchemas.setNotificationBlindTime>
 }
 
 /* --------------------------------------- BUTTON COMMANDS --------------------------------------- */
