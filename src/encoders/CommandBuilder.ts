@@ -1016,22 +1016,23 @@ export class CommandBuilder {
 			case 'GetFilterAlarm': {
 				return FanCoilThermostatCommands.getFilterAlarm()
 			}
+
 			// ------------------------------------------------ RELAY 16 / 16ASPM ------------------------------------------------
 
-			case 'SetOverheatingThreshold': {
-				return Relay16Commands.setOverheatingThreshold(params as Relay16CommandTypes.SetOverheatingThresholdParams)
+			case 'SetOverheatingThresholds': {
+				return Relay16Commands.setOverheatingThresholds(params as Relay16CommandTypes.SetOverheatingThresholdsParams)
 			}
 
-			case 'GetOverheatingThreshold': {
-				return Relay16Commands.getOverheatingThreshold()
+			case 'GetOverheatingThresholds': {
+				return Relay16Commands.getOverheatingThresholds()
 			}
 
-			case 'SetOvervoltageThreshold': {
-				return Relay16Commands.setOvervoltageThreshold(params as Relay16CommandTypes.SetOvervoltageThresholdParams)
+			case 'SetOvervoltageThresholds': {
+				return Relay16Commands.setOvervoltageThresholds(params as Relay16CommandTypes.SetOvervoltageThresholdsParams)
 			}
 
-			case 'GetOvervoltageThreshold': {
-				return Relay16Commands.getOvervoltageThreshold()
+			case 'GetOvervoltageThresholds': {
+				return Relay16Commands.getOvervoltageThresholds()
 			}
 
 			case 'SetOvercurrentThreshold': {
@@ -1048,6 +1049,24 @@ export class CommandBuilder {
 
 			case 'GetOverpowerThreshold': {
 				return Relay16Commands.getOverpowerThreshold()
+			}
+
+			case 'SetAfterOverheatingProtectionRecovery': {
+				return Relay16Commands.setAfterOverheatingProtectionRecovery(
+					params as Relay16CommandTypes.SetAfterOverheatingProtectionRecoveryParams,
+				)
+			}
+
+			case 'GetAfterOverheatingProtectionRecovery': {
+				return Relay16Commands.getAfterOverheatingProtectionRecovery()
+			}
+
+			case 'SetLedIndicationMode': {
+				return Relay16Commands.setLedIndicationMode(params as Relay16CommandTypes.SetLedIndicationModeParams)
+			}
+
+			case 'GetLedIndicationMode': {
+				return Relay16Commands.getLedIndicationMode()
 			}
 
 			case 'SetRelayRecoveryState': {
@@ -1081,7 +1100,6 @@ export class CommandBuilder {
 			case 'GetOverpowerEvents': {
 				return Relay16Commands.getOverpowerEvents()
 			}
-
 			default:
 				return new BaseCommand(type, 55)
 		}

@@ -4,56 +4,56 @@ import { ZodError } from 'zod'
 import { Relay16CommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
 export class Relay16Commands {
-	static setOverheatingThreshold(params: Relay16CommandTypes.SetOverheatingThresholdParams) {
+	static setOverheatingThresholds(params: Relay16CommandTypes.SetOverheatingThresholdsParams) {
 		try {
-			DeviceCommandSchemas.Relay16CommandSchemas.setOverheatingThreshold.parse(params)
-			const { temperature } = params
-			return new BaseCommand('SetOverheatingThreshold', 0x1e, decToHex(temperature))
+			DeviceCommandSchemas.Relay16CommandSchemas.setOverheatingThresholds.parse(params)
+			const { trigger, recovery } = params
+			return new BaseCommand('SetOverheatingThresholds', 0x1e, decToHex(trigger), decToHex(recovery))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
-					message: 'Zod validation error during SetOverheatingThreshold execution',
-					command: 'SetOverheatingThreshold',
+					message: 'Zod validation error during SetOverheatingThresholds execution',
+					command: 'SetOverheatingThresholds',
 					originalError: e,
 				})
 			} else {
 				throw new CustomError({
-					message: 'Error during SetOverheatingThreshold execution',
-					command: 'SetOverheatingThreshold',
+					message: 'Error during SetOverheatingThresholds execution',
+					command: 'SetOverheatingThresholds',
 					originalError: e as Error,
 				})
 			}
 		}
 	}
 
-	static getOverheatingThreshold() {
-		return new BaseCommand('GetOverheatingThreshold', 0x1f)
+	static getOverheatingThresholds() {
+		return new BaseCommand('GetOverheatingThresholds', 0x1f)
 	}
 
-	static setOvervoltageThreshold(params: Relay16CommandTypes.SetOvervoltageThresholdParams) {
+	static setOvervoltageThresholds(params: Relay16CommandTypes.SetOvervoltageThresholdsParams) {
 		try {
-			DeviceCommandSchemas.Relay16CommandSchemas.setOvervoltageThreshold.parse(params)
-			const { voltage } = params
-			return new BaseCommand('SetOvervoltageThreshold', 0x20, dec2hex(voltage))
+			DeviceCommandSchemas.Relay16CommandSchemas.setOvervoltageThresholds.parse(params)
+			const { trigger, recovery } = params
+			return new BaseCommand('SetOvervoltageThresholds', 0x20, dec2hex(trigger), decToHex(recovery))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
-					message: 'Zod validation error during SetOvervoltageThreshold execution',
-					command: 'SetOvervoltageThreshold',
+					message: 'Zod validation error during SetOvervoltageThresholds execution',
+					command: 'SetOvervoltageThresholds',
 					originalError: e,
 				})
 			} else {
 				throw new CustomError({
-					message: 'Error during SetOvervoltageThreshold execution',
-					command: 'SetOvervoltageThreshold',
+					message: 'Error during SetOvervoltageThresholds execution',
+					command: 'SetOvervoltageThresholds',
 					originalError: e as Error,
 				})
 			}
 		}
 	}
 
-	static getOvervoltageThreshold() {
-		return new BaseCommand('GetOvervoltageThreshold', 0x21)
+	static getOvervoltageThresholds() {
+		return new BaseCommand('GetOvervoltageThresholds', 0x21)
 	}
 
 	static setOvercurrentThreshold(params: Relay16CommandTypes.SetOvercurrentThresholdParams) {
@@ -106,6 +106,58 @@ export class Relay16Commands {
 
 	static getOverpowerThreshold() {
 		return new BaseCommand('GetOverpowerThreshold', 0x25)
+	}
+
+	static setAfterOverheatingProtectionRecovery(params: Relay16CommandTypes.SetAfterOverheatingProtectionRecoveryParams) {
+		try {
+			DeviceCommandSchemas.Relay16CommandSchemas.setAfterOverheatingProtectionRecovery.parse(params)
+			const { state } = params
+			return new BaseCommand('SetAfterOverheatingProtectionRecovery', 0x59, decToHex(state))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetAfterOverheatingProtectionRecovery execution',
+					command: 'SetAfterOverheatingProtectionRecovery',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetAfterOverheatingProtectionRecovery execution',
+					command: 'SetAfterOverheatingProtectionRecovery',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getAfterOverheatingProtectionRecovery() {
+		return new BaseCommand('GetAfterOverheatingProtectionRecovery', 0x5a)
+	}
+
+	static setLedIndicationMode(params: Relay16CommandTypes.SetLedIndicationModeParams) {
+		try {
+			DeviceCommandSchemas.Relay16CommandSchemas.setLedIndicationMode.parse(params)
+			const { mode } = params
+			return new BaseCommand('SetLedIndicationMode', 0x5b, decToHex(mode))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetLedIndicationMode execution',
+					command: 'SetLedIndicationMode',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetLedIndicationMode execution',
+					command: 'SetLedIndicationMode',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getLedIndicationMode() {
+		return new BaseCommand('GetLedIndicationMode', 0x5c)
 	}
 
 	static setRelayRecoveryState(params: Relay16CommandTypes.SetRelayRecoveryStateParams) {

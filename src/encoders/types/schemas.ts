@@ -220,17 +220,25 @@ export namespace VickiCommandTypes {
 /* --------------------------------------- RELAY 16 COMMANDS --------------------------------------- */
 
 const Relay16CommandSchemas = {
-	setOverheatingThreshold: z.object({
-		temperature: z.number(),
+	setOverheatingThresholds: z.object({
+		trigger: z.number(),
+		recovery: z.number(),
 	}),
-	setOvervoltageThreshold: z.object({
-		voltage: z.number(),
+	setOvervoltageThresholds: z.object({
+		trigger: z.number(),
+		recovery: z.number(),
 	}),
 	setOvercurrentThreshold: z.object({
 		current: z.number(),
 	}),
 	setOverpowerThreshold: z.object({
 		power: z.number(),
+	}),
+	setAfterOverheatingProtectionRecovery: z.object({
+		state: z.number(),
+	}),
+	setLedIndicationMode: z.object({
+		mode: z.number(),
 	}),
 	setRelayRecoveryState: z.object({
 		state: z.number(),
@@ -241,14 +249,17 @@ const Relay16CommandSchemas = {
 }
 
 export namespace Relay16CommandTypes {
-	export type SetOverheatingThresholdParams = z.infer<typeof Relay16CommandSchemas.setOverheatingThreshold>
-	export type SetOvervoltageThresholdParams = z.infer<typeof Relay16CommandSchemas.setOvervoltageThreshold>
+	export type SetOverheatingThresholdsParams = z.infer<typeof Relay16CommandSchemas.setOverheatingThresholds>
+	export type SetOvervoltageThresholdsParams = z.infer<typeof Relay16CommandSchemas.setOvervoltageThresholds>
 	export type SetOvercurrentThresholdParams = z.infer<typeof Relay16CommandSchemas.setOvercurrentThreshold>
 	export type SetOverpowerThresholdParams = z.infer<typeof Relay16CommandSchemas.setOverpowerThreshold>
+	export type SetAfterOverheatingProtectionRecoveryParams = z.infer<
+		typeof Relay16CommandSchemas.setAfterOverheatingProtectionRecovery
+	>
+	export type SetLedIndicationModeParams = z.infer<typeof Relay16CommandSchemas.setLedIndicationMode>
 	export type SetRelayRecoveryStateParams = z.infer<typeof Relay16CommandSchemas.setRelayRecoveryState>
 	export type SetRelayStateParams = z.infer<typeof Relay16CommandSchemas.setRelayState>
 }
-
 // ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
 
 const TValveCommandSchemas = {
