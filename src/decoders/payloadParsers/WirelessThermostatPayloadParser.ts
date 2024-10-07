@@ -24,12 +24,12 @@ export const WirelessThermostatPayloadParser = (hexData: string) => {
 			if (data[0] == 1) {
 				targetTemperature = data[6]
 				powerSourceStatus = data[7]
-				lux = parseInt('0' + data[8].toString(16) + data[9].toString(16), 16)
+				lux = (data[8] << 8) | data[9]
 				pir = toBool(data[10])
 			} else {
 				targetTemperature = parseInt(`${decbin(data[6])}${decbin(data[7])}`, 2) / 10
 				powerSourceStatus = data[8]
-				lux = parseInt('0' + data[9].toString(16) + data[10].toString(16), 16)
+				lux = (data[9] << 8) | data[10]
 				pir = toBool(data[11])
 			}
 			const keepaliveData = {

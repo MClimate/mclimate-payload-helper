@@ -11,32 +11,39 @@ export const CO2DisplayLitePayloadParser = (hexData: string) => {
 		const calculateHumidity = (rawData: number) => (rawData * 100) / 256
 
 		const handleKeepAliveData = (data: number[]) => {
-			let tempHex = ('0' + data[1].toString(16)).substr(-2) + ('0' + data[2].toString(16)).substr(-2)
-			let tempDec = parseInt(tempHex, 16)
-			let temperature = calculateTemperature(tempDec)
-			let humidity = calculateHumidity(data[3])
-			let batteryVoltageCalculated = parseInt(`${decbin(data[4])}${decbin(data[5])}`, 2) / 1000
-			let sensorTemperature = Number(temperature.toFixed(2))
-			let relativeHumidity = Number(humidity.toFixed(2))
-			let batteryVoltage = Number(batteryVoltageCalculated.toFixed(2))
+			// Temperature calculation from two data
+			let temperatureRaw = (data[1] << 8) | data[2] // Shift byte[1] left by 8 bits and OR with byte[2]
+			let sensorTemperature = Number(calculateTemperature(temperatureRaw).toFixed(2))
 
-			let ppmBin = decbin(data[6])
-			let ppmBin2 = decbin(data[7])
-			ppmBin = `${ppmBin2.slice(0, 5)}${ppmBin}`
-			let ppm = parseInt(ppmBin, 2)
-			let powerSourceStatus = ppmBin2.slice(5, 8)
-			let lux = parseInt('0' + data[8].toString(16) + data[9].toString(16), 16)
+			// Humidity calculation
+			let relativeHumidity = Number(calculateHumidity(data[3]).toFixed(2))
 
-			let keepaliveData = {
-				CO2: ppm,
+			// Battery voltage calculation from two data
+			let batteryVoltageRaw = (data[4] << 8) | data[5]
+			let batteryVoltage = Number((batteryVoltageRaw / 1000).toFixed(2))
+
+			// CO2 calculation from data 6 and 7
+			let co2Low = data[6] // Lower byte of CO2
+			let co2High = (data[7] & 0xf8) >> 3 // Mask the upper 5 bits and shift them right
+			let CO2 = (co2High << 8) | co2Low // Shift co2High left by 8 bits and combine with co2Low
+
+			// Power source status
+			let powerSourceStatus = data[7] & 0x07 // Extract the last 3 bits directly
+
+			// Light intensity from two data
+			let lightIntensityRaw = (data[8] << 8) | data[9]
+			let lux = lightIntensityRaw
+
+			let keepAliveData = {
 				sensorTemperature,
 				relativeHumidity,
 				batteryVoltage,
-				powerSourceStatus: parseInt(powerSourceStatus, 2),
+				CO2,
+				powerSourceStatus,
 				lux,
 			}
 
-			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
+			Object.assign(deviceData, { ...deviceData }, { ...keepAliveData })
 		}
 
 		if (hexData) {
