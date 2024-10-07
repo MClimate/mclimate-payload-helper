@@ -619,6 +619,10 @@ export class FanCoilThermostatCommands {
 		}
 	}
 
+	static getDeviceStatus() {
+		return new BaseCommand('GetDeviceStatus', 0x67)
+	}
+
 	static setReturnOfPowerOperation(params: FanCoilThermostatCommandTypes.SetReturnOfPowerOperationParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setReturnOfPowerOperation.parse(params)

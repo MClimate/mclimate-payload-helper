@@ -967,6 +967,10 @@ export class CommandBuilder {
 				return FanCoilThermostatCommands.setDeviceStatus(params as FanCoilThermostatCommandTypes.SetDeviceStatusParams)
 			}
 
+			case 'GetDeviceStatus': {
+				return FanCoilThermostatCommands.getDeviceStatus()
+			}
+
 			case 'SetReturnOfPowerOperation': {
 				return FanCoilThermostatCommands.setReturnOfPowerOperation(
 					params as FanCoilThermostatCommandTypes.SetReturnOfPowerOperationParams,
