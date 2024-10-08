@@ -812,11 +812,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '30':
 				{
 					try {
-						let data;
+						let data
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 2
-							data = { manualTargetTemperatureUpdate: ((parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)) / 10 }
-						}else{
+							data = {
+								manualTargetTemperatureUpdate: ((parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)) / 10,
+							}
+						} else {
 							command_len = 1
 							data = { manualTargetTemperatureUpdate: parseInt(commands[i + 1], 16) }
 						}
