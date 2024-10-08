@@ -507,3 +507,48 @@ describe('T-Flood payload decoder', () => {
 		})
 	})
 })
+
+describe('ASPM payload decoder', () => {
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('011C034A241805D9E7195201', DeviceType.Relay16)).toStrictEqual({
+			internalTemperature: 28,
+			energy: 55190.552,
+			power: 1497,
+			acVoltage: 231,
+			acCurrent: 6482,
+			relayState: true,
+		})
+	})
+	test('keepalive with response of commands', () => {
+		expect(uplinkPayloadParser('5C015A01011C034A241805D9E7195201', DeviceType.Relay16)).toStrictEqual({
+			internalTemperature: 28,
+			energy: 55190.552,
+			power: 1497,
+			acVoltage: 231,
+			acCurrent: 6482,
+			relayState: true,
+			ledIndicationMode: 1,
+			afterOverheatingProtectionRecovery: 1,
+		})
+	})
+	test('all settings ', () => {
+		expect(uplinkPayloadParser('041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201', DeviceType.Relay16)).toStrictEqual({
+			deviceVersions: { hardware: 13, software: 12 },
+			keepAliveTime: 10,
+			joinRetryPeriod: 10,
+			uplinkType: '00',
+			watchDogParams: { wdpC: 2, wdpUc: 24 },
+			overheatingThresholds: { trigger: 95, recovery: 70 },
+			overvoltageThresholds: { trigger: 275, recovery: 250 },
+			overcurrentThreshold: 16,
+			overpowerThreshold: 3680,
+			relayRecoveryState: 0,
+			internalTemperature: 28,
+			energy: 55190.552,
+			power: 1497,
+			acVoltage: 231,
+			acCurrent: 6482,
+			relayState: true,
+		})
+	})
+})

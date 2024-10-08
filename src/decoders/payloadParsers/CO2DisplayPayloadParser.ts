@@ -25,7 +25,7 @@ export const CO2DisplayPayloadParser = (hexData: string) => {
 			ppmBin = `${ppmBin2.slice(0, 5)}${ppmBin}`
 			let ppm = parseInt(ppmBin, 2)
 			let powerSourceStatus = ppmBin2.slice(5, 8)
-			let lux = parseInt('0' + data[8].toString(16) + data[9].toString(16), 16)
+			let lux = (data[8] << 8) | data[9]
 			let pir = toBool(data[10])
 
 			let keepaliveData = {
