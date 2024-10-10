@@ -1,5 +1,5 @@
-export * from './BaseCommand'
 export * from './CommandBuilder'
+export * from './BaseCommand'
 export * from './GeneralCommands'
 export * from './VickiCommands'
 export * from './Relay16Commands'
