@@ -15,5 +15,8 @@ export {
 	CO2DisplayCommands,
 	DskDeviceCommands,
 	ButtonCommands,
+	HTSensor,
+	HTDisplayLite,
+	CO2DisplayLiteCommands,
 } from '@/encoders'
 export { CustomError } from '@/utils'
