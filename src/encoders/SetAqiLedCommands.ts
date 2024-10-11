@@ -3,7 +3,7 @@ import { ZodError } from 'zod'
 import { CustomError } from '@/utils'
 import { AQICommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-export class SetAqiLed extends BaseCommand {
+export class SetAqiLedCommands extends BaseCommand {
 	constructor(params: AQICommandTypes.SetAqiLedParams) {
 		try {
 			DeviceCommandSchemas.AQICommandSchemas.setAqiLed.parse(params)

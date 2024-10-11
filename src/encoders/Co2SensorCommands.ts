@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError, dec2hex, decToHex } from '@/utils'
 import { DeviceCommandSchemas, CO2SensorCommandTypes } from '@/encoders/types'
 
-export class CO2SensorCommands {
+export class CO2SensorCommands extends GeneralCommands {
 	static setCo2BoundaryLevels(params: CO2SensorCommandTypes.SetCo2BoundaryLevelsParams) {
 		try {
 			DeviceCommandSchemas.CO2SensorCommandSchemas.setCo2BoundaryLevels.parse(params)

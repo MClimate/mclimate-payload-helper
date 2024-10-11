@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError, decToHex } from '@/utils'
 import { DeviceCommandSchemas, ButtonCommandTypes } from '@/encoders/types'
 
-export class ButtonCommands {
+export class ButtonCommands extends GeneralCommands {
 	static setSendEventLater(params: ButtonCommandTypes.SetSendEventLaterParams) {
 		try {
 			DeviceCommandSchemas.ButtonCommandSchemas.setSendEventLater.parse(params)

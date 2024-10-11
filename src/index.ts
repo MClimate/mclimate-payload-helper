@@ -4,7 +4,7 @@ export {
 	CommandBuilder,
 	VickiCommands,
 	WirelessThermostatCommands,
-	SetAqiLed,
+	SetAqiLedCommands,
 	Relay16Commands,
 	TFloodCommands,
 	OpenCloseSensorCommands,
@@ -15,5 +15,8 @@ export {
 	CO2DisplayCommands,
 	DskDeviceCommands,
 	ButtonCommands,
+	HTSensorCommands,
+	HTDisplayLite,
+	CO2DisplayLiteCommands,
 } from '@/encoders'
 export { CustomError } from '@/utils'

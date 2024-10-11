@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
-import { decToHex, dec2hex, CustomError } from '@/utils'
+import { BaseCommand, DisplayCommands, GeneralCommands, TemperatureCommonCommands } from '@/encoders'
+import { decToHex, dec2hex, CustomError, applyMixins } from '@/utils'
 import { ZodError } from 'zod'
 import { DeviceCommandSchemas, FanCoilThermostatCommandTypes } from '@/encoders/types'
 
-export class FanCoilThermostatCommands {
+export class FanCoilThermostatCommands extends GeneralCommands {
 	static setTargetTemperatureStep(params: FanCoilThermostatCommandTypes.SetTargetTemperatureStepParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setTargetTemperatureStep.parse(params)
@@ -726,3 +726,5 @@ export class FanCoilThermostatCommands {
 		return new BaseCommand('GetFilterAlarm', 0x73)
 	}
 }
+
+applyMixins(FanCoilThermostatCommands, [DisplayCommands, TemperatureCommonCommands])
