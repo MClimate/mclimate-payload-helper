@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError, decToHex } from '@/utils'
 import { OpenCloseSensorCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-export class OpenCloseSensorCommands {
+export class OpenCloseSensorCommands extends GeneralCommands {
 	static setNotificationBlindTime(params: OpenCloseSensorCommandTypes.SetNotificationBlindTimeParams) {
 		try {
 			DeviceCommandSchemas.OpenCloseSensorCommandSchemas.setNotificationBlindTime.parse(params)

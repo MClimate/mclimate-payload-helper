@@ -1,9 +1,16 @@
-import { BaseCommand } from '@/encoders'
+import {
+	BaseCommand,
+	ChildLockCommands,
+	DisplayCommands,
+	GeneralCommands,
+	PIRCommands,
+	TemperatureCommonCommands,
+} from '@/encoders'
 import { ZodError } from 'zod'
-import { CustomError, dec2hex, decToHex } from '@/utils'
+import { applyMixins, CustomError, dec2hex, decToHex } from '@/utils'
 import { WirelessThermostatCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-export class WirelessThermostatCommands {
+export class WirelessThermostatCommands extends GeneralCommands {
 	static setTargetTemperature(params: WirelessThermostatCommandTypes.SetTargetTemperatureParams) {
 		try {
 			DeviceCommandSchemas.WirelessThermostatCommandSchemas.setTargetTemperature.parse(params)
@@ -241,3 +248,5 @@ export class WirelessThermostatCommands {
 		return new BaseCommand('GetTargetTemperatureStep', 0x53)
 	}
 }
+
+applyMixins(WirelessThermostatCommands, [TemperatureCommonCommands, DisplayCommands, PIRCommands, ChildLockCommands])

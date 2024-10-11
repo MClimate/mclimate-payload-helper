@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError, dec2hex, decToHex } from '@/utils'
 import { DeviceCommandSchemas, DSKDeviceCommandTypes } from '@/encoders/types'
 
-export class DskDeviceCommands {
+export class DskDeviceCommands extends GeneralCommands {
 	static setVrvStatus(params: DSKDeviceCommandTypes.SetVrvStatusParams) {
 		try {
 			DeviceCommandSchemas.DSKDeviceCommandSchemas.setVrvStatus.parse(params)

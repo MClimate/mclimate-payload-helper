@@ -1,9 +1,17 @@
-import { BaseCommand } from '@/encoders'
 import { ZodError } from 'zod'
-import { CustomError, decToHex } from '@/utils'
+import {
+	BaseCommand,
+	ChildLockCommands,
+	Co2DisplayCommonCommands,
+	CO2SensorCommands,
+	DisplayCommands,
+	GeneralCommands,
+	PIRCommands,
+} from '@/encoders'
+import { applyMixins, CustomError, decToHex } from '@/utils'
 import { DeviceCommandSchemas, CO2DisplayCommandTypes } from '@/encoders/types'
 
-export class CO2DisplayCommands {
+export class CO2DisplayCommands extends GeneralCommands {
 	static setCo2MeasurementBlindTime(params: CO2DisplayCommandTypes.SetCo2MeasurementBlindTimeParams) {
 		try {
 			DeviceCommandSchemas.CO2DisplayCommandSchemas.setCo2MeasurementBlindTime.parse(params)
@@ -30,3 +38,11 @@ export class CO2DisplayCommands {
 		return new BaseCommand('GetCo2MeasurementBlindTime', 0x80)
 	}
 }
+
+applyMixins(CO2DisplayCommands, [
+	CO2SensorCommands,
+	DisplayCommands,
+	Co2DisplayCommonCommands,
+	PIRCommands,
+	ChildLockCommands,
+])
