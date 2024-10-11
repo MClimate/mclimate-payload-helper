@@ -4,7 +4,7 @@ export {
 	CommandBuilder,
 	VickiCommands,
 	WirelessThermostatCommands,
-	SetAqiLed,
+	SetAqiLedCommands,
 	Relay16Commands,
 	TFloodCommands,
 	OpenCloseSensorCommands,
