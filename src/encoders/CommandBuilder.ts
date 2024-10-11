@@ -13,7 +13,7 @@ import {
 	OpenCloseSensorCommands,
 	ButtonCommands,
 	SetAqiLedCommands,
-	HTSensor,
+	HTSensorCommands,
 	CO2DisplayLiteCommands,
 	HTDisplayLite,
 } from '@/encoders'
@@ -39,7 +39,7 @@ export class CommandBuilder {
 			co2_display_lite: CO2DisplayLiteCommands,
 			t_valve: TValveCommands,
 			t_flood: TFloodCommands,
-			ht_sensor: HTSensor,
+			ht_sensor: HTSensorCommands,
 			ht_display_lite: HTDisplayLite,
 			thermostat: TringThermostatCommands,
 			aqi_sensor: SetAqiLedCommands,

@@ -15,7 +15,7 @@ export {
 	CO2DisplayCommands,
 	DskDeviceCommands,
 	ButtonCommands,
-	HTSensor,
+	HTSensorCommands,
 	HTDisplayLite,
 	CO2DisplayLiteCommands,
 } from '@/encoders'
