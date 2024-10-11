@@ -1,3 +1,3 @@
 import { GeneralCommands } from '@/encoders/GeneralCommands'
 
-export class HTSensor extends GeneralCommands {}
+export class HTSensorCommands extends GeneralCommands {}
