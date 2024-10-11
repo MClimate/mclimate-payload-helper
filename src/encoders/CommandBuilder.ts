@@ -30,7 +30,7 @@ export class CommandBuilder {
 			co2_sensor: CO2SensorCommands,
 			vicki: VickiCommands,
 			wireless_thermostat: WirelessThermostatCommands,
-			button: ButtonCommands,
+			mc_button: ButtonCommands,
 			relay_16: Relay16Commands,
 			fan_coil_thermostat: FanCoilThermostatCommands,
 			open_close_sensor: OpenCloseSensorCommands,
@@ -42,7 +42,7 @@ export class CommandBuilder {
 			ht_sensor: HTSensor,
 			ht_display_lite: HTDisplayLite,
 			thermostat: TringThermostatCommands,
-			set_aqi: SetAqiLedCommands,
+			aqi_sensor: SetAqiLedCommands,
 		}
 	}
 
