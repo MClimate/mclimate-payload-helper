@@ -19,4 +19,5 @@ export {
 	HTDisplayLite,
 	CO2DisplayLiteCommands,
 } from '@/encoders'
+export { DeviceCommandSchemas } from '@/encoders/types'
 export { CustomError } from '@/utils'
