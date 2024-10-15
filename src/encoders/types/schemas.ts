@@ -121,6 +121,9 @@ export namespace Co2CommonDisplayCommandTypes {
 /* ---------------------------------------VICKI COMMANDS--------------------------------------- */
 
 const VickiCommandSchemas = {
+	...GeneralCommandSchemas,
+	...TemperatureCommandSchemas,
+	...ChildLockCommandSchemas,
 	setOpenWindow: z.object({
 		enabled: z.boolean(),
 		delta: z.number(),
@@ -260,6 +263,7 @@ export namespace VickiCommandTypes {
 /* --------------------------------------- RELAY 16 COMMANDS --------------------------------------- */
 
 const Relay16CommandSchemas = {
+	...GeneralCommandSchemas,
 	setOverheatingThresholds: z.object({
 		trigger: z.number(),
 		recovery: z.number(),
@@ -303,6 +307,7 @@ export namespace Relay16CommandTypes {
 // ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
 
 const TValveCommandSchemas = {
+	...GeneralCommandSchemas,
 	setOpenCloseTime: z.object({
 		openingTime: z.number(),
 		closingTime: z.number(),
@@ -382,6 +387,9 @@ export namespace TValveCommandTypes {
 /* --------------------------------------- FAN COIL THERMOSTAT COMMANDS --------------------------------------- */
 
 const FanCoilThermostatCommandSchemas = {
+	...GeneralCommandSchemas,
+	...DisplayCommandSchemas,
+	...TemperatureCommandSchemas,
 	setTargetTemperatureStep: z.object({
 		value: z.number(),
 	}),
@@ -516,6 +524,7 @@ export namespace FanCoilThermostatCommandTypes {
 
 /* --------------------------------------- OPEN CLOSE SENSOR COMMANDS --------------------------------------- */
 const OpenCloseSensorCommandSchemas = {
+	...GeneralCommandSchemas,
 	setNotificationBlindTime: z.object({
 		time: z.number(),
 	}),
@@ -527,6 +536,11 @@ export namespace OpenCloseSensorCommandTypes {
 
 /* --------------------------------------- WIRELESS THERMOSTAT COMMANDS --------------------------------------- */
 const WirelessThermostatCommandSchemas = {
+	...GeneralCommandSchemas,
+	...TemperatureCommandSchemas,
+	...DisplayCommandSchemas,
+	...PIRCommandSchemas,
+	...ChildLockCommandSchemas,
 	setTargetTemperature: z.object({
 		targetTemperature: z.number(),
 	}),
@@ -574,6 +588,7 @@ export namespace WirelessThermostatCommandTypes {
 
 /* --------------------------------------- CO2 SENSOR COMMANDS --------------------------------------- */
 const CO2SensorCommandSchemas = {
+	...GeneralCommandSchemas,
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number(),
 		medium_bad: z.number(),
@@ -633,6 +648,11 @@ export namespace CO2SensorCommandTypes {
 
 /* --------------------------------------- CO2 DISPLAY COMMANDS --------------------------------------- */
 const CO2DisplayCommandSchemas = {
+	...CO2SensorCommandSchemas,
+	...DisplayCommandSchemas,
+	...Co2CommonDisplayCommandSchemas,
+	...PIRCommandSchemas,
+	...ChildLockCommandSchemas,
 	setCo2MeasurementBlindTime: z.object({
 		time: z.number(),
 	}),
@@ -640,6 +660,18 @@ const CO2DisplayCommandSchemas = {
 
 export namespace CO2DisplayCommandTypes {
 	export type SetCo2MeasurementBlindTimeParams = z.infer<typeof CO2DisplayCommandSchemas.setCo2MeasurementBlindTime>
+}
+
+/* --------------------------------------- CO2 DISPLAY LITE COMMANDS --------------------------------------- */
+const CO2DisplayLiteCommandSchemas = {
+	...CO2SensorCommandSchemas,
+	...DisplayCommandSchemas,
+	...Co2CommonDisplayCommandSchemas,
+}
+
+/* --------------------------------------- HT SENSOR COMMANDS --------------------------------------- */
+const HTSensorCommandSchemas = {
+	...GeneralCommandSchemas,
 }
 
 // ------------------------------------------------ AQI LED COMMANDS ------------------------------------------------
@@ -661,6 +693,7 @@ export namespace AQICommandTypes {
 
 /* --------------------------------------- T-FLOOD COMMANDS --------------------------------------- */
 const TFloodCommandSchemas = {
+	...GeneralCommandSchemas,
 	setFloodAlarmTime: z.object({
 		time: z.number(),
 	}),
@@ -725,6 +758,7 @@ export namespace DSKDeviceCommandTypes {
 
 /* --------------------------------------- BUTTON COMMANDS --------------------------------------- */
 const ButtonCommandSchemas = {
+	...GeneralCommandSchemas,
 	setSendEventLater: z.object({
 		value: z.number(),
 	}),
@@ -755,4 +789,6 @@ export const DeviceCommandSchemas = {
 	ChildLockCommandSchemas,
 	TemperatureCommandSchemas,
 	PIRCommandSchemas,
+	HTSensorCommandSchemas,
+	CO2DisplayLiteCommandSchemas,
 }
