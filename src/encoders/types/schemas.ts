@@ -9,13 +9,6 @@ const GeneralCommandSchemas = {
 	setKeepAlive: z.object({
 		time: z.number(),
 	}),
-	setChildLock: z.object({
-		enabled: z.boolean(),
-	}),
-	setTemperatureRange: z.object({
-		min: z.number(),
-		max: z.number(),
-	}),
 	setJoinRetryPeriod: z.object({
 		period: z.number(),
 	}),
@@ -26,19 +19,68 @@ const GeneralCommandSchemas = {
 		confirmedUplinks: z.number(),
 		unconfirmedUplinks: z.number(),
 	}),
-	setDisplayRefreshPeriod: z.object({
-		period: z.number(),
+}
+
+export namespace GeneralCommandTypes {
+	export type CustomHexCommandParams = z.infer<typeof GeneralCommandSchemas.customHexCommand>
+	export type SetKeepAliveParams = z.infer<typeof GeneralCommandSchemas.setKeepAlive>
+	export type SetJoinRetryPeriodParams = z.infer<typeof GeneralCommandSchemas.setJoinRetryPeriod>
+	export type SetUplinkTypeParams = z.infer<typeof GeneralCommandSchemas.setUplinkType>
+	export type SetWatchDogParams = z.infer<typeof GeneralCommandSchemas.setWatchDogParams>
+}
+
+/* ---------------------------------------CHILD LOCK COMMANDS--------------------------------------- */
+
+const ChildLockCommandSchemas = {
+	setChildLock: z.object({
+		enabled: z.boolean(),
 	}),
-	setDeepSleepMode: z.object({
-		state: z.number(),
+}
+
+export namespace ChildLockCommandTypes {
+	export type SetChildLockParams = z.infer<typeof ChildLockCommandSchemas.setChildLock>
+}
+
+/* ---------------------------------------TEMPERATURE COMMANDS--------------------------------------- */
+
+const TemperatureCommandSchemas = {
+	setTemperatureRange: z.object({
+		min: z.number(),
+		max: z.number(),
 	}),
+}
+
+export namespace TemperatureCommandTypes {
+	export type SetTemperatureRangeParams = z.infer<typeof TemperatureCommandSchemas.setTemperatureRange>
+}
+
+/* ---------------------------------------PIR COMMANDS--------------------------------------- */
+
+const PIRCommandSchemas = {
 	setPIRSensorStatus: z.object({
 		state: z.number(),
 	}),
 	setPIRSensorSensitivity: z.object({
 		sensitivity: z.number(),
 	}),
-	setCurrentTemperatureVisibility: z.object({
+	setPIRPeriod: z.object({
+		time: z.number(),
+	}),
+}
+
+export namespace PIRCommandTypes {
+	export type SetPIRSensorStatusParams = z.infer<typeof PIRCommandSchemas.setPIRSensorStatus>
+	export type SetPIRSensorSensitivityParams = z.infer<typeof PIRCommandSchemas.setPIRSensorSensitivity>
+	export type SetPIRPeriodParams = z.infer<typeof PIRCommandSchemas.setPIRPeriod>
+}
+
+/* ---------------------------------------DISPLAY COMMANDS--------------------------------------- */
+
+const DisplayCommandSchemas = {
+	setDisplayRefreshPeriod: z.object({
+		period: z.number(),
+	}),
+	setDeepSleepMode: z.object({
 		state: z.number(),
 	}),
 	setHumidityVisibility: z.object({
@@ -47,40 +89,41 @@ const GeneralCommandSchemas = {
 	setLightIntensityVisibility: z.object({
 		state: z.number(),
 	}),
-	setCo2ImagesVisibility: z.object({
-		chart: z.number(),
-		digital_value: z.number(),
-		emoji: z.number(),
-	}),
-	setPIRPeriod: z.object({
-		time: z.number(),
+	setCurrentTemperatureVisibility: z.object({
+		state: z.number(),
 	}),
 }
 
-export namespace GeneralCommandTypes {
-	export type CustomHexCommandParams = z.infer<typeof GeneralCommandSchemas.customHexCommand>
-	export type SetKeepAliveParams = z.infer<typeof GeneralCommandSchemas.setKeepAlive>
-	export type SetChildLockParams = z.infer<typeof GeneralCommandSchemas.setChildLock>
-	export type SetTemperatureRangeParams = z.infer<typeof GeneralCommandSchemas.setTemperatureRange>
-	export type SetJoinRetryPeriodParams = z.infer<typeof GeneralCommandSchemas.setJoinRetryPeriod>
-	export type SetUplinkTypeParams = z.infer<typeof GeneralCommandSchemas.setUplinkType>
-	export type SetWatchDogParams = z.infer<typeof GeneralCommandSchemas.setWatchDogParams>
-	export type SetDisplayRefreshPeriodParams = z.infer<typeof GeneralCommandSchemas.setDisplayRefreshPeriod>
-	export type SetDeepSleepModeParams = z.infer<typeof GeneralCommandSchemas.setDeepSleepMode>
-	export type SetPIRSensorStatusParams = z.infer<typeof GeneralCommandSchemas.setPIRSensorStatus>
-	export type SetPIRSensorSensitivityParams = z.infer<typeof GeneralCommandSchemas.setPIRSensorSensitivity>
+export namespace DisplayCommandTypes {
+	export type SetDisplayRefreshPeriodParams = z.infer<typeof DisplayCommandSchemas.setDisplayRefreshPeriod>
+	export type SetDeepSleepModeParams = z.infer<typeof DisplayCommandSchemas.setDeepSleepMode>
+	export type SetHumidityVisibilityParams = z.infer<typeof DisplayCommandSchemas.setHumidityVisibility>
+	export type SetLightIntensityVisibilityParams = z.infer<typeof DisplayCommandSchemas.setLightIntensityVisibility>
 	export type SetCurrentTemperatureVisibilityParams = z.infer<
-		typeof GeneralCommandSchemas.setCurrentTemperatureVisibility
+		typeof DisplayCommandSchemas.setCurrentTemperatureVisibility
 	>
-	export type SetHumidityVisibilityParams = z.infer<typeof GeneralCommandSchemas.setHumidityVisibility>
-	export type SetLightIntensityVisibilityParams = z.infer<typeof GeneralCommandSchemas.setLightIntensityVisibility>
-	export type SetCo2ImagesVisibilityParams = z.infer<typeof GeneralCommandSchemas.setCo2ImagesVisibility>
-	export type SetPIRPeriodParams = z.infer<typeof GeneralCommandSchemas.setPIRPeriod>
+}
+
+/* ---------------------------------------CO2 DISPLAY COMMON COMMANDS--------------------------------------- */
+
+const Co2CommonDisplayCommandSchemas = {
+	setCo2ImagesVisibility: z.object({
+		chart: z.boolean(),
+		digital_value: z.boolean(),
+		emoji: z.boolean(),
+	}),
+}
+
+export namespace Co2CommonDisplayCommandTypes {
+	export type SetCo2ImagesVisibilityParams = z.infer<typeof Co2CommonDisplayCommandSchemas.setCo2ImagesVisibility>
 }
 
 /* ---------------------------------------VICKI COMMANDS--------------------------------------- */
 
 const VickiCommandSchemas = {
+	...GeneralCommandSchemas,
+	...TemperatureCommandSchemas,
+	...ChildLockCommandSchemas,
 	setOpenWindow: z.object({
 		enabled: z.boolean(),
 		delta: z.number(),
@@ -220,6 +263,7 @@ export namespace VickiCommandTypes {
 /* --------------------------------------- RELAY 16 COMMANDS --------------------------------------- */
 
 const Relay16CommandSchemas = {
+	...GeneralCommandSchemas,
 	setOverheatingThresholds: z.object({
 		trigger: z.number(),
 		recovery: z.number(),
@@ -263,6 +307,7 @@ export namespace Relay16CommandTypes {
 // ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
 
 const TValveCommandSchemas = {
+	...GeneralCommandSchemas,
 	setOpenCloseTime: z.object({
 		openingTime: z.number(),
 		closingTime: z.number(),
@@ -342,6 +387,9 @@ export namespace TValveCommandTypes {
 /* --------------------------------------- FAN COIL THERMOSTAT COMMANDS --------------------------------------- */
 
 const FanCoilThermostatCommandSchemas = {
+	...GeneralCommandSchemas,
+	...DisplayCommandSchemas,
+	...TemperatureCommandSchemas,
 	setTargetTemperatureStep: z.object({
 		value: z.number(),
 	}),
@@ -476,6 +524,7 @@ export namespace FanCoilThermostatCommandTypes {
 
 /* --------------------------------------- OPEN CLOSE SENSOR COMMANDS --------------------------------------- */
 const OpenCloseSensorCommandSchemas = {
+	...GeneralCommandSchemas,
 	setNotificationBlindTime: z.object({
 		time: z.number(),
 	}),
@@ -487,6 +536,11 @@ export namespace OpenCloseSensorCommandTypes {
 
 /* --------------------------------------- WIRELESS THERMOSTAT COMMANDS --------------------------------------- */
 const WirelessThermostatCommandSchemas = {
+	...GeneralCommandSchemas,
+	...TemperatureCommandSchemas,
+	...DisplayCommandSchemas,
+	...PIRCommandSchemas,
+	...ChildLockCommandSchemas,
 	setTargetTemperature: z.object({
 		targetTemperature: z.number(),
 	}),
@@ -534,6 +588,7 @@ export namespace WirelessThermostatCommandTypes {
 
 /* --------------------------------------- CO2 SENSOR COMMANDS --------------------------------------- */
 const CO2SensorCommandSchemas = {
+	...GeneralCommandSchemas,
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number(),
 		medium_bad: z.number(),
@@ -593,6 +648,11 @@ export namespace CO2SensorCommandTypes {
 
 /* --------------------------------------- CO2 DISPLAY COMMANDS --------------------------------------- */
 const CO2DisplayCommandSchemas = {
+	...CO2SensorCommandSchemas,
+	...DisplayCommandSchemas,
+	...Co2CommonDisplayCommandSchemas,
+	...PIRCommandSchemas,
+	...ChildLockCommandSchemas,
 	setCo2MeasurementBlindTime: z.object({
 		time: z.number(),
 	}),
@@ -600,6 +660,18 @@ const CO2DisplayCommandSchemas = {
 
 export namespace CO2DisplayCommandTypes {
 	export type SetCo2MeasurementBlindTimeParams = z.infer<typeof CO2DisplayCommandSchemas.setCo2MeasurementBlindTime>
+}
+
+/* --------------------------------------- CO2 DISPLAY LITE COMMANDS --------------------------------------- */
+const CO2DisplayLiteCommandSchemas = {
+	...CO2SensorCommandSchemas,
+	...DisplayCommandSchemas,
+	...Co2CommonDisplayCommandSchemas,
+}
+
+/* --------------------------------------- HT SENSOR COMMANDS --------------------------------------- */
+const HTSensorCommandSchemas = {
+	...GeneralCommandSchemas,
 }
 
 // ------------------------------------------------ AQI LED COMMANDS ------------------------------------------------
@@ -621,6 +693,7 @@ export namespace AQICommandTypes {
 
 /* --------------------------------------- T-FLOOD COMMANDS --------------------------------------- */
 const TFloodCommandSchemas = {
+	...GeneralCommandSchemas,
 	setFloodAlarmTime: z.object({
 		time: z.number(),
 	}),
@@ -685,6 +758,7 @@ export namespace DSKDeviceCommandTypes {
 
 /* --------------------------------------- BUTTON COMMANDS --------------------------------------- */
 const ButtonCommandSchemas = {
+	...GeneralCommandSchemas,
 	setSendEventLater: z.object({
 		value: z.number(),
 	}),
@@ -710,4 +784,11 @@ export const DeviceCommandSchemas = {
 	DSKDeviceCommandSchemas,
 	OpenCloseSensorCommandSchemas,
 	ButtonCommandSchemas,
+	DisplayCommandSchemas,
+	Co2CommonDisplayCommandSchemas,
+	ChildLockCommandSchemas,
+	TemperatureCommandSchemas,
+	PIRCommandSchemas,
+	HTSensorCommandSchemas,
+	CO2DisplayLiteCommandSchemas,
 }

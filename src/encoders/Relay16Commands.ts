@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { decToHex, dec2hex, CustomError } from '@/utils'
 import { ZodError } from 'zod'
 import { Relay16CommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-export class Relay16Commands {
+export class Relay16Commands extends GeneralCommands {
 	static setOverheatingThresholds(params: Relay16CommandTypes.SetOverheatingThresholdsParams) {
 		try {
 			DeviceCommandSchemas.Relay16CommandSchemas.setOverheatingThresholds.parse(params)

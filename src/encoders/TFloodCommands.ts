@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError, dec2hex } from '@/utils'
 import { TFloodCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-export class TFloodCommands {
+export class TFloodCommands extends GeneralCommands {
 	static getTemperature() {
 		return new BaseCommand('GetTemperature', 0x01)
 	}

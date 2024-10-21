@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError, dec2hex, decToHex } from '@/utils'
 import { TringThermostatCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-export class TringThermostatCommands {
+export class TringThermostatCommands extends GeneralCommands {
 	static setThermostatTarget(params: TringThermostatCommandTypes.SetThermostatTargetParams) {
 		try {
 			DeviceCommandSchemas.TringThermostatCommandSchemas.setThermostatTarget.parse(params)

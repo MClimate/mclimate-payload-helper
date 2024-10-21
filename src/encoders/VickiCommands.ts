@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
-import { decToHex, dec2hex, CustomError, isFloat, dec2hex3bytes } from '@/utils'
+import { BaseCommand, ChildLockCommands, GeneralCommands, TemperatureCommonCommands } from '@/encoders'
+import { decToHex, dec2hex, CustomError, isFloat, dec2hex3bytes, applyMixins } from '@/utils'
 import { ZodError } from 'zod'
 import { VickiCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-export class VickiCommands {
+export class VickiCommands extends GeneralCommands {
 	static recalibrateMotor() {
 		return new BaseCommand('RecalibrateMotor', 0x03)
 	}
@@ -744,3 +744,5 @@ export class VickiCommands {
 		return new BaseCommand('GetTemperatureOffset', 0x54)
 	}
 }
+
+applyMixins(VickiCommands, [TemperatureCommonCommands, ChildLockCommands])

@@ -1,9 +1,9 @@
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { decToHex, dec2hex, CustomError } from '@/utils'
 import { ZodError } from 'zod'
 import { TValveCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
-export class TValveCommands {
+export class TValveCommands extends GeneralCommands {
 	static setOpenCloseTime(params: TValveCommandTypes.SetOpenCloseTimeParams) {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setOpenCloseTime.parse(params)
