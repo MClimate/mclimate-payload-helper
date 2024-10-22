@@ -9,16 +9,20 @@ const GeneralCommandSchemas = {
 	setKeepAlive: z.object({
 		time: z.number(),
 	}),
+	getKeepAlive: z.object({}),
 	setJoinRetryPeriod: z.object({
 		period: z.number(),
 	}),
+	getJoinRetryPeriod: z.object({}),
 	setUplinkType: z.object({
 		type: z.string(),
 	}),
+	getUplinkType: z.object({}),
 	setWatchDogParams: z.object({
 		confirmedUplinks: z.number(),
 		unconfirmedUplinks: z.number(),
 	}),
+	getWatchDogParams: z.object({}),
 }
 
 export namespace GeneralCommandTypes {
@@ -35,6 +39,7 @@ const ChildLockCommandSchemas = {
 	setChildLock: z.object({
 		enabled: z.boolean(),
 	}),
+	getChildLock: z.object({}),
 }
 
 export namespace ChildLockCommandTypes {
@@ -60,12 +65,18 @@ const PIRCommandSchemas = {
 	setPIRSensorStatus: z.object({
 		state: z.number(),
 	}),
+	getPIRSensorStatus: z.object({}),
 	setPIRSensorSensitivity: z.object({
 		sensitivity: z.number(),
 	}),
+	getPIRSensorSensitivity: z.object({}),
 	setPIRPeriod: z.object({
 		time: z.number(),
 	}),
+	getPIRInitPeriod: z.object({}),
+	getPIRMeasurementPeriod: z.object({}),
+	getPIRCheckPeriod: z.object({}),
+	getPIRBlindPeriod: z.object({}),
 }
 
 export namespace PIRCommandTypes {
@@ -80,18 +91,22 @@ const DisplayCommandSchemas = {
 	setDisplayRefreshPeriod: z.object({
 		period: z.number(),
 	}),
+	getDisplayRefreshPeriod: z.object({}),
 	setDeepSleepMode: z.object({
 		state: z.number(),
 	}),
 	setHumidityVisibility: z.object({
 		state: z.number(),
 	}),
+	getHumidityVisibility: z.object({}),
 	setLightIntensityVisibility: z.object({
 		state: z.number(),
 	}),
+	getLightIntensityVisibility: z.object({}),
 	setCurrentTemperatureVisibility: z.object({
 		state: z.number(),
 	}),
+	getCurrentTemperatureVisibility: z.object({}),
 }
 
 export namespace DisplayCommandTypes {
@@ -112,6 +127,7 @@ const Co2CommonDisplayCommandSchemas = {
 		digital_value: z.boolean(),
 		emoji: z.boolean(),
 	}),
+	getCo2ImagesVisibility: z.object({}),
 }
 
 export namespace Co2CommonDisplayCommandTypes {
@@ -130,27 +146,35 @@ const VickiCommandSchemas = {
 		closeTime: z.number(),
 		motorPosition: z.number(),
 	}),
+	getOpenWindowParams: z.object({}),
+	recalibrateMotor: z.object({}),
+	forceClose: z.object({}),
 	setInternalAlgoParams: z.object({
 		period: z.number(),
 		pFirstLast: z.number(),
 		pNext: z.number(),
 	}),
+	getInternalAlgoParams: z.object({}),
 	setOperationalMode: z.object({
 		mode: z.string(),
 	}),
+	getOperationalMode: z.object({}),
 	setTargetTemperature: z.object({
 		targetTemperature: z.number(),
 	}),
 	setExternalTemperature: z.object({
 		temp: z.number(),
 	}),
+	getExternalTemperature: z.object({}),
 	setInternalAlgoTdiffParams: z.object({
 		cold: z.number(),
 		warm: z.number(),
 	}),
+	getInternalAlgoTdiffParams: z.object({}),
 	setPrimaryOperationalMode: z.object({
 		mode: z.string(),
 	}),
+	getPrimaryOperationalMode: z.object({}),
 	setBatteryRangesBoundaries: z.object({
 		Boundary1: z.number(),
 		Boundary2: z.number(),
@@ -164,16 +188,20 @@ const VickiCommandSchemas = {
 	setOvac: z.object({
 		ovac: z.number(),
 	}),
+	getOvac: z.object({}),
 	setProportionalAlgorithmParameters: z.object({
 		coefficient: z.number(),
 		period: z.number(),
 	}),
+	getProportionalAlgorithmParameters: z.object({}),
 	setTemperatureControlAlgorithm: z.object({
 		algorithm: z.string(),
 	}),
+	getTemperatureControlAlgorithm: z.object({}),
 	setMotorPositionOnly: z.object({
 		position: z.number(),
 	}),
+	deviceReset: z.object({}),
 	setTargetTemperatureAndMotorPosition: z.object({
 		motorPosition: z.number(),
 		targetTemperature: z.number(),
@@ -181,37 +209,47 @@ const VickiCommandSchemas = {
 	setChildLockBehavior: z.object({
 		behavior: z.number(),
 	}),
+	getChildLockBehavior: z.object({}),
 	setProportionalGain: z.object({
 		proportionalGain: z.number(),
 	}),
+	getProportionalGain: z.object({}),
 	setExternalTemperatureFloat: z.object({
 		temp: z.number(),
 	}),
 	setIntegralGain: z.object({
 		integralGain: z.number(),
 	}),
+	getIntegralGain: z.object({}),
+	getIntegralValue: z.object({}),
 	setPiRunPeriod: z.object({
 		period: z.number(),
 	}),
+	getPiRunPeriod: z.object({}),
 	setTemperatureHysteresis: z.object({
 		hysteresis: z.number(),
 	}),
+	getTemperatureHysteresis: z.object({}),
 	setOpenWindowPrecisely: z.object({
 		enabled: z.boolean(),
 		duration: z.number(),
 		delta: z.number(),
 	}),
+	getOpenWindowPrecisely: z.object({}),
 	setForceAttach: z.object({
 		enabled: z.boolean(),
 	}),
+	getForceAttach: z.object({}),
 	setAntiFreezeParams: z.object({
 		activatedTemperature: z.number(),
 		deactivatedTemperature: z.number(),
 		targetTemperature: z.number(),
 	}),
+	getAntiFreezeParams: z.object({}),
 	setMaxAllowedIntegralValue: z.object({
 		value: z.number(),
 	}),
+	getMaxAllowedIntegralValue: z.object({}),
 	setValveOpennessInPercentage: z.object({
 		value: z.number(),
 	}),
@@ -219,9 +257,11 @@ const VickiCommandSchemas = {
 		min: z.number(),
 		max: z.number(),
 	}),
+	getValveOpennessRangeInPercentage: z.object({}),
 	setTemperatureOffset: z.object({
 		value: z.number(),
 	}),
+	getTemperatureOffset: z.object({}),
 }
 
 export namespace VickiCommandTypes {
@@ -268,28 +308,40 @@ const Relay16CommandSchemas = {
 		trigger: z.number(),
 		recovery: z.number(),
 	}),
+	getOverheatingThresholds: z.object({}),
 	setOvervoltageThresholds: z.object({
 		trigger: z.number(),
 		recovery: z.number(),
 	}),
+	getOvervoltageThresholds: z.object({}),
 	setOvercurrentThreshold: z.object({
 		current: z.number(),
 	}),
+	getOvercurrentThreshold: z.object({}),
 	setOverpowerThreshold: z.object({
 		power: z.number(),
 	}),
+	getOverpowerThreshold: z.object({}),
 	setAfterOverheatingProtectionRecovery: z.object({
 		state: z.number(),
 	}),
+	getAfterOverheatingProtectionRecovery: z.object({}),
 	setLedIndicationMode: z.object({
 		mode: z.number(),
 	}),
+	getLedIndicationMode: z.object({}),
 	setRelayRecoveryState: z.object({
 		state: z.number(),
 	}),
+	getRelayRecoveryState: z.object({}),
 	setRelayState: z.object({
 		state: z.boolean(),
 	}),
+	getRelayState: z.object({}),
+	getOverheatingEvents: z.object({}),
+	getOvervoltageEvents: z.object({}),
+	getOvercurrentEvents: z.object({}),
+	getOverpowerEvents: z.object({}),
 }
 
 export namespace Relay16CommandTypes {
@@ -312,6 +364,7 @@ const TValveCommandSchemas = {
 		openingTime: z.number(),
 		closingTime: z.number(),
 	}),
+	getOpenCloseTime: z.object({}),
 	setLED: z.object({
 		ledId: z.number(),
 		behavior: z.number(),
@@ -327,6 +380,7 @@ const TValveCommandSchemas = {
 	setEmergencyOpenings: z.object({
 		maxOpenings: z.number(),
 	}),
+	getEmergencyOpenings: z.object({}),
 	setManualControl: z.object({
 		enableOpen: z.boolean(),
 		enableClose: z.boolean(),
@@ -334,12 +388,14 @@ const TValveCommandSchemas = {
 	setFloodAlarmTime: z.object({
 		time: z.number(),
 	}),
+	getFloodAlarmTime: z.object({}),
 	setKeepAliveTValve: z.object({
 		time: z.number(),
 	}),
 	setWorkingVoltage: z.object({
 		voltage: z.number(),
 	}),
+	getWorkingVoltage: z.object({}),
 	setValveState: z.object({
 		state: z.number(),
 	}),
@@ -347,6 +403,7 @@ const TValveCommandSchemas = {
 		openingTime: z.number(),
 		closingTime: z.number(),
 	}),
+	getOpenCloseTimeExtended: z.object({}),
 	setSingleTimeValveState: z.object({
 		state: z.number(),
 		time: z.number(),
@@ -354,6 +411,7 @@ const TValveCommandSchemas = {
 	setDeviceFloodSensor: z.object({
 		enabled: z.boolean(),
 	}),
+	getDeviceFloodSensor: z.object({}),
 	setJoinRetryPeriodTValve: z.object({
 		period: z.number(),
 	}),
@@ -364,6 +422,8 @@ const TValveCommandSchemas = {
 		confirmedUplinks: z.number(),
 		unconfirmedUplinks: z.number(),
 	}),
+	getWatchDogParams: z.object({}),
+	requestFullData: z.object({}),
 }
 
 export namespace TValveCommandTypes {
@@ -393,9 +453,11 @@ const FanCoilThermostatCommandSchemas = {
 	setTargetTemperatureStep: z.object({
 		value: z.number(),
 	}),
+	getTargetTemperatureStep: z.object({}),
 	setKeysLock: z.object({
 		value: z.number(),
 	}),
+	getKeysLock: z.object({}),
 	setFanCoilTarget: z.object({
 		value: z.number(),
 	}),
@@ -405,77 +467,104 @@ const FanCoilThermostatCommandSchemas = {
 	setValveOpenCloseTime: z.object({
 		value: z.number(),
 	}),
+	getValveOpenCloseTime: z.object({}),
 	setExtAutomaticTemperatureControl: z.object({
 		value: z.number(),
 	}),
+	getExtAutomaticTemperatureControl: z.object({}),
 	setFanSpeed: z.object({
 		value: z.number(),
 	}),
+	getFanSpeed: z.object({}),
 	setFanSpeedLimit: z.object({
 		value: z.number(),
 	}),
+	getFanSpeedLimit: z.object({}),
 	setEcmVoltageRange: z.object({
 		min: z.number(),
 		max: z.number(),
 	}),
+	getEcmVoltageRange: z.object({}),
 	setEcmStartUpTime: z.object({
 		value: z.number(),
 	}),
+	getEcmStartUpTime: z.object({}),
 	setEcmRelay: z.object({
 		value: z.number(),
 	}),
+	getEcmRelay: z.object({}),
 	setFrostProtection: z.object({
 		value: z.number(),
 	}),
+	getFrostProtection: z.object({}),
 	setFrostProtectionSettings: z.object({
 		threshold: z.number(),
 		setpoint: z.number(),
 	}),
+	getFrostProtectionSettings: z.object({}),
 	setFctOperationalMode: z.object({
 		value: z.number(),
 	}),
 	setAllowedOperationalModes: z.object({
 		value: z.number(),
 	}),
+	getAllowedOperationalModes: z.object({}),
 	setCoolingSetpointNotOccupied: z.object({
 		value: z.number(),
 	}),
+	getCoolingSetpointNotOccupied: z.object({}),
 	setHeatingSetpointNotOccupied: z.object({
 		value: z.number(),
 	}),
+	getHeatingSetpointNotOccupied: z.object({}),
 	setTempSensorCompensation: z.object({
 		compensation: z.number(),
 		temperature: z.number(),
 	}),
+	getTempSensorCompensation: z.object({}),
 	setFanSpeedNotOccupied: z.object({
 		value: z.number(),
 	}),
+	getFanSpeedNotOccupied: z.object({}),
 	setAutomaticChangeover: z.object({
 		value: z.number(),
 	}),
+	getAutomaticChangeover: z.object({}),
 	setWiringDiagram: z.object({
 		value: z.number(),
 	}),
+	getWiringDiagram: z.object({}),
 	setOccFunction: z.object({
 		value: z.number(),
 	}),
+	getOccFunction: z.object({}),
 	setAutomaticChangeoverThreshold: z.object({
 		coolingThreshold: z.number(),
 		heatingThreshold: z.number(),
 	}),
+	getAutomaticChangeoverThreshold: z.object({}),
 	setDeviceStatus: z.object({
 		value: z.number(),
 	}),
+	getDeviceStatus: z.object({}),
 	setReturnOfPowerOperation: z.object({
 		value: z.number(),
 	}),
+	getReturnOfPowerOperation: z.object({}),
 	setDeltaTemperature1: z.object({
 		value: z.number(),
 	}),
+	getDeltaTemperature1: z.object({}),
 	setDeltaTemperature2and3: z.object({
 		deltaTemperature2: z.number(),
 		deltaTemperature3: z.number(),
 	}),
+	getDeltaTemperature2and3: z.object({}),
+	getFrostProtectionStatus: z.object({}),
+	getOccupancySensorStatusSetPoint: z.object({}),
+	getOccupancySensorStatus: z.object({}),
+	getDewPointSensorStatus: z.object({}),
+	getFilterAlarm: z.object({}),
 }
 
 export namespace FanCoilThermostatCommandTypes {
@@ -528,6 +617,7 @@ const OpenCloseSensorCommandSchemas = {
 	setNotificationBlindTime: z.object({
 		time: z.number(),
 	}),
+	getNotificationBlindTime: z.object({}),
 }
 
 export namespace OpenCloseSensorCommandTypes {
@@ -544,30 +634,39 @@ const WirelessThermostatCommandSchemas = {
 	setTargetTemperature: z.object({
 		targetTemperature: z.number(),
 	}),
+	getTargetTemperature: z.object({}),
 	setHeatingStatus: z.object({
 		status: z.number(),
 	}),
+	getHeatingStatus: z.object({}),
 	setDisplayRefreshPeriod: z.object({
 		period: z.number(),
 	}),
+	getDisplayRefreshPeriod: z.object({}),
 	setTargetSendDelay: z.object({
 		time: z.number(),
 	}),
+	getTargetSendDelay: z.object({}),
 	setAutomaticHeatingStatus: z.object({
 		state: z.number(),
 	}),
+	getAutomaticHeatingStatus: z.object({}),
 	setSensorMode: z.object({
 		state: z.number(),
 	}),
+	getSensorMode: z.object({}),
 	setTemperatureHysteresis: z.object({
 		hysteresis: z.number(),
 	}),
+	getTemperatureHysteresis: z.object({}),
 	setTargetTemperaturePrecisely: z.object({
 		targetTemperature: z.number(),
 	}),
+	getTargetTemperaturePrecisely: z.object({}),
 	setTargetTemperatureStep: z.object({
 		value: z.number(),
 	}),
+	getTargetTemperatureStep: z.object({}),
 }
 
 export namespace WirelessThermostatCommandTypes {
@@ -593,19 +692,23 @@ const CO2SensorCommandSchemas = {
 		good_medium: z.number(),
 		medium_bad: z.number(),
 	}),
+	getCo2BoundaryLevels: z.object({}),
 	setCo2AutoZeroValue: z.object({
 		ppm: z.number(),
 	}),
+	getCo2AutoZeroValue: z.object({}),
 	setNotifyPeriod: z.object({
 		good_zone: z.number(),
 		medium_zone: z.number(),
 		bad_zone: z.number(),
 	}),
+	getNotifyPeriod: z.object({}),
 	setCo2MeasurementPeriod: z.object({
 		good_zone: z.number(),
 		medium_zone: z.number(),
 		bad_zone: z.number(),
 	}),
+	getCo2MeasurementPeriod: z.object({}),
 	setBuzzerNotification: z.object({
 		duration_good_beeping: z.number(),
 		duration_good_loud: z.number(),
@@ -617,6 +720,7 @@ const CO2SensorCommandSchemas = {
 		duration_bad_loud: z.number(),
 		duration_bad_silent: z.number(),
 	}),
+	getBuzzerNotification: z.object({}),
 	setCo2Led: z.object({
 		red_good: z.number(),
 		green_good: z.number(),
@@ -631,9 +735,11 @@ const CO2SensorCommandSchemas = {
 		blue_bad: z.number(),
 		duration_bad: z.number(),
 	}),
+	getCo2Led: z.object({}),
 	setCo2AutoZeroPeriod: z.object({
 		hours: z.number(),
 	}),
+	getCo2AutoZeroPeriod: z.object({}),
 }
 
 export namespace CO2SensorCommandTypes {
@@ -656,6 +762,7 @@ const CO2DisplayCommandSchemas = {
 	setCo2MeasurementBlindTime: z.object({
 		time: z.number(),
 	}),
+	getCo2MeasurementBlindTime: z.object({}),
 }
 
 export namespace CO2DisplayCommandTypes {
@@ -694,18 +801,23 @@ export namespace AQICommandTypes {
 /* --------------------------------------- T-FLOOD COMMANDS --------------------------------------- */
 const TFloodCommandSchemas = {
 	...GeneralCommandSchemas,
+	getTemperature: z.object({}),
 	setFloodAlarmTime: z.object({
 		time: z.number(),
 	}),
+	getFloodAlarmTime: z.object({}),
 	setKeepAlive: z.object({
 		time: z.number(),
 	}),
+	getDeviceVersion: z.object({}),
 	setFloodEventSendTime: z.object({
 		time: z.number(),
 	}),
+	getFloodEventSendTime: z.object({}),
 	setFloodEventUplinkType: z.object({
 		type: z.string(),
 	}),
+	getFloodEventUplinkType: z.object({}),
 }
 
 export namespace TFloodCommandTypes {
