@@ -465,9 +465,6 @@ const FanCoilThermostatCommandSchemas = {
 		period: z.number(),
 	}),
 	getDisplayRefreshPeriod: z.object({}),
-	setDeepSleepMode: z.object({
-		state: z.number(),
-	}),
 	setHumidityVisibility: z.object({
 		state: z.number(),
 	}),

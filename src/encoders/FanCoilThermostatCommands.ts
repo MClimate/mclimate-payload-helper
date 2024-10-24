@@ -729,4 +729,8 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 
 applyMixins(FanCoilThermostatCommands, [DisplayCommands, TemperatureCommonCommands])
 
-delMethods(FanCoilThermostatCommands, ['setLightIntensityVisibility', 'getLightIntensityVisibility'])
+delMethods(FanCoilThermostatCommands, [
+	'setLightIntensityVisibility',
+	'getLightIntensityVisibility',
+	'setDeepSleepMode',
+])
