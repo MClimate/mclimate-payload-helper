@@ -73,6 +73,18 @@ const PIRCommandSchemas = {
 	setPIRPeriod: z.object({
 		time: z.number(),
 	}),
+	setPIRInitPeriod: z.object({
+		time: z.number(),
+	}),
+	setPIRMeasurementPeriod: z.object({
+		time: z.number(),
+	}),
+	setPIRCheckPeriod: z.object({
+		time: z.number(),
+	}),
+	setPIRBlindPeriod: z.object({
+		time: z.number(),
+	}),
 	getPIRInitPeriod: z.object({}),
 	getPIRMeasurementPeriod: z.object({}),
 	getPIRCheckPeriod: z.object({}),
