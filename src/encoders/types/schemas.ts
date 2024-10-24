@@ -91,7 +91,10 @@ const PIRCommandSchemas = {
 export namespace PIRCommandTypes {
 	export type SetPIRSensorStatusParams = z.infer<typeof PIRCommandSchemas.setPIRSensorStatus>
 	export type SetPIRSensorSensitivityParams = z.infer<typeof PIRCommandSchemas.setPIRSensorSensitivity>
-	export type SetPIRPeriodParams = z.infer<typeof PIRCommandSchemas.setPIRPeriod>
+	export type SetPIRInitPeriodParams = z.infer<typeof PIRCommandSchemas.setPIRInitPeriod>
+	export type SetPIRMeasurementPeriodParams = z.infer<typeof PIRCommandSchemas.setPIRMeasurementPeriod>
+	export type SetPIRCheckPeriodParams = z.infer<typeof PIRCommandSchemas.setPIRCheckPeriod>
+	export type SetPIRBlindPeriodParams = z.infer<typeof PIRCommandSchemas.setPIRBlindPeriod>
 }
 
 /* ---------------------------------------DISPLAY COMMANDS--------------------------------------- */

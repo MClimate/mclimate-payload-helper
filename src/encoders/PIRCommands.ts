@@ -56,7 +56,7 @@ export class PIRCommands {
 		return new BaseCommand('GetPIRSensorSensitivity', 0x3f)
 	}
 
-	static setPIRInitPeriod(params: PIRCommandTypes.SetPIRPeriodParams) {
+	static setPIRInitPeriod(params: PIRCommandTypes.SetPIRInitPeriodParams) {
 		try {
 			DeviceCommandSchemas.PIRCommandSchemas.setPIRInitPeriod.parse(params)
 			const { time } = params
@@ -82,7 +82,7 @@ export class PIRCommands {
 		return new BaseCommand('GetPIRInitPeriod', 0x47)
 	}
 
-	static setPIRMeasurementPeriod(params: PIRCommandTypes.SetPIRPeriodParams) {
+	static setPIRMeasurementPeriod(params: PIRCommandTypes.SetPIRMeasurementPeriodParams) {
 		try {
 			DeviceCommandSchemas.PIRCommandSchemas.setPIRMeasurementPeriod.parse(params)
 			const { time } = params
@@ -108,7 +108,7 @@ export class PIRCommands {
 		return new BaseCommand('GetPIRMeasurementPeriod', 0x49)
 	}
 
-	static setPIRCheckPeriod(params: PIRCommandTypes.SetPIRPeriodParams) {
+	static setPIRCheckPeriod(params: PIRCommandTypes.SetPIRCheckPeriodParams) {
 		try {
 			DeviceCommandSchemas.PIRCommandSchemas.setPIRCheckPeriod.parse(params)
 			const { time } = params
@@ -134,7 +134,7 @@ export class PIRCommands {
 		return new BaseCommand('GetPIRCheckPeriod', 0x4b)
 	}
 
-	static setPIRBlindPeriod(params: PIRCommandTypes.SetPIRPeriodParams) {
+	static setPIRBlindPeriod(params: PIRCommandTypes.SetPIRBlindPeriodParams) {
 		try {
 			DeviceCommandSchemas.PIRCommandSchemas.setPIRBlindPeriod.parse(params)
 			const { time } = params
