@@ -8,7 +8,7 @@ import {
 	GeneralCommands,
 	PIRCommands,
 } from '@/encoders'
-import { applyMixins, CustomError, decToHex } from '@/utils'
+import { applyMixins, CustomError, decToHex, delMethods } from '@/utils'
 import { DeviceCommandSchemas, CO2DisplayCommandTypes } from '@/encoders/types'
 
 export class CO2DisplayCommands extends GeneralCommands {
@@ -45,4 +45,13 @@ applyMixins(CO2DisplayCommands, [
 	Co2DisplayCommonCommands,
 	PIRCommands,
 	ChildLockCommands,
+])
+
+delMethods(CO2DisplayCommands, [
+	'setNotifyPeriod',
+	'getNotifyPeriod',
+	'setBuzzerNotification',
+	'getBuzzerNotification',
+	'setCo2Led',
+	'getCo2Led',
 ])

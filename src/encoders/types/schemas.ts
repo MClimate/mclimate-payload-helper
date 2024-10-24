@@ -766,7 +766,6 @@ export namespace CO2SensorCommandTypes {
 
 /* --------------------------------------- CO2 DISPLAY COMMANDS --------------------------------------- */
 const CO2DisplayCommandSchemas = {
-	...CO2SensorCommandSchemas,
 	...DisplayCommandSchemas,
 	...Co2CommonDisplayCommandSchemas,
 	...PIRCommandSchemas,
@@ -775,6 +774,25 @@ const CO2DisplayCommandSchemas = {
 		time: z.number(),
 	}),
 	getCo2MeasurementBlindTime: z.object({}),
+	setCo2BoundaryLevels: z.object({
+		good_medium: z.number(),
+		medium_bad: z.number(),
+	}),
+	getCo2BoundaryLevels: z.object({}),
+	setCo2AutoZeroValue: z.object({
+		ppm: z.number(),
+	}),
+	getCo2AutoZeroValue: z.object({}),
+	setCo2MeasurementPeriod: z.object({
+		good_zone: z.number(),
+		medium_zone: z.number(),
+		bad_zone: z.number(),
+	}),
+	getCo2MeasurementPeriod: z.object({}),
+	setCo2AutoZeroPeriod: z.object({
+		hours: z.number(),
+	}),
+	getCo2AutoZeroPeriod: z.object({}),
 }
 
 export namespace CO2DisplayCommandTypes {
