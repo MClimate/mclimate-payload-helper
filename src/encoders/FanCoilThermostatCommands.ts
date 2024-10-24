@@ -1,5 +1,5 @@
 import { BaseCommand, DisplayCommands, GeneralCommands, TemperatureCommonCommands } from '@/encoders'
-import { decToHex, dec2hex, CustomError, applyMixins } from '@/utils'
+import { decToHex, dec2hex, CustomError, applyMixins, delMethods } from '@/utils'
 import { ZodError } from 'zod'
 import { DeviceCommandSchemas, FanCoilThermostatCommandTypes } from '@/encoders/types'
 
@@ -728,3 +728,5 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 }
 
 applyMixins(FanCoilThermostatCommands, [DisplayCommands, TemperatureCommonCommands])
+
+delMethods(FanCoilThermostatCommands, ['setLightIntensityVisibility', 'getLightIntensityVisibility'])

@@ -460,8 +460,23 @@ export namespace TValveCommandTypes {
 
 const FanCoilThermostatCommandSchemas = {
 	...GeneralCommandSchemas,
-	...DisplayCommandSchemas,
 	...TemperatureCommandSchemas,
+	setDisplayRefreshPeriod: z.object({
+		period: z.number(),
+	}),
+	getDisplayRefreshPeriod: z.object({}),
+	setDeepSleepMode: z.object({
+		state: z.number(),
+	}),
+	setHumidityVisibility: z.object({
+		state: z.number(),
+	}),
+	getHumidityVisibility: z.object({}),
+	setCurrentTemperatureVisibility: z.object({
+		state: z.number(),
+	}),
+	getCurrentTemperatureVisibility: z.object({}),
+
 	setTargetTemperatureStep: z.object({
 		value: z.number(),
 	}),
