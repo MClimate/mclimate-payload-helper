@@ -78,9 +78,9 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		}
 	}
 
-	static setTargetTemperature(params: FanCoilThermostatCommandTypes.SetTargetTemperatureFanCoilParams) {
+	static setTargetTemperature(params: FanCoilThermostatCommandTypes.SetTargetTemperatureParams) {
 		try {
-			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setTargetTemperatureFanCoil.parse(params)
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setTargetTemperature.parse(params)
 			const { targetTemperature } = params
 			return new BaseCommand('SetTargetTemperature', 0x2e, dec2hex(targetTemperature * 10))
 		} catch (e) {
