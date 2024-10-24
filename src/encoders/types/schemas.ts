@@ -70,9 +70,6 @@ const PIRCommandSchemas = {
 		sensitivity: z.number(),
 	}),
 	getPIRSensorSensitivity: z.object({}),
-	setPIRPeriod: z.object({
-		time: z.number(),
-	}),
 	setPIRInitPeriod: z.object({
 		time: z.number(),
 	}),
