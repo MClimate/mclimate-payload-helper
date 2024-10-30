@@ -368,6 +368,35 @@ export namespace Relay16CommandTypes {
 	export type SetRelayRecoveryStateParams = z.infer<typeof Relay16CommandSchemas.setRelayRecoveryState>
 	export type SetRelayStateParams = z.infer<typeof Relay16CommandSchemas.setRelayState>
 }
+
+/* --------------------------------------- RELAY 16 DRY COMMANDS --------------------------------------- */
+
+const Relay16DryCommandSchemas = {
+	...GeneralCommandSchemas,
+	setOverheatingThresholds: z.object({
+		trigger: z.number(),
+		recovery: z.number(),
+	}),
+	getOverheatingThresholds: z.object({}),
+	setAfterOverheatingProtectionRecovery: z.object({
+		state: z.number(),
+	}),
+	getAfterOverheatingProtectionRecovery: z.object({}),
+	setLedIndicationMode: z.object({
+		mode: z.number(),
+	}),
+	getLedIndicationMode: z.object({}),
+	setRelayRecoveryState: z.object({
+		state: z.number(),
+	}),
+	getRelayRecoveryState: z.object({}),
+	setRelayState: z.object({
+		state: z.boolean(),
+	}),
+	getRelayState: z.object({}),
+	getOverheatingEvents: z.object({}),
+}
+
 // ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
 
 const TValveCommandSchemas = {
@@ -961,4 +990,5 @@ export const DeviceCommandSchemas = {
 	PIRCommandSchemas,
 	HTSensorCommandSchemas,
 	CO2DisplayLiteCommandSchemas,
+	Relay16DryCommandSchemas
 }
