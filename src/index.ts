@@ -18,6 +18,7 @@ export {
 	HTSensorCommands,
 	HTDisplayLite,
 	CO2DisplayLiteCommands,
+	Relay16DryCommands
 } from '@/encoders'
 export { DeviceCommandSchemas } from '@/encoders/types'
 export { CustomError } from '@/utils'
