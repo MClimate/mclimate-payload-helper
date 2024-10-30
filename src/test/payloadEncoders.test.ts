@@ -5,11 +5,9 @@ describe('General Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('vicki')
 
 	test('Custom hex command Vicki', () => {
-		expect(commandBuilder.build('SendCustomHexCommand', { command: '0412' })).toStrictEqual({
-			cmdId: '0412',
-			commandName: 'SendCustomHexCommand',
-			params: [],
-		})
+		expect(commandBuilder.build('SendCustomHexCommand', { command: '0412' })).toStrictEqual(
+			new BaseCommand('SendCustomHexCommand', '0412'),
+		)
 	})
 
 	test('Set keepalive time', () => {

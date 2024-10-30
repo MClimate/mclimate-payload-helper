@@ -7,11 +7,7 @@ export class GeneralCommands {
 	static sendCustomHexCommand(params: GeneralCommandTypes.CustomHexCommandParams) {
 		try {
 			DeviceCommandSchemas.GeneralCommandSchemas.customHexCommand.parse(params)
-			return {
-				commandName: 'SendCustomHexCommand',
-				cmdId: params.command,
-				params: [],
-			}
+			return new BaseCommand('SendCustomHexCommand', params.command)
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
