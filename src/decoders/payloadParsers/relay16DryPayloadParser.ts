@@ -3,32 +3,21 @@ import { DeviceType, RelayKeepAliveData } from '@/decoders/payloadParsers/types'
 import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
-export const relay16PayloadParser = (hexData: string) => {
+export const relay16DryPayloadParser = (hexData: string) => {
 	let deviceData = {}
 
 	try {
 		const handleKeepAliveData = (bytes: number[]) => {
 			let keepaliveData: RelayKeepAliveData = {}
 
-			// Internal temperature sensor
+			// Temperature sign and internal temperature
 			const isNegative = (bytes[1] & 0x80) !== 0; // Check the 7th bit for the sign
+
 			let temperature = bytes[1] & 0x7F; // Mask out the 7th bit to get the temperature value
 			keepaliveData.internalTemperature = isNegative ? -temperature : temperature;
 
-			// Energy data
-			keepaliveData.energy = ((bytes[2] << 24) | (bytes[3] << 16) | (bytes[4] << 8) | bytes[5]) / 1000
-
-			// Power data
-			keepaliveData.power = (bytes[6] << 8) | bytes[7]
-
-			// AC voltage
-			keepaliveData.acVoltage = bytes[8]
-
-			// AC current data
-			keepaliveData.acCurrent = (bytes[9] << 8) | bytes[10]
-
 			// Relay state
-			keepaliveData.relayState = bytes[11] === 0x01
+			keepaliveData.relayState = bytes[2] === 0x01
 
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
@@ -41,7 +30,7 @@ export const relay16PayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				let data = commandsReadingHelper(hexData, 24, DeviceType.Relay16)
+				let data = commandsReadingHelper(hexData, 6, DeviceType.Relay16)
 				if (!data) return
 				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
 				if ('decodeKeepalive' in data) {
@@ -52,20 +41,19 @@ export const relay16PayloadParser = (hexData: string) => {
 
 				// get only keepalive from device response
 				if (shouldKeepAlive) {
-					let keepaliveData = hexData.slice(-24)
+					let keepaliveData = hexData.slice(-6)
 					let dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 					handleKeepAliveData(dataToPass)
 				}
 			}
-			// console.log(deviceData)
 			return deviceData
 		}
 	} catch (e) {
 		throw new CustomError({
 			message: `Unhandled data`,
 			hexData: hexData,
-			deviceType: 'relay_16',
+			deviceType: 'relay_16_dry',
 			originalError: e as Error,
 		})
 	}

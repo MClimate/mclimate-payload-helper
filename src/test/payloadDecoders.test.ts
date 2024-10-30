@@ -552,3 +552,33 @@ describe('ASPM payload decoder', () => {
 		})
 	})
 })
+
+describe('ADS payload decoder', () => {
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('011E00', DeviceType.Relay16Dry)).toStrictEqual({
+			internalTemperature: 30,
+			relayState: false
+		})
+	})
+	test('keepalive with response of commands', () => {
+		expect(uplinkPayloadParser('5C015A01011E00', DeviceType.Relay16Dry)).toStrictEqual({
+			internalTemperature: 30,
+			relayState: false,
+			ledIndicationMode: 1,
+			afterOverheatingProtectionRecovery: 1,
+		})
+	})
+	test('all settings ', () => {
+		expect(uplinkPayloadParser('041010120A19781B001D02181F5F465F00011E00', DeviceType.Relay16Dry)).toStrictEqual({
+			deviceVersions: { hardware: 10, software: 10 },
+			keepAliveTime: 10,
+			joinRetryPeriod: 10,
+			uplinkType: '00',
+			watchDogParams: { wdpC: 2, wdpUc: 24 },
+			overheatingThresholds: { trigger: 95, recovery: 70 },
+			relayRecoveryState: 0,
+			internalTemperature: 30,
+			relayState: false,
+		})
+	})
+})

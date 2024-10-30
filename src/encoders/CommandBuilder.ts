@@ -16,6 +16,7 @@ import {
 	HTSensorCommands,
 	CO2DisplayLiteCommands,
 	HTDisplayLite,
+	Relay16DryCommands,
 } from '@/encoders'
 
 import { CustomError, toCamelCase } from '@/utils'
@@ -43,6 +44,7 @@ export class CommandBuilder {
 			ht_display_lite: HTDisplayLite,
 			thermostat: TringThermostatCommands,
 			aqi_sensor: SetAqiLedCommands,
+			relay_16_dry: Relay16DryCommands,
 		}
 	}
 

@@ -16,6 +16,7 @@ import {
 	tFloodPayloadParser,
 	tValvePayloadParser,
 	relay16PayloadParser,
+	relay16DryPayloadParser,
 } from '@/decoders/payloadParsers'
 
 export const uplinkPayloadParser = (hexData: string, deviceType: DeviceType) => {
@@ -52,6 +53,8 @@ export const uplinkPayloadParser = (hexData: string, deviceType: DeviceType) => 
 			return htDisplayLitePayloadParser(hexData)
 		case DeviceType.Relay16:
 			return relay16PayloadParser(hexData)
+		case DeviceType.Relay16Dry:
+			return relay16DryPayloadParser(hexData)
 		default:
 			// Q: is this OK?
 			return vickiPayloadParser(hexData) // Default case if deviceType is not recognized

@@ -1963,7 +1963,23 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
-
+			case 'a4':
+				{
+					try {
+						command_len = 1
+						let data = { region: parseInt(commands[i + 1], 16) }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command 'a4'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
 			case '5a':
 				{
 					try {

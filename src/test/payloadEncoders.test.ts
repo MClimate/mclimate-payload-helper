@@ -34,7 +34,15 @@ describe('Relay commands payload encoder', () => {
 		)
 	})
 })
+describe('16 ADS commands payload encoder', () => {
+	const commandBuilder = new CommandBuilder('relay_16_dry')
 
+	test('SetRelayState command', () => {
+		expect(commandBuilder.build('SetRelayState', { state: true })).toStrictEqual(
+			new BaseCommand('SetRelayState', 0xc1, '01'),
+		)
+	})
+})
 describe('CO2Display Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('co2_display')
 
