@@ -8,7 +8,7 @@ export class CO2SensorCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.CO2SensorCommandSchemas.setCo2BoundaryLevels.parse(params)
 			const { good_medium, medium_bad } = params
-			return new BaseCommand('SetCo2BoundaryLevels', 0x1e, decToHex(good_medium), decToHex(medium_bad))
+			return new BaseCommand('SetCo2BoundaryLevels', 0x1e, dec2hex(good_medium), dec2hex(medium_bad))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -34,7 +34,7 @@ export class CO2SensorCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.CO2SensorCommandSchemas.setCo2AutoZeroValue.parse(params)
 			const { ppm } = params
-			return new BaseCommand('SetCo2AutoZeroValue', 0x20, decToHex(ppm))
+			return new BaseCommand('SetCo2AutoZeroValue', 0x20, dec2hex(ppm))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
