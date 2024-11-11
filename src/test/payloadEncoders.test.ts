@@ -62,12 +62,12 @@ describe('CO2Sensor Commands payload encoder', () => {
 
 	test('Set CO2 Boundary Levels (valid range)', () => {
 		expect(commandBuilder.build('SetCo2BoundaryLevels', { good_medium: 200, medium_bad: 250 })).toStrictEqual(
-			new BaseCommand('SetCo2BoundaryLevels', 0x1e, 'C8', 'FA'),
+			new BaseCommand('SetCo2BoundaryLevels', 0x1e, '00C8', '00FA'),
 		)
 	})
 
 	test('Throw error on invalid CO2 Boundary Levels (out of range)', () => {
-		expect(() => commandBuilder.build('SetCo2BoundaryLevels', { good_medium: 300, medium_bad: 100 })).toThrow(CustomError)
+		expect(() => commandBuilder.build('SetCo2BoundaryLevels', { good_medium: 65536, medium_bad: 66536 })).toThrow(CustomError)
 	})
 
 	test('Get CO2 Boundary Levels', () => {
@@ -76,12 +76,12 @@ describe('CO2Sensor Commands payload encoder', () => {
 
 	test('Set CO2 Auto Zero Value (valid range)', () => {
 		expect(commandBuilder.build('SetCo2AutoZeroValue', { ppm: 150 })).toStrictEqual(
-			new BaseCommand('SetCo2AutoZeroValue', 0x20, '96'),
+			new BaseCommand('SetCo2AutoZeroValue', 0x20, '0096'),
 		)
 	})
 
 	test('Throw error on invalid CO2 Auto Zero Value (out of range)', () => {
-		expect(() => commandBuilder.build('SetCo2AutoZeroValue', { ppm: 300 })).toThrow(CustomError)
+		expect(() => commandBuilder.build('SetCo2AutoZeroValue', { ppm: 65539 })).toThrow(CustomError)
 	})
 
 	test('Get CO2 Auto Zero Value', () => {

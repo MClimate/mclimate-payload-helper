@@ -27,7 +27,7 @@ export const ButtonPayloadParser = (hexData: string) => {
 			const temperatureCelsius = calculateTemperature(temperatureRaw)
 
 			// Byte 4: Button event data
-			const buttonEventData = bytes[4] ? '01' : '00'
+			const buttonEventData = ("0" + bytes[4]);
 
 			// check if it is a keepalive
 			const keepaliveData = {
