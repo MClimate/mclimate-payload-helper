@@ -1313,7 +1313,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						command_len = 2
 						let data = {
-							valveOpennessRangeInPercentage: { min: 100 - parseInt(commands[i + 1], 16), max: 100 - parseInt(commands[i + 2], 16) },
+							valveOpennessRangeInPercentage: { max: 100 - parseInt(commands[i + 1], 16), min: 100 - parseInt(commands[i + 2], 16) },
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
