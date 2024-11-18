@@ -641,6 +641,27 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType == DeviceType.Relay16) {
 							command_len = 2
 							data = { overpowerThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+						} else if(deviceType == DeviceType.Vicki){
+							command_len = 31;
+							data = {
+								debug: {
+									batterySubrange: parseInt(commands[i + 1], 16),
+									motorCurrentConsumption: parseInt(commands[i + 2], 16) * 4,
+									powerSupplyVoltageMeasured: parseInt(commands[i + 3], 16) * 16,
+									daysSinceLastDeviceReset: parseInt(commands[i + 4], 16),
+									detectedMotorOverVoltages: parseInt(commands[i + 5], 16),
+									motorHardwareDriverType: (parseInt(commands[i + 6], 16) >> 4) & 0x0F,
+									temperatureSensorModel: parseInt(commands[i + 6], 16) & 0x0F,
+									motorTotalTravelSteps: (parseInt(commands[i + 7], 16) << 24) | (parseInt(commands[i + 8], 16) << 16) | (parseInt(commands[i + 9], 16) << 8) | parseInt(commands[i + 10], 16),
+									packetsSentOnSF7: (parseInt(commands[i + 11], 16) << 16) | (parseInt(commands[i + 12], 16) << 8) | parseInt(commands[i + 13], 16),
+									packetsSentOnSF8: (parseInt(commands[i + 14], 16) << 16) | (parseInt(commands[i + 15], 16) << 8) | parseInt(commands[i + 16], 16),
+									packetsSentOnSF9: (parseInt(commands[i + 17], 16) << 16) | (parseInt(commands[i + 18], 16) << 8) | parseInt(commands[i + 19], 16),
+									packetsSentOnSF10: (parseInt(commands[i + 20], 16) << 16) | (parseInt(commands[i + 21], 16) << 8) | parseInt(commands[i + 22], 16),
+									packetsSentOnSF11: (parseInt(commands[i + 23], 16) << 16) | (parseInt(commands[i + 24], 16) << 8) | parseInt(commands[i + 25], 16),
+									packetsSentOnSF12: (parseInt(commands[i + 26], 16) << 16) | (parseInt(commands[i + 27], 16) << 8) | parseInt(commands[i + 28], 16),
+									totalSentPackets: (parseInt(commands[i + 29], 16) << 16) | (parseInt(commands[i + 30], 16) << 8) | parseInt(commands[i + 31], 16),
+								}
+							};
 						} else {
 							command_len = 3
 							let good_zone = parseInt(commands[i + 1], 16)

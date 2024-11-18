@@ -111,6 +111,47 @@ describe('Vicki payload decoder', () => {
 			valveOpenness: 23,
 		})
 	})
+	test('keepalive with response of debug command', () => {
+		expect(uplinkPayloadParser('25028EC83700220000986000C54600002700000300000000000000001500C585A0000023C0811BA24A0E0E22F030', DeviceType.Vicki)).toStrictEqual({
+			debug: {
+				batterySubrange: 2,
+				motorCurrentConsumption: 568,
+				powerSupplyVoltageMeasured: 3200,
+				daysSinceLastDeviceReset: 55,
+				detectedMotorOverVoltages: 0,
+				motorHardwareDriverType: 2,
+				temperatureSensorModel: 2,
+				motorTotalTravelSteps: 39008,
+				packetsSentOnSF7: 50502,
+				packetsSentOnSF8: 39,
+				packetsSentOnSF9: 3,
+				packetsSentOnSF10: 0,
+				packetsSentOnSF11: 0,
+				packetsSentOnSF12: 21,
+				totalSentPackets: 50565
+			},
+			fuota: { fuota_address: 9152, fuota_address_raw: '000023C0' },
+			reason: 129,
+			targetTemperature: 27,
+			sensorTemperature: 23.588263633251334,
+			relativeHumidity: 28.90625,
+			motorRange: 526,
+			motorPosition: 526,
+			batteryVoltage: 3.5,
+			openWindow: false,
+			highMotorConsumption: false,
+			lowMotorConsumption: false,
+			brokenSensor: false,
+			childLock: false,
+			calibrationFailed: false,
+			attachedBackplate: true,
+			perceiveAsOnline: true,
+			antiFreezeProtection: true,
+			valveOpenness: 0,
+			targetTemperatureFloat: '27.00'
+		})
+	})
+	
 })
 
 describe('HT payload decoder', () => {
