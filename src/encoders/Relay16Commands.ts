@@ -228,4 +228,20 @@ export class Relay16Commands extends GeneralCommands {
 	static getOverpowerEvents() {
 		return new BaseCommand('GetOverpowerEvents', 0x63)
 	}
+
+	static getOverheatingRecoveryTime() {
+		return new BaseCommand('GetOverheatingRecoveryTime', 0x70)
+	}
+
+	static getOvervoltageRecoveryTime() {
+		return new BaseCommand('GetOvervoltageRecoveryTime', 0x71)
+	}
+
+	static getOvercurrentRecoveryTemp() {
+		return new BaseCommand('GetOvercurrentRecoveryTemp', 0x72)
+	}
+
+	static getOverpowerRecoveryTemp() {
+		return new BaseCommand('GetOverpowerRecoveryTemp', 0x73)
+	}
 }
