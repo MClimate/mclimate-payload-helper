@@ -22,6 +22,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			decodeKeepalive = true
 		} else if ((potentialKeepAlive[0] === '00' || potentialKeepAlive[0] === '88') && deviceType === DeviceType.TFlood) {
 			decodeKeepalive = true
+		} else if ((potentialKeepAlive[0] === '01' || potentialKeepAlive[0] === '20'|| potentialKeepAlive[0] === '21') && deviceType === DeviceType.OpenCloseSensor) {
+			decodeKeepalive = true
 		} else if (potentialKeepAlive[0] === '01') {
 			decodeKeepalive = true
 		} else {
@@ -557,7 +559,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 3
 							let data = { overvoltageThresholds: {trigger: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16), recovery: parseInt(commands[i + 3], 16)  }}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
-						} else {
+						} else if(deviceType !== DeviceType.OpenCloseSensor) {
 							command_len = 2
 							let data = { autoZeroValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })

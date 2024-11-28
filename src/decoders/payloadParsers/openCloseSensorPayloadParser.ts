@@ -20,7 +20,7 @@ export const openCloseSensorPayloadParser = (hexData: string) => {
 			const counter = parseInt(`0x${hexArray[4]}${hexArray[5]}${hexArray[6]}`, 16)
 			const status = hexArray[7]
 
-			const events: { [key: string]: string } = { '01': 'keepalive', '20': 'reed switch', '21': 'push button' }
+			const events: { [key: string]: string } = { '01': 'keepalive', '32': 'reed switch', '33': 'push button' }
 			const eventKey = hexArray[0].toString().padStart(2, '0')
 			const event = events[eventKey]
 

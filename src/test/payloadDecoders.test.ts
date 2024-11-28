@@ -246,6 +246,23 @@ describe('Open/Close payload decoder', () => {
 		})
 	})
 
+	test('reed switch with response of commands', () => {
+		expect(uplinkPayloadParser('04131212F019781B001D02181F0020E200D700000100', DeviceType.OpenCloseSensor)).toStrictEqual({
+			deviceVersions: { hardware: 13, software: 12 },
+			keepAliveTime: 240,
+			joinRetryPeriod: 10,
+			uplinkType: '00',
+			watchDogParams: { wdpC: 2, wdpUc: 24 },
+			notificationBlindTime: 0,
+			event: 'reed switch',
+			status: 0,
+			counter: 1,
+			batteryVoltage: 3.408,
+			thermistorProperlyConnected: true,
+			sensorTemperature: 21.5
+		})
+	})
+
 	test('keepalive with undefined response of command', () => {
 		expect(uplinkPayloadParser('0413109902120F01C2009600000101', DeviceType.OpenCloseSensor)).toStrictEqual({
 			event: 'keepalive',
