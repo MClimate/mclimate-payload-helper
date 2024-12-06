@@ -131,21 +131,6 @@ export namespace DisplayCommandTypes {
 	>
 }
 
-/* ---------------------------------------CO2 DISPLAY COMMON COMMANDS--------------------------------------- */
-
-const Co2CommonDisplayCommandSchemas = {
-	setCo2ImagesVisibility: z.object({
-		chart: z.boolean(),
-		digital_value: z.boolean(),
-		emoji: z.boolean(),
-	}),
-	getCo2ImagesVisibility: z.object({}),
-}
-
-export namespace Co2CommonDisplayCommandTypes {
-	export type SetCo2ImagesVisibilityParams = z.infer<typeof Co2CommonDisplayCommandSchemas.setCo2ImagesVisibility>
-}
-
 /* ---------------------------------------VICKI COMMANDS--------------------------------------- */
 
 const VickiCommandSchemas = {
@@ -806,7 +791,6 @@ export namespace CO2SensorCommandTypes {
 /* --------------------------------------- CO2 DISPLAY COMMANDS --------------------------------------- */
 const CO2DisplayCommandSchemas = {
 	...DisplayCommandSchemas,
-	...Co2CommonDisplayCommandSchemas,
 	...PIRCommandSchemas,
 	...ChildLockCommandSchemas,
 	setCo2MeasurementBlindTime: z.object({
@@ -832,16 +816,23 @@ const CO2DisplayCommandSchemas = {
 		hours: z.number(),
 	}),
 	getCo2AutoZeroPeriod: z.object({}),
+
+	setCo2ImagesVisibility: z.object({
+		chart: z.boolean(),
+		digital_value: z.boolean(),
+		emoji: z.boolean(),
+	}),
+	getCo2ImagesVisibility: z.object({}),
 }
 
 export namespace CO2DisplayCommandTypes {
+	export type SetCo2ImagesVisibilityParams = z.infer<typeof CO2DisplayCommandSchemas.setCo2ImagesVisibility>
 	export type SetCo2MeasurementBlindTimeParams = z.infer<typeof CO2DisplayCommandSchemas.setCo2MeasurementBlindTime>
 }
 
 /* --------------------------------------- CO2 DISPLAY LITE COMMANDS --------------------------------------- */
 const CO2DisplayLiteCommandSchemas = {
 	...DisplayCommandSchemas,
-	...Co2CommonDisplayCommandSchemas,
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number(),
 		medium_bad: z.number(),
@@ -861,6 +852,15 @@ const CO2DisplayLiteCommandSchemas = {
 		hours: z.number(),
 	}),
 	getCo2AutoZeroPeriod: z.object({}),
+	setCo2ImagesVisibility: z.object({
+		digital_value: z.boolean(),
+		emoji: z.boolean(),
+	}),
+	getCo2ImagesVisibility: z.object({}),
+}
+
+export namespace CO2DisplayLiteCommandTypes {
+	export type SetCo2ImagesVisibilityParams = z.infer<typeof CO2DisplayLiteCommandSchemas.setCo2ImagesVisibility>
 }
 
 /* --------------------------------------- HT SENSOR COMMANDS --------------------------------------- */
@@ -984,11 +984,10 @@ export const DeviceCommandSchemas = {
 	OpenCloseSensorCommandSchemas,
 	ButtonCommandSchemas,
 	DisplayCommandSchemas,
-	Co2CommonDisplayCommandSchemas,
 	ChildLockCommandSchemas,
 	TemperatureCommandSchemas,
 	PIRCommandSchemas,
 	HTSensorCommandSchemas,
 	CO2DisplayLiteCommandSchemas,
-	Relay16DryCommandSchemas
+	Relay16DryCommandSchemas,
 }
