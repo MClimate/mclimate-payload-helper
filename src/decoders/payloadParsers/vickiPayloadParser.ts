@@ -30,7 +30,7 @@ export const vickiPayloadParser = (hexData: string) => {
 			let calibrationFailed = byte8Bin[1]
 			let attachedBackplate = byte8Bin[2]
 			let perceiveAsOnline = byte8Bin[3]
-			let antiFreezeProtection = byte8Bin[3]
+			let antiFreezeProtection = byte8Bin[4]
 
 			let sensorTemp
 			if (byteArray[0] == 1) {

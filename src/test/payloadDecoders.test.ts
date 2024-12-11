@@ -19,7 +19,7 @@ describe('Vicki payload decoder', () => {
 			calibrationFailed: false,
 			attachedBackplate: true,
 			perceiveAsOnline: true,
-			antiFreezeProtection: true,
+			antiFreezeProtection: false,
 			targetTemperatureFloat: '27.00',
 			valveOpenness: 23,
 		})
@@ -42,7 +42,7 @@ describe('Vicki payload decoder', () => {
 			calibrationFailed: false,
 			attachedBackplate: true,
 			perceiveAsOnline: true,
-			antiFreezeProtection: true,
+			antiFreezeProtection: false,
 			targetTemperatureFloat: '27.00',
 			valveOpenness: 23,
 			keepAliveTime: 3,
@@ -106,7 +106,7 @@ describe('Vicki payload decoder', () => {
 			calibrationFailed: false,
 			attachedBackplate: true,
 			perceiveAsOnline: true,
-			antiFreezeProtection: true,
+			antiFreezeProtection: false,
 			targetTemperatureFloat: '27.00',
 			valveOpenness: 23,
 		})
@@ -146,7 +146,7 @@ describe('Vicki payload decoder', () => {
 			calibrationFailed: false,
 			attachedBackplate: true,
 			perceiveAsOnline: true,
-			antiFreezeProtection: true,
+			antiFreezeProtection: false,
 			valveOpenness: 0,
 			targetTemperatureFloat: '27.00'
 		})
