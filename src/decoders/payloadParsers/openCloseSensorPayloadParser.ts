@@ -17,7 +17,7 @@ export const openCloseSensorPayloadParser = (hexData: string) => {
 			const extT1 = ('0' + hexArray[2].toString(16)).substr(-2)[1]
 			const extT2 = '0' + hexArray[3].toString(16).substr(-2)
 			const temperature = (thermistorProperlyConnected ? parseInt(`0x${extT1}${extT2}`, 16) * 0.1 : 0).toFixed(2)
-			const counter = parseInt(`0x${hexArray[4]}${hexArray[5]}${hexArray[6]}`, 16)
+			const counter = ((hexArray[4] << 16) | (hexArray[5] << 8) | hexArray[6])
 			const status = hexArray[7]
 
 			const events: { [key: string]: string } = { '01': 'keepalive', '32': 'reed switch', '33': 'push button' }

@@ -1,6 +1,6 @@
 {
 	"name": "mclimate-payload-helper",
-	"version": "1.0.47",
+	"version": "1.0.48",
 	"description": "Mclimate payload helper",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
