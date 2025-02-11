@@ -112,7 +112,12 @@ describe('Vicki payload decoder', () => {
 		})
 	})
 	test('keepalive with response of debug command', () => {
-		expect(uplinkPayloadParser('25028EC83700220000986000C54600002700000300000000000000001500C585A0000023C0811BA24A0E0E22F030', DeviceType.Vicki)).toStrictEqual({
+		expect(
+			uplinkPayloadParser(
+				'25028EC83700220000986000C54600002700000300000000000000001500C585A0000023C0811BA24A0E0E22F030',
+				DeviceType.Vicki,
+			),
+		).toStrictEqual({
 			debug: {
 				batterySubrange: 2,
 				motorCurrentConsumption: 568,
@@ -128,7 +133,7 @@ describe('Vicki payload decoder', () => {
 				packetsSentOnSF10: 0,
 				packetsSentOnSF11: 0,
 				packetsSentOnSF12: 21,
-				totalSentPackets: 50565
+				totalSentPackets: 50565,
 			},
 			fuota: { fuota_address: 9152, fuota_address_raw: '000023C0' },
 			reason: 129,
@@ -148,10 +153,9 @@ describe('Vicki payload decoder', () => {
 			perceiveAsOnline: true,
 			antiFreezeProtection: false,
 			valveOpenness: 0,
-			targetTemperatureFloat: '27.00'
+			targetTemperatureFloat: '27.00',
 		})
 	})
-	
 })
 
 describe('HT payload decoder', () => {
@@ -168,6 +172,20 @@ describe('HT payload decoder', () => {
 	test('keepalive with response of commands', () => {
 		expect(uplinkPayloadParser('04201512050102764DE90400', DeviceType.HTSensor)).toStrictEqual({
 			deviceVersions: { hardware: 20, software: 15 },
+			keepAliveTime: 5,
+			sensorTemperature: 23,
+			relativeHumidity: 30.078125,
+			batteryVoltage: 3.4000000000000004,
+			extThermistorTemperature: 0,
+			thermistorProperlyConnected: false,
+		})
+	})
+
+	test('keepalive with response of commands compensations', () => {
+		expect(uplinkPayloadParser('34010332010304201512050102764DE90400', DeviceType.HTSensor)).toStrictEqual({
+			deviceVersions: { hardware: 20, software: 15 },
+			temperatureCompensation: { negativeCompensation: true, compensation: 0.3 },
+			humidityCompensation: { negativeCompensation: true, compensation: 3 },
 			keepAliveTime: 5,
 			sensorTemperature: 23,
 			relativeHumidity: 30.078125,
@@ -247,20 +265,22 @@ describe('Open/Close payload decoder', () => {
 	})
 
 	test('reed switch with response of commands', () => {
-		expect(uplinkPayloadParser('04131212F019781B001D02181F0020E200D700000100', DeviceType.OpenCloseSensor)).toStrictEqual({
-			deviceVersions: { hardware: 13, software: 12 },
-			keepAliveTime: 240,
-			joinRetryPeriod: 10,
-			uplinkType: '00',
-			watchDogParams: { wdpC: 2, wdpUc: 24 },
-			notificationBlindTime: 0,
-			event: 'reed switch',
-			status: 0,
-			counter: 1,
-			batteryVoltage: 3.408,
-			thermistorProperlyConnected: true,
-			sensorTemperature: 21.5
-		})
+		expect(uplinkPayloadParser('04131212F019781B001D02181F0020E200D700000100', DeviceType.OpenCloseSensor)).toStrictEqual(
+			{
+				deviceVersions: { hardware: 13, software: 12 },
+				keepAliveTime: 240,
+				joinRetryPeriod: 10,
+				uplinkType: '00',
+				watchDogParams: { wdpC: 2, wdpUc: 24 },
+				notificationBlindTime: 0,
+				event: 'reed switch',
+				status: 0,
+				counter: 1,
+				batteryVoltage: 3.408,
+				thermistorProperlyConnected: true,
+				sensorTemperature: 21.5,
+			},
+		)
 	})
 
 	test('keepalive with undefined response of command', () => {
@@ -590,7 +610,12 @@ describe('ASPM payload decoder', () => {
 		})
 	})
 	test('all settings ', () => {
-		expect(uplinkPayloadParser('041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201', DeviceType.Relay16)).toStrictEqual({
+		expect(
+			uplinkPayloadParser(
+				'041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201',
+				DeviceType.Relay16,
+			),
+		).toStrictEqual({
 			deviceVersions: { hardware: 13, software: 12 },
 			keepAliveTime: 10,
 			joinRetryPeriod: 10,
@@ -615,7 +640,7 @@ describe('ADS payload decoder', () => {
 	test('simple keepalive', () => {
 		expect(uplinkPayloadParser('011E00', DeviceType.Relay16Dry)).toStrictEqual({
 			internalTemperature: 30,
-			relayState: false
+			relayState: false,
 		})
 	})
 	test('keepalive with response of commands', () => {
@@ -640,3 +665,4 @@ describe('ADS payload decoder', () => {
 		})
 	})
 })
+

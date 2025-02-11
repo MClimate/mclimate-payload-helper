@@ -67,7 +67,9 @@ describe('CO2Sensor Commands payload encoder', () => {
 	})
 
 	test('Throw error on invalid CO2 Boundary Levels (out of range)', () => {
-		expect(() => commandBuilder.build('SetCo2BoundaryLevels', { good_medium: 65536, medium_bad: 66536 })).toThrow(CustomError)
+		expect(() => commandBuilder.build('SetCo2BoundaryLevels', { good_medium: 65536, medium_bad: 66536 })).toThrow(
+			CustomError,
+		)
 	})
 
 	test('Get CO2 Boundary Levels', () => {
@@ -533,5 +535,21 @@ describe('TFlood Commands payload encoder', () => {
 		expect(commandBuilder.build('SetFloodEventUplinkType', { type: '2' })).toStrictEqual(
 			new BaseCommand('SetFloodEventUplinkType', 0x13, '2'),
 		)
+	})
+})
+
+describe('HT Sensor Commands payload encoder', () => {
+	const commandBuilder = new CommandBuilder('ht_sensor')
+
+	test('Set Temperature Compensation', () => {
+		expect(
+			commandBuilder.build('SetTemperatureCompensation', { negativeCompensation: true, compensation: 0.3 }),
+		).toStrictEqual(new BaseCommand('SetTemperatureCompensation', 0x31, '01', '03'))
+	})
+
+	test('Set Humidity Compensation', () => {
+		expect(
+			commandBuilder.build('SetHumidityCompensation', { negativeCompensation: true, compensation: 3 }),
+		).toStrictEqual(new BaseCommand('SetHumidityCompensation', 0x33, '01', '03'))
 	})
 })

@@ -833,6 +833,7 @@ export namespace CO2DisplayCommandTypes {
 /* --------------------------------------- CO2 DISPLAY LITE COMMANDS --------------------------------------- */
 const CO2DisplayLiteCommandSchemas = {
 	...DisplayCommandSchemas,
+	...ChildLockCommandSchemas,
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number(),
 		medium_bad: z.number(),
@@ -866,6 +867,21 @@ export namespace CO2DisplayLiteCommandTypes {
 /* --------------------------------------- HT SENSOR COMMANDS --------------------------------------- */
 const HTSensorCommandSchemas = {
 	...GeneralCommandSchemas,
+	setTemperatureCompensation: z.object({
+		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
+		compensation: z.number(),
+	}),
+	getTemperatureCompensation: z.object({}),
+	setHumidityCompensation: z.object({
+		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
+		compensation: z.number(),
+	}),
+	getHumidityCompensation: z.object({}),
+}
+
+export namespace HTSensorCommandTypes {
+	export type SetTemperatureCompensationParams = z.infer<typeof HTSensorCommandSchemas.setTemperatureCompensation>
+	export type SetHumidityCompensationParams = z.infer<typeof HTSensorCommandSchemas.setHumidityCompensation>
 }
 
 // ------------------------------------------------ AQI LED COMMANDS ------------------------------------------------

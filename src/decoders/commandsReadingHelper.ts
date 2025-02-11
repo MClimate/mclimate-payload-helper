@@ -22,7 +22,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			decodeKeepalive = true
 		} else if ((potentialKeepAlive[0] === '00' || potentialKeepAlive[0] === '88') && deviceType === DeviceType.TFlood) {
 			decodeKeepalive = true
-		} else if ((potentialKeepAlive[0] === '01' || potentialKeepAlive[0] === '20'|| potentialKeepAlive[0] === '21') && deviceType === DeviceType.OpenCloseSensor) {
+		} else if (
+			(potentialKeepAlive[0] === '01' || potentialKeepAlive[0] === '20' || potentialKeepAlive[0] === '21') &&
+			deviceType === DeviceType.OpenCloseSensor
+		) {
 			decodeKeepalive = true
 		} else if (potentialKeepAlive[0] === '01') {
 			decodeKeepalive = true
@@ -522,7 +525,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 2
-							let data = { overheatingThresholds: {trigger: parseInt(commands[i + 1], 16), recovery: parseInt(commands[i + 2], 16) }}
+							let data = {
+								overheatingThresholds: { trigger: parseInt(commands[i + 1], 16), recovery: parseInt(commands[i + 2], 16) },
+							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 4
@@ -557,9 +562,14 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 3
-							let data = { overvoltageThresholds: {trigger: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16), recovery: parseInt(commands[i + 3], 16)  }}
+							let data = {
+								overvoltageThresholds: {
+									trigger: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16),
+									recovery: parseInt(commands[i + 3], 16),
+								},
+							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
-						} else if(deviceType !== DeviceType.OpenCloseSensor) {
+						} else if (deviceType !== DeviceType.OpenCloseSensor) {
 							command_len = 2
 							let data = { autoZeroValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -643,8 +653,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType == DeviceType.Relay16) {
 							command_len = 2
 							data = { overpowerThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
-						} else if(deviceType == DeviceType.Vicki){
-							command_len = 31;
+						} else if (deviceType == DeviceType.Vicki) {
+							command_len = 31
 							data = {
 								debug: {
 									batterySubrange: parseInt(commands[i + 1], 16),
@@ -652,18 +662,43 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									powerSupplyVoltageMeasured: parseInt(commands[i + 3], 16) * 16,
 									daysSinceLastDeviceReset: parseInt(commands[i + 4], 16),
 									detectedMotorOverVoltages: parseInt(commands[i + 5], 16),
-									motorHardwareDriverType: (parseInt(commands[i + 6], 16) >> 4) & 0x0F,
-									temperatureSensorModel: parseInt(commands[i + 6], 16) & 0x0F,
-									motorTotalTravelSteps: (parseInt(commands[i + 7], 16) << 24) | (parseInt(commands[i + 8], 16) << 16) | (parseInt(commands[i + 9], 16) << 8) | parseInt(commands[i + 10], 16),
-									packetsSentOnSF7: (parseInt(commands[i + 11], 16) << 16) | (parseInt(commands[i + 12], 16) << 8) | parseInt(commands[i + 13], 16),
-									packetsSentOnSF8: (parseInt(commands[i + 14], 16) << 16) | (parseInt(commands[i + 15], 16) << 8) | parseInt(commands[i + 16], 16),
-									packetsSentOnSF9: (parseInt(commands[i + 17], 16) << 16) | (parseInt(commands[i + 18], 16) << 8) | parseInt(commands[i + 19], 16),
-									packetsSentOnSF10: (parseInt(commands[i + 20], 16) << 16) | (parseInt(commands[i + 21], 16) << 8) | parseInt(commands[i + 22], 16),
-									packetsSentOnSF11: (parseInt(commands[i + 23], 16) << 16) | (parseInt(commands[i + 24], 16) << 8) | parseInt(commands[i + 25], 16),
-									packetsSentOnSF12: (parseInt(commands[i + 26], 16) << 16) | (parseInt(commands[i + 27], 16) << 8) | parseInt(commands[i + 28], 16),
-									totalSentPackets: (parseInt(commands[i + 29], 16) << 16) | (parseInt(commands[i + 30], 16) << 8) | parseInt(commands[i + 31], 16),
-								}
-							};
+									motorHardwareDriverType: (parseInt(commands[i + 6], 16) >> 4) & 0x0f,
+									temperatureSensorModel: parseInt(commands[i + 6], 16) & 0x0f,
+									motorTotalTravelSteps:
+										(parseInt(commands[i + 7], 16) << 24) |
+										(parseInt(commands[i + 8], 16) << 16) |
+										(parseInt(commands[i + 9], 16) << 8) |
+										parseInt(commands[i + 10], 16),
+									packetsSentOnSF7:
+										(parseInt(commands[i + 11], 16) << 16) |
+										(parseInt(commands[i + 12], 16) << 8) |
+										parseInt(commands[i + 13], 16),
+									packetsSentOnSF8:
+										(parseInt(commands[i + 14], 16) << 16) |
+										(parseInt(commands[i + 15], 16) << 8) |
+										parseInt(commands[i + 16], 16),
+									packetsSentOnSF9:
+										(parseInt(commands[i + 17], 16) << 16) |
+										(parseInt(commands[i + 18], 16) << 8) |
+										parseInt(commands[i + 19], 16),
+									packetsSentOnSF10:
+										(parseInt(commands[i + 20], 16) << 16) |
+										(parseInt(commands[i + 21], 16) << 8) |
+										parseInt(commands[i + 22], 16),
+									packetsSentOnSF11:
+										(parseInt(commands[i + 23], 16) << 16) |
+										(parseInt(commands[i + 24], 16) << 8) |
+										parseInt(commands[i + 25], 16),
+									packetsSentOnSF12:
+										(parseInt(commands[i + 26], 16) << 16) |
+										(parseInt(commands[i + 27], 16) << 8) |
+										parseInt(commands[i + 28], 16),
+									totalSentPackets:
+										(parseInt(commands[i + 29], 16) << 16) |
+										(parseInt(commands[i + 30], 16) << 8) |
+										parseInt(commands[i + 31], 16),
+								},
+							}
 						} else {
 							command_len = 3
 							let good_zone = parseInt(commands[i + 1], 16)
@@ -877,6 +912,14 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { valveOpenCloseTime: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.HTSensor) {
+							command_len = 2
+							data = {
+								temperatureCompensation: {
+									negativeCompensation: !!parseInt(commands[i + 1], 16),
+									compensation: parseInt(commands[i + 2], 16) / 10,
+								},
+							}
 						} else {
 							command_len = 1
 							data = { heatingStatus: parseInt(commands[i + 1], 16) }
@@ -899,6 +942,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 1
 							let data = { childLockBehavior: commands[i + 1] }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.HTSensor) {
+							command_len = 2
+							let data = {
+								humidityCompensation: {
+									negativeCompensation: !!parseInt(commands[i + 1], 16),
+									compensation: parseInt(commands[i + 2], 16),
+								},
+							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
@@ -1336,7 +1388,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						command_len = 2
 						let data = {
-							valveOpennessRangeInPercentage: { max: 100 - parseInt(commands[i + 1], 16), min: 100 - parseInt(commands[i + 2], 16) },
+							valveOpennessRangeInPercentage: {
+								max: 100 - parseInt(commands[i + 1], 16),
+								min: 100 - parseInt(commands[i + 2], 16),
+							},
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {

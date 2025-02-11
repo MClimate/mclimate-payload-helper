@@ -1,4 +1,4 @@
-import { BaseCommand, CO2SensorCommands, DisplayCommands, GeneralCommands } from '@/encoders'
+import { BaseCommand, ChildLockCommands, CO2SensorCommands, DisplayCommands, GeneralCommands } from '@/encoders'
 import { CO2DisplayLiteCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 import { applyMixins, CustomError, decToHex, delMethods } from '@/utils'
 import { ZodError } from 'zod'
@@ -37,7 +37,7 @@ export class CO2DisplayLiteCommands extends GeneralCommands {
 	}
 }
 
-applyMixins(CO2DisplayLiteCommands, [CO2SensorCommands, DisplayCommands])
+applyMixins(CO2DisplayLiteCommands, [CO2SensorCommands, DisplayCommands, ChildLockCommands])
 
 delMethods(CO2DisplayLiteCommands, [
 	'setNotifyPeriod',
