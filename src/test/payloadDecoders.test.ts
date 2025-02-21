@@ -516,6 +516,18 @@ describe('Button payload decoder', () => {
 		})
 	})
 
+	test('keepalive with response of commands + single press counter', () => {
+		expect(uplinkPayloadParser('B10001AA120204121101b000d200', DeviceType.MCButton)).toStrictEqual({
+			sensorTemperature: 21,
+			batteryVoltage: 3,
+			pressEvent: '00',
+			thermistorProperlyConnected: true,
+			deviceVersions: { hardware: 12, software: 11 },
+			keepAliveTime: 2,
+			singlePressEventCounter: 426
+		})
+	})
+
 	test('keepalive with undefined response of command', () => {
 		expect(uplinkPayloadParser('1202990204121101b000d200', DeviceType.MCButton)).toStrictEqual({
 			sensorTemperature: 21,
