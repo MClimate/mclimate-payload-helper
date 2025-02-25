@@ -56,28 +56,6 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		return new BaseCommand('GetKeysLock', 0x14)
 	}
 
-	static setFanCoilTarget(params: FanCoilThermostatCommandTypes.SetFanCoilTargetParams) {
-		try {
-			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setFanCoilTarget.parse(params)
-			const { value } = params
-			return new BaseCommand('SetFanCoilTarget', 0x2e, dec2hex(value * 10))
-		} catch (e) {
-			if (e instanceof ZodError) {
-				throw new CustomError({
-					message: 'Zod validation error during SetFanCoilTarget execution',
-					command: 'SetFanCoilTarget',
-					originalError: e,
-				})
-			} else {
-				throw new CustomError({
-					message: 'Error during SetFanCoilTarget execution',
-					command: 'SetFanCoilTarget',
-					originalError: e as Error,
-				})
-			}
-		}
-	}
-
 	static setTargetTemperature(params: FanCoilThermostatCommandTypes.SetTargetTemperatureParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setTargetTemperature.parse(params)

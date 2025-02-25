@@ -496,9 +496,6 @@ const FanCoilThermostatCommandSchemas = {
 		value: z.number(),
 	}),
 	getKeysLock: z.object({}),
-	setFanCoilTarget: z.object({
-		value: z.number(),
-	}),
 	setTargetTemperature: z.object({
 		targetTemperature: z.number(),
 	}),
@@ -608,7 +605,6 @@ const FanCoilThermostatCommandSchemas = {
 export namespace FanCoilThermostatCommandTypes {
 	export type SetTargetTemperatureStepParams = z.infer<typeof FanCoilThermostatCommandSchemas.setTargetTemperatureStep>
 	export type SetKeysLockParams = z.infer<typeof FanCoilThermostatCommandSchemas.setKeysLock>
-	export type SetFanCoilTargetParams = z.infer<typeof FanCoilThermostatCommandSchemas.setFanCoilTarget>
 	export type SetTargetTemperatureParams = z.infer<typeof FanCoilThermostatCommandSchemas.setTargetTemperature>
 	export type SetValveOpenCloseTimeParams = z.infer<typeof FanCoilThermostatCommandSchemas.setValveOpenCloseTime>
 	export type SetExtAutomaticTemperatureControlParams = z.infer<
