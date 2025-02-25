@@ -973,10 +973,18 @@ const ButtonCommandSchemas = {
 	setSendEventLater: z.object({
 		value: z.number(),
 	}),
+	clearPressEventCounter: z.object({
+		value: z.number(),
+	}),
+	restartDevice: z.object({}),
+	getSinglePressEventCounter: z.object({}),
+	getDoublePressEventCounter: z.object({}),
+	getTriplePressEventCounter: z.object({}),
 }
 
 export namespace ButtonCommandTypes {
 	export type SetSendEventLaterParams = z.infer<typeof ButtonCommandSchemas.setSendEventLater>
+	export type ClearPressEventCounter = z.infer<typeof ButtonCommandSchemas.clearPressEventCounter>
 }
 
 /* --------------------------------------- EXPORT ALL SCHEMA GROUPS --------------------------------------- */

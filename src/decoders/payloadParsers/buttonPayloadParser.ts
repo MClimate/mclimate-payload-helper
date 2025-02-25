@@ -40,11 +40,11 @@ export const ButtonPayloadParser = (hexData: string) => {
 		}
 
 		if (hexData) {
-			if (parseInt(hexData[1]) == 1) {
-				// its a keeapalive
-				const byteArray = byteArrayParser(hexData)
-				if (!byteArray) return
+			const byteArray = byteArrayParser(hexData)
+			if (!byteArray) return
 
+			if (byteArray[0] == 1) {
+				// its a keeapalive
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers

@@ -2008,12 +2008,52 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case 'b1':
 				{
 					try {
-						command_len = 1
-						let data = { relayState: parseInt(commands[i + 1], 16) === 0x01 }
+						let data;
+						if (deviceType === DeviceType.MCButton) {
+							command_len = 3
+							data = { singlePressEventCounter: (parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16) }
+						}else{
+							command_len = 1
+							data = { relayState: parseInt(commands[i + 1], 16) === 0x01 }
+						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command 'b1'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case 'b2':
+				{
+					try {
+						command_len = 3
+						let data = { doublePressEventCounter: (parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16) }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command 'b2'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case 'b3':
+				{
+					try {
+						command_len = 3
+						let data = { triplePressEventCounter: (parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16) }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command 'b3'`,
 							hexData,
 							command,
 							deviceType,

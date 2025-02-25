@@ -553,3 +553,19 @@ describe('HT Sensor Commands payload encoder', () => {
 		).toStrictEqual(new BaseCommand('SetHumidityCompensation', 0x33, '01', '03'))
 	})
 })
+
+describe('MC Button Commands payload encoder', () => {
+	const commandBuilder = new CommandBuilder('mc_button')
+
+	test('Clear Press Event Counter ', () => {
+		expect(
+			commandBuilder.build('ClearPressEventCounter', { value: 1 }),
+		).toStrictEqual(new BaseCommand('ClearPressEventCounter', 0x20, '01'))
+	})
+
+	test('Restart Device', () => {
+		expect(
+			commandBuilder.build('RestartDevice'),
+		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+	})
+})
