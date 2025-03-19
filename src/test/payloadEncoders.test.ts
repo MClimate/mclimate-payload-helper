@@ -57,6 +57,25 @@ describe('CO2Display Commands payload encoder', () => {
 	})
 })
 
+describe('CO2DisplayLite Commands payload encoder', () => {
+	const commandBuilder = new CommandBuilder('co2_display_lite')
+
+	test('Set Uplink Sending On Button Press', () => {
+		expect(commandBuilder.build('SetUplinkSendingOnButtonPress', { value: 1 })).toStrictEqual(
+			new BaseCommand('SetUplinkSendingOnButtonPress', 0x2e, '01'),
+		)
+	})
+
+	test('Restart Device', () => {
+		expect(commandBuilder.build('RestartDevice'),
+		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+	})
+
+	test('Throw error on invalid Set Uplink Sending On Button Press params', () => {
+		expect(() => commandBuilder.build('SetUplinkSendingOnButtonPress', { time: -1 })).toThrow(CustomError)
+	})
+})
+
 describe('CO2Sensor Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('co2_sensor')
 
@@ -185,11 +204,6 @@ describe('FanCoilThermostat Commands payload encoder', () => {
 		expect(commandBuilder.build('SetKeysLock', { value: 1 })).toStrictEqual(new BaseCommand('SetKeysLock', 0x07, '01'))
 	})
 
-	test('Set Fan Coil Target', () => {
-		expect(commandBuilder.build('SetFanCoilTarget', { value: 30 })).toStrictEqual(
-			new BaseCommand('SetFanCoilTarget', 0x2e, '012C'),
-		)
-	})
 
 	test('Set Target Temperature', () => {
 		expect(commandBuilder.build('SetTargetTemperature', { targetTemperature: 25 })).toStrictEqual(
@@ -329,6 +343,18 @@ describe('FanCoilThermostat Commands payload encoder', () => {
 		expect(
 			commandBuilder.build('SetDeltaTemperature2and3', { deltaTemperature2: 4, deltaTemperature3: 5 }),
 		).toStrictEqual(new BaseCommand('SetDeltaTemperature2and3', 0x6c, '28', '32'))
+	})
+
+	test('Set Heating Cooling Target Temp Ranges', () => {
+		expect(commandBuilder.build('SetHeatingCoolingTargetTempRanges', { heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29 })).toStrictEqual(
+			new BaseCommand('SetHeatingCoolingTargetTempRanges', 0x16, '10', '18', '14', '1D'),
+		)
+	})
+
+	test('Set Heating Cooling Target Temp Ranges Unoccupied', () => {
+		expect(commandBuilder.build('SetHeatingCoolingTargetTempRangesUnoccupied', { heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29 })).toStrictEqual(
+			new BaseCommand('SetHeatingCoolingTargetTempRangesUnoccupied', 0x76, '10', '18', '14', '1D'),
+		)
 	})
 })
 

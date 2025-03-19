@@ -352,7 +352,7 @@ describe('FCT payload decoder', () => {
 	})
 
 	test('keepalive with response of commands', () => {
-		expect(uplinkPayloadParser('120A04121201026A4C00DC0100070001', DeviceType.FanCoilThermostat)).toStrictEqual({
+		expect(uplinkPayloadParser('120A041212771018141D171018141D01026A4C00DC0100070001', DeviceType.FanCoilThermostat)).toStrictEqual({
 			sensorTemperature: 21.8,
 			relativeHumidity: 29.69,
 			targetTemperature: 22,
@@ -363,6 +363,8 @@ describe('FCT payload decoder', () => {
 			deviceStatus: 1,
 			deviceVersions: { hardware: 12, software: 12 },
 			keepAliveTime: 10,
+			heatingCoolingTargetTempRanges: {heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29},
+			heatingCoolingTargetTempRangesUnoccupied: {heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29},
 		})
 	})
 
@@ -435,7 +437,7 @@ describe('CO2 Display Lite payload decoder', () => {
 	})
 
 	test('keepalive with response of commands', () => {
-		expect(uplinkPayloadParser('120F04121001026e320c1eb908012c', DeviceType.CO2DisplayLite)).toStrictEqual({
+		expect(uplinkPayloadParser('120F0412102F0101026e320c1eb908012c', DeviceType.CO2DisplayLite)).toStrictEqual({
 			CO2: 441,
 			sensorTemperature: 22.2,
 			relativeHumidity: 19.53,
@@ -444,6 +446,7 @@ describe('CO2 Display Lite payload decoder', () => {
 			lux: 300,
 			deviceVersions: { hardware: 12, software: 10 },
 			keepAliveTime: 15,
+			uplinkSendingOnButtonPress: 1
 		})
 	})
 

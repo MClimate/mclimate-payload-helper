@@ -703,6 +703,144 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 	static getFilterAlarm() {
 		return new BaseCommand('GetFilterAlarm', 0x73)
 	}
+
+	static setHeatingCoolingTargetTempRanges(params: FanCoilThermostatCommandTypes.SetHeatingCoolingTargetTempRanges) {
+		try {
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setHeatingCoolingTargetTempRanges.parse(params)
+			const { heatingTempMin, heatingTempMax, coolingTempMin, coolingTempMax } = params
+			return new BaseCommand('SetHeatingCoolingTargetTempRanges', 0x16, decToHex(heatingTempMin), decToHex(heatingTempMax), decToHex(coolingTempMin), decToHex(coolingTempMax))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetHeatingCoolingTargetTempRanges execution',
+					command: 'SetHeatingCoolingTargetTempRanges',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetHeatingCoolingTargetTempRanges execution',
+					command: 'SetHeatingCoolingTargetTempRanges',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+	static getHeatingCoolingTargetTempRanges() {
+		return new BaseCommand('GetHeatingCoolingTargetTempRanges', 0x17)
+	}
+	static setHeatingCoolingTargetTempRangesUnoccupied(params: FanCoilThermostatCommandTypes.SetHeatingCoolingTargetTempRangesUnoccupied) {
+		try {
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setHeatingCoolingTargetTempRangesUnoccupied.parse(params)
+			const { heatingTempMin, heatingTempMax, coolingTempMin, coolingTempMax } = params
+			return new BaseCommand('SetHeatingCoolingTargetTempRangesUnoccupied', 0x76, decToHex(heatingTempMin), decToHex(heatingTempMax), decToHex(coolingTempMin), decToHex(coolingTempMax))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetHeatingCoolingTargetTempRangesUnoccupied execution',
+					command: 'SetHeatingCoolingTargetTempRangesUnoccupied',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetHeatingCoolingTargetTempRangesUnoccupied execution',
+					command: 'SetHeatingCoolingTargetTempRangesUnoccupied',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+	static getHeatingCoolingTargetTempRangesUnoccupied() {
+		return new BaseCommand('SetHeatingCoolingTargetTempRangesUnoccupied', 0x77)
+	}
+
+	static setFanOffDelayTime(params: FanCoilThermostatCommandTypes.SetFanOffDelayTime) {
+		try {
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setFanOffDelayTime.parse(params)
+			const { time } = params
+			return new BaseCommand('SetFanOffDelayTime', 0x78, decToHex(time))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetFanOffDelayTime execution',
+					command: 'SetFanOffDelayTime',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetFanOffDelayTime execution',
+					command: 'SetFanOffDelayTime',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getFanOffDelayTime() {
+		return new BaseCommand('getFanOffDelayTime', 0x79)
+	}
+	static setAdditionalFanMode(params: FanCoilThermostatCommandTypes.SetAdditionalFanMode) {
+		try {
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setAdditionalFanMode.parse(params)
+			const { mode } = params
+			return new BaseCommand('SetAdditionalFanMode', 0x7a, decToHex(mode))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetAdditionalFanMode execution',
+					command: 'SetAdditionalFanMode',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetAdditionalFanMode execution',
+					command: 'SetAdditionalFanMode',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getAdditionalFanMode() {
+		return new BaseCommand('GetAdditionalFanMode', 0x7b)
+	}
+
+	static getInternalTemperatureSensorError() {
+		return new BaseCommand('GetInternalTemperatureSensorError', 0x7c)
+	}
+
+	static getExternalTemperatureSensorError() {
+		return new BaseCommand('GetExternalTemperatureSensorError', 0x7d)
+	}
+
+	static setUserInterfaceLanguage(params: FanCoilThermostatCommandTypes.SetUserInterfaceLanguage) {
+		try {
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setUserInterfaceLanguage.parse(params)
+			const { value } = params
+			return new BaseCommand('SetUserInterfaceLanguage', 0x9a, decToHex(value))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetUserInterfaceLanguage execution',
+					command: 'SetUserInterfaceLanguage',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetUserInterfaceLanguage execution',
+					command: 'SetUserInterfaceLanguage',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getUserInterfaceLanguage() {
+		return new BaseCommand('GetUserInterfaceLanguage', 0x9b)
+	}
+
+	static restartDevice() {
+		return new BaseCommand('RestartDevice', 0xa5)
+	}
 }
 
 applyMixins(FanCoilThermostatCommands, [DisplayCommands, TemperatureCommonCommands])

@@ -600,6 +600,35 @@ const FanCoilThermostatCommandSchemas = {
 	getOccupancySensorStatus: z.object({}),
 	getDewPointSensorStatus: z.object({}),
 	getFilterAlarm: z.object({}),
+	setHeatingCoolingTargetTempRanges: z.object({
+		heatingTempMin: z.number(),
+		heatingTempMax: z.number(),
+		coolingTempMin: z.number(),
+		coolingTempMax: z.number(),
+	}),
+	getHeatingCoolingTargetTempRanges: z.object({}),
+	setHeatingCoolingTargetTempRangesUnoccupied: z.object({
+		heatingTempMin: z.number(),
+		heatingTempMax: z.number(),
+		coolingTempMin: z.number(),
+		coolingTempMax: z.number(),
+	}),
+	getHeatingCoolingTargetTempRangesUnoccupied: z.object({}),
+	setFanOffDelayTime: z.object({
+		time: z.number(),
+	}),
+	getFanOffDelayTime: z.object({}),
+	setAdditionalFanMode: z.object({
+		mode: z.number(),
+	}),
+	getAdditionalFanMode: z.object({}),
+	getInternalTemperatureSensorError: z.object({}),
+	getExternalTemperatureSensorError: z.object({}),
+	setUserInterfaceLanguage: z.object({
+		value: z.number(),
+	}),
+	getUserInterfaceLanguage: z.object({}),
+	restartDevice: z.object({}),
 }
 
 export namespace FanCoilThermostatCommandTypes {
@@ -641,6 +670,11 @@ export namespace FanCoilThermostatCommandTypes {
 	export type SetReturnOfPowerOperationParams = z.infer<typeof FanCoilThermostatCommandSchemas.setReturnOfPowerOperation>
 	export type SetDeltaTemperature1Params = z.infer<typeof FanCoilThermostatCommandSchemas.setDeltaTemperature1>
 	export type SetDeltaTemperature2and3Params = z.infer<typeof FanCoilThermostatCommandSchemas.setDeltaTemperature2and3>
+	export type SetHeatingCoolingTargetTempRanges = z.infer<typeof FanCoilThermostatCommandSchemas.setHeatingCoolingTargetTempRanges>
+	export type SetHeatingCoolingTargetTempRangesUnoccupied = z.infer<typeof FanCoilThermostatCommandSchemas.setHeatingCoolingTargetTempRangesUnoccupied>
+	export type SetFanOffDelayTime = z.infer<typeof FanCoilThermostatCommandSchemas.setFanOffDelayTime>
+	export type SetAdditionalFanMode = z.infer<typeof FanCoilThermostatCommandSchemas.setAdditionalFanMode>
+	export type SetUserInterfaceLanguage = z.infer<typeof FanCoilThermostatCommandSchemas.setUserInterfaceLanguage>
 }
 
 /* --------------------------------------- OPEN CLOSE SENSOR COMMANDS --------------------------------------- */
@@ -854,10 +888,16 @@ const CO2DisplayLiteCommandSchemas = {
 		emoji: z.boolean(),
 	}),
 	getCo2ImagesVisibility: z.object({}),
+	setUplinkSendingOnButtonPress: z.object({
+		value: z.number(),
+	}),
+	getUplinkSendingOnButtonPress: z.object({}),
+	restartDevice: z.object({}),
 }
 
 export namespace CO2DisplayLiteCommandTypes {
 	export type SetCo2ImagesVisibilityParams = z.infer<typeof CO2DisplayLiteCommandSchemas.setCo2ImagesVisibility>
+	export type SetUplinkSendingOnButtonPress = z.infer<typeof CO2DisplayLiteCommandSchemas.setUplinkSendingOnButtonPress>
 }
 
 /* --------------------------------------- HT SENSOR COMMANDS --------------------------------------- */

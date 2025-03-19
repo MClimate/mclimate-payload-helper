@@ -391,10 +391,22 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '17':
 				{
 					try {
-						command_len = 2
-						let data = {
-							internalAlgoTdiffParams: { warm: parseInt(commands[i + 1], 16), cold: parseInt(commands[i + 2], 16) },
+						let data;
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 4
+							data = {
+								heatingCoolingTargetTempRanges: {
+									heatingTempMin: parseInt(commands[i + 1], 16),
+									heatingTempMax: parseInt(commands[i + 2], 16),
+									coolingTempMin: parseInt(commands[i + 3], 16),
+									coolingTempMax: parseInt(commands[i + 4], 16),
+								}
+							}
+						} else {
+							command_len = 2
+							data = { internalAlgoTdiffParams: { warm: parseInt(commands[i + 1], 16), cold: parseInt(commands[i + 2], 16) } }
 						}
+
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -866,8 +878,14 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '2f':
 				{
 					try {
-						command_len = 1
-						let data = { targetTemperature: parseInt(commands[i + 1], 16) }
+						let data;
+						if (deviceType === DeviceType.CO2DisplayLite) {
+							command_len = 1
+							data = { uplinkSendingOnButtonPress: parseInt(commands[i + 1], 16) }
+						} else {
+							command_len = 1
+							data = { targetTemperature: parseInt(commands[i + 1], 16) }
+						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1967,6 +1985,133 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
+			case '77':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 4
+							data = {
+								heatingCoolingTargetTempRangesUnoccupied: {
+									heatingTempMin: parseInt(commands[i + 1], 16),
+									heatingTempMax: parseInt(commands[i + 2], 16),
+									coolingTempMin: parseInt(commands[i + 3], 16),
+									coolingTempMax: parseInt(commands[i + 4], 16),
+								}
+							}
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '77'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '79':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 1
+							data = { fanOffDelayTime: parseInt(commands[i + 1], 16) }
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '79'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '79':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 1
+							data = { additionalFanMode: parseInt(commands[i + 1], 16) }
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '79'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '7b':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 1
+							data = { additionalFanMode: parseInt(commands[i + 1], 16) }
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '7b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '7c':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 1
+							data = { internalTemperatureSensorError: parseInt(commands[i + 1], 16) }
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '7c'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '7d':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 1
+							data = { externalTemperatureSensorError: parseInt(commands[i + 1], 16) }
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '7d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
 			case '80':
 				{
 					try {
@@ -2012,7 +2157,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.MCButton) {
 							command_len = 3
 							data = { singlePressEventCounter: (parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16) }
-						}else{
+						} else {
 							command_len = 1
 							data = { relayState: parseInt(commands[i + 1], 16) === 0x01 }
 						}
@@ -2152,7 +2297,23 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
-
+			case '9b':
+				{
+					try {
+						command_len = 1
+						let data = { userInterfaceLanguage: parseInt(commands[i + 1], 16) }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '9b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
 			default:
 				decodeKeepalive(commands, payloadLength, deviceType)
 				commands.splice(i, commands.length)
