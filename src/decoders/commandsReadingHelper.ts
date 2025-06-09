@@ -2032,26 +2032,6 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
-			case '79':
-				{
-					try {
-						let data
-						if (deviceType === DeviceType.FanCoilThermostat) {
-							command_len = 1
-							data = { additionalFanMode: parseInt(commands[i + 1], 16) }
-						}
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
-					} catch (e) {
-						throw new CustomError({
-							message: `Failed to process command '79'`,
-							hexData,
-							command,
-							deviceType,
-							originalError: e as Error,
-						})
-					}
-				}
-				break
 			case '7b':
 				{
 					try {

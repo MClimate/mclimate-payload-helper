@@ -162,8 +162,8 @@ describe('HT payload decoder', () => {
 	test('simple keepalive', () => {
 		expect(uplinkPayloadParser('0102754BE90400', DeviceType.HTSensor)).toStrictEqual({
 			sensorTemperature: 22.9,
-			relativeHumidity: 29.296875,
-			batteryVoltage: 3.4000000000000004,
+			relativeHumidity: 29.3,
+			batteryVoltage: 3.46,
 			extThermistorTemperature: 0,
 			thermistorProperlyConnected: false,
 		})
@@ -174,8 +174,8 @@ describe('HT payload decoder', () => {
 			deviceVersions: { hardware: 20, software: 15 },
 			keepAliveTime: 5,
 			sensorTemperature: 23,
-			relativeHumidity: 30.078125,
-			batteryVoltage: 3.4000000000000004,
+			relativeHumidity: 30.08,
+			batteryVoltage: 3.46,
 			extThermistorTemperature: 0,
 			thermistorProperlyConnected: false,
 		})
@@ -188,8 +188,8 @@ describe('HT payload decoder', () => {
 			humidityCompensation: { negativeCompensation: true, compensation: 3 },
 			keepAliveTime: 5,
 			sensorTemperature: 23,
-			relativeHumidity: 30.078125,
-			batteryVoltage: 3.4000000000000004,
+			relativeHumidity: 30.08,
+			batteryVoltage: 3.46,
 			extThermistorTemperature: 0,
 			thermistorProperlyConnected: false,
 		})
@@ -199,8 +199,8 @@ describe('HT payload decoder', () => {
 		expect(uplinkPayloadParser('042015990312050102764DE90400', DeviceType.HTSensor)).toStrictEqual({
 			deviceVersions: { hardware: 20, software: 15 },
 			sensorTemperature: 23,
-			relativeHumidity: 30.078125,
-			batteryVoltage: 3.4000000000000004,
+			relativeHumidity: 30.08,
+			batteryVoltage: 3.46,
 			extThermistorTemperature: 0,
 			thermistorProperlyConnected: false,
 		})

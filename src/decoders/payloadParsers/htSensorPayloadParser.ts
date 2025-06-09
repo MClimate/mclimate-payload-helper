@@ -11,21 +11,18 @@ export const htSensorPayloadParser = (hexData: string) => {
 		const calculateHumidity = (rawData: number) => (rawData * 100) / 256
 
 		const handleKeepAliveData = (data: number[]) => {
-			let tempHex = ('0' + data[1].toString(16)).substr(-2) + ('0' + data[2].toString(16)).substr(-2)
-			let tempDec = parseInt(tempHex, 16)
-			let temperatureValue = calculateTemperature(tempDec)
-			let humidityValue = calculateHumidity(data[3])
-			let batteryTmp = ('0' + data[4].toString(16)).substr(-2)[0]
-			let batteryVoltageCalculated = 2 + parseInt(`0x${batteryTmp}`, 16) * 0.1
-			let sensorTemperature = temperatureValue
-			let relativeHumidity = humidityValue
-			let batteryVoltage = batteryVoltageCalculated
-			let thermistorProperlyConnected = parseInt(decbin(data[5])[5]) == 0
-			let extT1 = ('0' + data[5].toString(16)).substr(-2)[1]
-			let extT2 = ('0' + data[6].toString(16)).substr(-2)
-			let extThermistorTemperature = thermistorProperlyConnected ? parseInt(`0x${extT1}${extT2}`, 16) * 0.1 : 0
+			let temperatureRaw = (data[1] << 8) | data[2]
+			let sensorTemperature = Number(calculateTemperature(temperatureRaw).toFixed(2))
 
-			// check if it is a keepalive
+			let relativeHumidity = Number(calculateHumidity(data[3]).toFixed(2))
+
+			let batteryVoltage = Number(((data[4] * 8 + 1600) / 1000).toFixed(2))
+			let thermistorProperlyConnected = (data[5] & 0x04) === 0
+			let extThermHigh = data[5] & 0x03 // mask out bits 1:0
+			let extThermLow = data[6]
+			let extThermRaw = (extThermHigh << 8) | extThermLow
+			let extThermistorTemperature = thermistorProperlyConnected ? Number((extThermRaw * 0.1).toFixed(2)) : 0
+
 			let keepaliveData = {
 				sensorTemperature,
 				relativeHumidity,
