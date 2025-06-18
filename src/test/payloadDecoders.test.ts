@@ -680,4 +680,23 @@ describe('ADS payload decoder', () => {
 		})
 	})
 })
-
+describe('Melissa payload decoder', () => {
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('010031010A1D0218A4', DeviceType.MelissaLorawan)).toStrictEqual({
+			internalTemperature: 0,
+			energy: 822151.709,
+			power: 536,
+			acVoltage: 164
+		})
+		
+	})
+	test('keepalive with response of preloaded code', () => {
+		expect(uplinkPayloadParser('060042010031010A1D0218A4', DeviceType.MelissaLorawan)).toStrictEqual({
+			internalTemperature: 0,
+			energy: 822151.709,
+			power: 536,
+			acVoltage: 164,
+			preloadedCode: { codeAddress: 66, codeAddressRaw: '0042' }
+		})
+	})
+})

@@ -141,8 +141,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { alarmDuration: parseInt(commands[i + 1], 16) }
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						if (deviceType === DeviceType.MelissaLorawan) {
+							command_len = 2
+							let codeAddress = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
+							let codeAddressRaw = `${commands[i + 1]}${commands[i + 2]}`
+							let data = { preloadedCode: { codeAddress, codeAddressRaw } }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else {
+							let data = { alarmDuration: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '06'`,

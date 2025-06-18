@@ -15,5 +15,6 @@ export enum DeviceType {
 	CO2DisplayLite = 'co2_display_lite',
 	HTDisplayLite = 'ht_display_lite',
 	Relay16 = 'relay_16',
-	Relay16Dry = 'relay_16_dry'
+	Relay16Dry = 'relay_16_dry',
+	MelissaLorawan = 'melissa_lorawan'
 }
