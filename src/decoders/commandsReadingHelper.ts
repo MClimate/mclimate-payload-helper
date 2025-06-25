@@ -1534,6 +1534,26 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
+			case '56':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.Vicki) {
+							command_len = 1
+							data = { displayTemperatureUnits: parseInt(commands[i + 1], 16) }
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '56'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
 			case '57':
 				{
 					try {

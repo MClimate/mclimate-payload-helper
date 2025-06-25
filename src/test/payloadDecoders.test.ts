@@ -26,7 +26,7 @@ describe('Vicki payload decoder', () => {
 	})
 
 	test('keepalive with response of commands', () => {
-		expect(uplinkPayloadParser('1203042643811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual({
+		expect(uplinkPayloadParser('56011203042643811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual({
 			reason: 129,
 			targetTemperature: 27,
 			sensorTemperature: 25.88238397927527,
@@ -50,6 +50,7 @@ describe('Vicki payload decoder', () => {
 				hardware: 26,
 				software: 43,
 			},
+			displayTemperatureUnits: 1,
 		})
 	})
 
