@@ -1027,6 +1027,58 @@ export namespace ButtonCommandTypes {
 	export type ClearPressEventCounter = z.infer<typeof ButtonCommandSchemas.clearPressEventCounter>
 }
 
+/* --------------------------------------- HT PIR LITE COMMANDS --------------------------------------- */
+const HTPirLiteCommandSchemas = {
+	...GeneralCommandSchemas,
+	...PIRCommandSchemas,
+	setUplinkSendingOnButtonPress: z.object({
+		value: z.number(),
+	}),
+	getUplinkSendingOnButtonPress: z.object({}),
+	restartDevice: z.object({}),
+}
+
+export namespace HTPirLiteCommandTypes {
+	export type SetUplinkSendingOnButtonPressParams = z.infer<typeof HTPirLiteCommandSchemas.setUplinkSendingOnButtonPress>
+	export type GetUplinkSendingOnButtonPressParams = z.infer<typeof HTPirLiteCommandSchemas.getUplinkSendingOnButtonPress>
+	export type RestartDeviceParams = z.infer<typeof HTPirLiteCommandSchemas.restartDevice>
+}
+
+/* --------------------------------------- CO2 PIR LITE COMMANDS --------------------------------------- */
+const Co2PirLiteCommandSchemas = {
+	...GeneralCommandSchemas,
+	...PIRCommandSchemas,
+	setUplinkSendingOnButtonPress: z.object({
+		value: z.number(),
+	}),
+	getUplinkSendingOnButtonPress: z.object({}),
+	restartDevice: z.object({}),
+	setCo2BoundaryLevels: z.object({
+		good_medium: z.number(),
+		medium_bad: z.number(),
+	}),
+	getCo2BoundaryLevels: z.object({}),
+	setCo2AutoZeroValue: z.object({
+		ppm: z.number(),
+	}),
+	getCo2AutoZeroValue: z.object({}),
+	setCo2MeasurementPeriod: z.object({
+		good_zone: z.number(),
+		medium_zone: z.number(),
+		bad_zone: z.number(),
+	}),
+	getCo2MeasurementPeriod: z.object({}),
+	setCo2AutoZeroPeriod: z.object({
+		hours: z.number(),
+	}),
+	getCo2AutoZeroPeriod: z.object({}),
+}
+
+export namespace Co2PirLiteCommandTypes {
+	export type SetUplinkSendingOnButtonPressParams = z.infer<typeof Co2PirLiteCommandSchemas.setUplinkSendingOnButtonPress>
+	export type GetUplinkSendingOnButtonPressParams = z.infer<typeof Co2PirLiteCommandSchemas.getUplinkSendingOnButtonPress>
+	export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
+}
 /* --------------------------------------- EXPORT ALL SCHEMA GROUPS --------------------------------------- */
 export const DeviceCommandSchemas = {
 	GeneralCommandSchemas,
@@ -1050,4 +1102,6 @@ export const DeviceCommandSchemas = {
 	HTSensorCommandSchemas,
 	CO2DisplayLiteCommandSchemas,
 	Relay16DryCommandSchemas,
+	HTPirLiteCommandSchemas,
+	Co2PirLiteCommandSchemas,
 }

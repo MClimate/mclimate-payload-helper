@@ -595,3 +595,54 @@ describe('MC Button Commands payload encoder', () => {
 		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})
 })
+describe('CO2 PIR Lite Commands payload encoder', () => {
+	const commandBuilder = new CommandBuilder('co2_pir_lite')
+	test('Set CO2 Measurement Time', () => {
+		expect(commandBuilder.build('SetCo2MeasurementPeriod', { good_zone: 10, medium_zone: 20, bad_zone: 30 })).toStrictEqual(
+			new BaseCommand('SetCo2MeasurementPeriod', 0x24, '0A', '14', '1E'),
+		)
+	})
+	test('Set PIR Sensor Status ', () => {
+		expect(
+			commandBuilder.build('SetPIRSensorStatus', { state: 1 }),
+		).toStrictEqual(new BaseCommand('SetPIRSensorStatus', 0x3c, '01'))
+	})
+	test('Set Uplink Sending On Button Press', () => {
+		expect(commandBuilder.build('SetUplinkSendingOnButtonPress', { value: 1 })).toStrictEqual(
+			new BaseCommand('SetUplinkSendingOnButtonPress', 0x2e, '01'),
+		)
+	})
+	test('Set PIR Check Period', () => {
+		expect(commandBuilder.build('SetPIRCheckPeriod', { time: 20 })).toStrictEqual(
+			new BaseCommand('SetPIRCheckPeriod', 0x4a, '0014'),
+		)
+	})
+	test('Restart Device', () => {
+		expect(
+			commandBuilder.build('RestartDevice'),
+		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+	})
+})
+describe('HT PIR Lite Commands payload encoder', () => {
+	const commandBuilder = new CommandBuilder('ht_pir_lite')
+	test('Set PIR Sensor Status ', () => {
+		expect(
+			commandBuilder.build('SetPIRSensorStatus', { state: 1 }),
+		).toStrictEqual(new BaseCommand('SetPIRSensorStatus', 0x3c, '01'))
+	})
+	test('Set Uplink Sending On Button Press', () => {
+		expect(commandBuilder.build('SetUplinkSendingOnButtonPress', { value: 1 })).toStrictEqual(
+			new BaseCommand('SetUplinkSendingOnButtonPress', 0x2e, '01'),
+		)
+	})
+	test('Set PIR Check Period', () => {
+		expect(commandBuilder.build('SetPIRCheckPeriod', { time: 20 })).toStrictEqual(
+			new BaseCommand('SetPIRCheckPeriod', 0x4a, '0014'),
+		)
+	})
+	test('Restart Device', () => {
+		expect(
+			commandBuilder.build('RestartDevice'),
+		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+	})
+})

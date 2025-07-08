@@ -22,3 +22,6 @@ export * from './DskDeviceCommands'
 export * from './OpenCloseSensorCommands'
 export * from './ButtonCommands'
 export * from './Relay16DryCommands'
+export * from './HTPirLiteCommands'
+export * from './Co2PirLiteCommands'
+

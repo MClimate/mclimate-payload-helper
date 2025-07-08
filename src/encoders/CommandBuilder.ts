@@ -17,10 +17,11 @@ import {
 	CO2DisplayLiteCommands,
 	HTDisplayLite,
 	Relay16DryCommands,
+	HTPirLiteCommands,
+	Co2PirLiteCommands,
 } from '@/encoders'
 
 import { CustomError, toCamelCase } from '@/utils'
-
 export class CommandBuilder {
 	device_type: string
 	commandRegistry: Record<string, any>
@@ -45,6 +46,8 @@ export class CommandBuilder {
 			thermostat: TringThermostatCommands,
 			aqi_sensor: SetAqiLedCommands,
 			relay_16_dry: Relay16DryCommands,
+			ht_pir_lite: HTPirLiteCommands,
+			co2_pir_lite: Co2PirLiteCommands,
 		}
 	}
 

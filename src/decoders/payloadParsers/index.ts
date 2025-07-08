@@ -17,3 +17,6 @@ export * from './tValvePayloadParser'
 export * from './relay16PayloadParser'
 export * from './relay16DryPayloadParser'
 export * from './melissaLorawanPayloadParser'
+export * from './co2PirLitePayloadParser'
+export * from './htPirLitePayloadParser'
+

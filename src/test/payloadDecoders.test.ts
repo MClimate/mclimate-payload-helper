@@ -701,3 +701,43 @@ describe('Melissa payload decoder', () => {
 		})
 	})
 })
+describe('CO2PirLite payload decoder', () => {
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('010288800A451B0000', DeviceType.CO2PirLite)).toStrictEqual({
+			CO2: 864,
+			pir: false,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 2.63,
+		})
+	})
+	test('keepalive with response of preloaded code', () => {
+		expect(uplinkPayloadParser('120A010288800A451B0000', DeviceType.CO2PirLite)).toStrictEqual({
+			CO2: 864,
+			pir: false,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 2.63,
+			keepAliveTime: 10,
+		})
+	})
+})
+describe('HTPirLite payload decoder', () => {
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('010288800A4500', DeviceType.HTPirLite)).toStrictEqual({
+			pir: false,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 2.63,
+		})
+	})
+	test('keepalive with response of preloaded code', () => {
+		expect(uplinkPayloadParser('120A010288800A4500', DeviceType.HTPirLite)).toStrictEqual({
+			pir: false,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 2.63,
+			keepAliveTime: 10,
+		})
+	})
+})
