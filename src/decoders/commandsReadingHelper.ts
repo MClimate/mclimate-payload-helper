@@ -887,7 +887,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						let data;
-						if (deviceType === DeviceType.CO2DisplayLite) {
+						if (deviceType === DeviceType.CO2DisplayLite || deviceType === DeviceType.CO2PirLite || deviceType === DeviceType.HTPirLite) {
 							command_len = 1
 							data = { uplinkSendingOnButtonPress: parseInt(commands[i + 1], 16) }
 						} else {
@@ -2243,6 +2243,23 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command 'a4'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case 'a6':
+				{
+					try {
+						command_len = 1
+						let data = { crystalOscillatorError: true }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command 'a6'`,
 							hexData,
 							command,
 							deviceType,
