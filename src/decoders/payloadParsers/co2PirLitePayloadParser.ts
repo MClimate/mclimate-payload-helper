@@ -34,13 +34,11 @@ export const co2PirLitePayloadParser = (hexData: string) => {
 			var batteryLsb = bytes[5]; // bits 7:0
 			keepaliveData.batteryVoltage = Number((((batteryMsb << 8) | batteryLsb) / 1000).toFixed(2));
 			
-			// Bytes 6-7: CO2 value in ppm
-			// Byte 6 contains the lower part of the value
-			// Byte 7 contains the higher part of the value (when CO2 exceeds ~8000 ppm)
-			// Create a 16-bit value combining both bytes
-			var co2Raw = bytes[6] | ((bytes[7] & 0x1F) << 8); // Get bits 4:0 from byte 7 and shift to positions 12:8
-			var co2Value = co2Raw << 5; // Shift left 5 bits as per the spec
-			keepaliveData.CO2 = co2Value;
+			// CO2 calculation from data 6 and 7
+			let co2Low = bytes[6] // Lower byte of CO2
+			let co2High = (bytes[7] & 0xf8) >> 3 // Mask the upper 5 bits and shift them right
+			keepaliveData.CO2 = (co2High << 8) | co2Low // Shift co2High left by 8 bits and combine with co2Low
+
 			// Byte 8: PIR sensor status (only bit 0 is used)
 			// 0 - No motion detected
 			// 1 - Motion detected
