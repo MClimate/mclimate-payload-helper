@@ -10,6 +10,12 @@ Ensure you have access to:
 - `src/encoders/types/schemas.ts` file
 - Knowledge of existing device command classes for reference
 
+For internal imports always use the @ syntax e.g.:
+
+```typescript
+import { applyMixins, delMethods } from '@/utils'
+```
+
 ## Step 1: Create Device Command Class
 
 ### 🔍 ASK: What is the name of your device command class?
@@ -43,20 +49,19 @@ export class [YourDeviceCommands] {
 For each command, provide:
 
 1. **Command name** (e.g., `setTemperature`, `getTemperature`)
-2. **Parameters** with their types (for "set" commands) 
-3. **Second parameter for BaseCommand** (the hex value or additional parameters)
+2. **Static function parameters** with their types (for "set" commands)
+3. **Additional parameters for BaseCommand** (the hex value and any additional parameters like the decToHex utility function)
 
 **Format**:
 
 ```
 Command: setTemperature
-Parameters:
-  - value: number
-Second Parameter: Ask user for the second parameter value
+Static Function Parameters: 1) value: number, 2) state: boolean
+Additional Parameters: Ask user for the additional parameter values
 
-Command: getTemperature  
-Parameters: none
-Second Parameter: Ask user for the second parameter value
+Command: getTemperature
+Static Function Parameters: none
+Additional Parameters: Ask user for the additional parameter values
 ```
 
 ### Command Templates
@@ -68,7 +73,7 @@ static [commandName](params: [YourDeviceCommandTypes].[CommandNameParams]) {
   try {
     DeviceCommandSchemas.[YourDeviceCommandSchemas].[commandName].parse(params)
     // Command implementation here
-    return new BaseCommand('[CommandName]', [SECOND_PARAMETER])
+    return new BaseCommand('[CommandName]', [ADDITIONAL_PARAMETERS])
   } catch (e) {
     if (e instanceof ZodError) {
       throw new CustomError({
@@ -91,16 +96,17 @@ static [commandName](params: [YourDeviceCommandTypes].[CommandNameParams]) {
 
 ```typescript
 static [commandName]() {
-  return new BaseCommand('[CommandName]', [SECOND_PARAMETER])
+  return new BaseCommand('[CommandName]', [ADDITIONAL_PARAMETERS])
 }
 ```
 
-**IMPORTANT**: 
+**IMPORTANT**:
+
 - All functions are `static`
 - First parameter of `new BaseCommand` is always the command name in CamelCase
 - For the second parameter and any additional parameters, ASK THE USER for input
 - Always include proper try/catch blocks for commands with parameters
-- Use the newly created schemas for validation
+- Use the newly (to be) created schemas for validation
 
 ## Step 3: Apply Mixins (Optional)
 
@@ -178,7 +184,7 @@ For each custom command from Step 2, provide the parameter definitions and their
 
 **IMPORTANT**: Schemas must be added to `src/encoders/types/schemas.ts` in the appropriate sections.
 
-### Schema Creation Steps:
+### Schema Creation Steps
 
 1. **Add Command Schemas**: Create a new schema group in `schemas.ts` following the established pattern
 2. **Add Type Namespace**: Create corresponding TypeScript types
@@ -208,10 +214,10 @@ export namespace [YourDeviceCommandTypes] {
 }
 ```
 
-### Important Schema Guidelines:
+### Important Schema Guidelines
 
 1. **Location**: Add schemas directly to `@src/encoders/types/schemas.ts`
-2. **Pattern**: Follow the exact pattern used by other device schemas in the file  
+2. **Pattern**: Follow the exact pattern used by other device schemas in the file
 3. **Inheritance**: Always include `...GeneralCommandSchemas`
 4. **Parameters**: Only create schemas for commands that have parameters
 5. **Types**: Only create type exports for commands with parameters
@@ -224,25 +230,27 @@ export namespace [YourDeviceCommandTypes] {
 ```typescript
 /* --------------------------------------- CO2 PIR LITE COMMANDS --------------------------------------- */
 const Co2PirLiteCommandSchemas = {
-  ...GeneralCommandSchemas,
-  ...PIRCommandSchemas,
-  setUplinkSendingOnButtonPress: z.object({
-    value: z.number(),
-  }),
-  getUplinkSendingOnButtonPress: z.object({}),
-  restartDevice: z.object({}),
-  setCo2BoundaryLevels: z.object({
-    good_medium: z.number(),
-    medium_bad: z.number(),
-  }),
-  getCo2BoundaryLevels: z.object({}),
-  // ... more commands
+ ...GeneralCommandSchemas,
+ ...PIRCommandSchemas,
+ setUplinkSendingOnButtonPress: z.object({
+  value: z.number(),
+ }),
+ getUplinkSendingOnButtonPress: z.object({}),
+ restartDevice: z.object({}),
+ setCo2BoundaryLevels: z.object({
+  good_medium: z.number(),
+  medium_bad: z.number(),
+ }),
+ getCo2BoundaryLevels: z.object({}),
+ // ... more commands
 }
 
 export namespace Co2PirLiteCommandTypes {
-  export type SetUplinkSendingOnButtonPressParams = z.infer<typeof Co2PirLiteCommandSchemas.setUplinkSendingOnButtonPress>
-  export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
-  export type SetCo2BoundaryLevelsParams = z.infer<typeof Co2PirLiteCommandSchemas.setCo2BoundaryLevels>
+ export type SetUplinkSendingOnButtonPressParams = z.infer<
+  typeof Co2PirLiteCommandSchemas.setUplinkSendingOnButtonPress
+ >
+ export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
+ export type SetCo2BoundaryLevelsParams = z.infer<typeof Co2PirLiteCommandSchemas.setCo2BoundaryLevels>
 }
 ```
 
@@ -268,7 +276,7 @@ Before completing:
 - [ ] Class exported in `index.ts`
 - [ ] Command class added to CommandBuilder registry with correct import
 - [ ] Schemas added to `src/encoders/types/schemas.ts` following established patterns
-- [ ] Schema group includes `...GeneralCommandSchemas` 
+- [ ] Schema group includes `...GeneralCommandSchemas`
 - [ ] Type namespace created for commands with parameters
 - [ ] Schema added to `DeviceCommandSchemas` export at bottom of schemas.ts
 - [ ] Each command function uses the newly created schemas for validation
@@ -285,31 +293,31 @@ import { CustomError } from '@/utils'
 import { MyDeviceCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
 export class MyDeviceCommands {
-  static setTemperature(params: MyDeviceCommandTypes.SetTemperatureParams) {
-    try {
-      DeviceCommandSchemas.MyDeviceCommandSchemas.setTemperature.parse(params)
-      const { value } = params
-      return new BaseCommand('SetTemperature', 0x15, value)
-    } catch (e) {
-      if (e instanceof ZodError) {
-        throw new CustomError({
-          message: 'Zod validation error during SetTemperature execution',
-          command: 'SetTemperature',
-          originalError: e,
-        })
-      } else {
-        throw new CustomError({
-          message: 'Error during SetTemperature execution',
-          command: 'SetTemperature',
-          originalError: e as Error,
-        })
-      }
-    }
+ static setTemperature(params: MyDeviceCommandTypes.SetTemperatureParams) {
+  try {
+   DeviceCommandSchemas.MyDeviceCommandSchemas.setTemperature.parse(params)
+   const { value } = params
+   return new BaseCommand('SetTemperature', 0x15, value)
+  } catch (e) {
+   if (e instanceof ZodError) {
+    throw new CustomError({
+     message: 'Zod validation error during SetTemperature execution',
+     command: 'SetTemperature',
+     originalError: e,
+    })
+   } else {
+    throw new CustomError({
+     message: 'Error during SetTemperature execution',
+     command: 'SetTemperature',
+     originalError: e as Error,
+    })
+   }
   }
+ }
 
-  static getTemperature() {
-    return new BaseCommand('GetTemperature', 0x16)
-  }
+ static getTemperature() {
+  return new BaseCommand('GetTemperature', 0x16)
+ }
 }
 ```
 
@@ -318,21 +326,21 @@ export class MyDeviceCommands {
 ```typescript
 /* --------------------------------------- MY DEVICE COMMANDS --------------------------------------- */
 const MyDeviceCommandSchemas = {
-  ...GeneralCommandSchemas,
-  setTemperature: z.object({
-    value: z.number().min(-40).max(85),
-  }),
-  getTemperature: z.object({}),
+ ...GeneralCommandSchemas,
+ setTemperature: z.object({
+  value: z.number().min(-40).max(85),
+ }),
+ getTemperature: z.object({}),
 }
 
 export namespace MyDeviceCommandTypes {
-  export type SetTemperatureParams = z.infer<typeof MyDeviceCommandSchemas.setTemperature>
+ export type SetTemperatureParams = z.infer<typeof MyDeviceCommandSchemas.setTemperature>
 }
 
 // Then add to the export at bottom:
 export const DeviceCommandSchemas = {
-  // ... existing schemas
-  MyDeviceCommandSchemas,
+ // ... existing schemas
+ MyDeviceCommandSchemas,
 }
 ```
 
