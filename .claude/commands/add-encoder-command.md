@@ -31,12 +31,12 @@ Once you provide the class name, the following file will be created:
 **File**: `src/encoders/[YourDeviceCommands].ts`
 
 ```typescript
-import { BaseCommand } from '@/encoders'
+import { BaseCommand, GeneralCommands } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError } from '@/utils'
 import { DeviceCommandSchemas } from '@/encoders/types'
 
-export class [YourDeviceCommands] {
+export class [YourDeviceCommands] extends GeneralCommands  {
   // All methods will be static and follow the established patterns
   // Commands will be added in Step 2
 }
