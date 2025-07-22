@@ -1,4 +1,4 @@
-# Add Encoder Command Workflow
+# Add Encoder Command Workflow - New Device Classes
 
 This command guides you through adding new device commands in the encoder system. Follow each step and provide input when prompted.
 
@@ -174,11 +174,11 @@ this.commandRegistry = {
 }
 ```
 
-**Note**: The `device_type_key` should match the corresponding `DeviceType` enum value (in snake_case format).
+**Note**: The `device_type_key` should match the corresponding `DeviceType` enum value (in snake_case format). Confirm with user whether the chose name is correct.
 
 ## Step 7: Create Schema and Types in schemas.ts
 
-### 🔍 ASK: What parameters does each command need?
+### 🔍 ASK: What parameters does each command need for the scehma validation?
 
 For each custom command from Step 2, provide the parameter definitions and their types for schema validation.
 
@@ -219,9 +219,9 @@ export namespace [YourDeviceCommandTypes] {
 1. **Location**: Add schemas directly to `@src/encoders/types/schemas.ts`
 2. **Pattern**: Follow the exact pattern used by other device schemas in the file
 3. **Inheritance**: Always include `...GeneralCommandSchemas`
-4. **Parameters**: Only create schemas for commands that have parameters
-5. **Types**: Only create type exports for commands with parameters
-6. **Export**: Add your schema to the `DeviceCommandSchemas` export at the bottom of the file
+4. **Types**: Only create type exports for commands with parameters
+5. **Export**: Add your schema to the `DeviceCommandSchemas` export at the bottom of the file
+6. Ensure there are no formatting issues - e.g. closing brackets, end of comments etc.
 
 ### Schema Example
 
