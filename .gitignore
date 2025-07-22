@@ -13,3 +13,4 @@ dist-ssr
 build
 *.local
 .env
+.claude/
