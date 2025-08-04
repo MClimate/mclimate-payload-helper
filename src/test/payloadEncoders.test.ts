@@ -33,6 +33,31 @@ describe('Relay commands payload encoder', () => {
 			new BaseCommand('SetRelayState', 0xc1, '01'),
 		)
 	})
+	test('SetRelayTimerInMiliseconds command', () => {
+		expect(commandBuilder.build('SetRelayTimerInMiliseconds', { state: 0, time: 500 })).toStrictEqual(
+			new BaseCommand('SetRelayTimerInMiliseconds', 0x55, '00', '01F4'),
+		)
+	})
+	test('GetRelayTimerInMiliseconds command', () => {
+		expect(commandBuilder.build('GetRelayTimerInMiliseconds')).toStrictEqual(
+			new BaseCommand('GetRelayTimerInMiliseconds', 0x56),
+		)
+	})
+	test('SetRelayTimerInSeconds command', () => {
+		expect(commandBuilder.build('SetRelayTimerInSeconds', { state: 0, time: 3 })).toStrictEqual(
+			new BaseCommand('SetRelayTimerInSeconds', 0x57, '00', '0003'),
+		)
+	})
+	test('GetRelayTimerInSeconds command', () => {
+		expect(commandBuilder.build('GetRelayTimerInSeconds')).toStrictEqual(
+			new BaseCommand('GetRelayTimerInSeconds', 0x58),
+		)
+	})
+	test('GetRelayStateChangeReason command', () => {
+		expect(commandBuilder.build('GetRelayStateChangeReason')).toStrictEqual(
+			new BaseCommand('GetRelayStateChangeReason', 0x54),
+		)
+	})
 })
 describe('16 ADS commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('relay_16_dry')
@@ -40,6 +65,31 @@ describe('16 ADS commands payload encoder', () => {
 	test('SetRelayState command', () => {
 		expect(commandBuilder.build('SetRelayState', { state: true })).toStrictEqual(
 			new BaseCommand('SetRelayState', 0xc1, '01'),
+		)
+	})
+	test('SetRelayTimerInMiliseconds command', () => {
+		expect(commandBuilder.build('SetRelayTimerInMiliseconds', { state: 0, time: 500 })).toStrictEqual(
+			new BaseCommand('SetRelayTimerInMiliseconds', 0x55, '00', '01F4'),
+		)
+	})
+	test('GetRelayTimerInMiliseconds command', () => {
+		expect(commandBuilder.build('GetRelayTimerInMiliseconds')).toStrictEqual(
+			new BaseCommand('GetRelayTimerInMiliseconds', 0x56),
+		)
+	})
+	test('SetRelayTimerInSeconds command', () => {
+		expect(commandBuilder.build('SetRelayTimerInSeconds', { state: 0, time: 3 })).toStrictEqual(
+			new BaseCommand('SetRelayTimerInSeconds', 0x57, '00', '0003'),
+		)
+	})
+	test('GetRelayTimerInSeconds command', () => {
+		expect(commandBuilder.build('GetRelayTimerInSeconds')).toStrictEqual(
+			new BaseCommand('GetRelayTimerInSeconds', 0x58),
+		)
+	})
+	test('GetRelayStateChangeReason command', () => {
+		expect(commandBuilder.build('GetRelayStateChangeReason')).toStrictEqual(
+			new BaseCommand('GetRelayStateChangeReason', 0x54),
 		)
 	})
 })

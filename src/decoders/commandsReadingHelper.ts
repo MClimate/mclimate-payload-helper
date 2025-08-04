@@ -1497,6 +1497,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.WirelessThermostat) {
 							command_len = 2
 							data = { manualTargetTemperatureUpdate: parseInt(`0x${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
+						} else if (deviceType === DeviceType.Relay16 || deviceType === DeviceType.Relay16Dry) {
+							command_len = 1
+							data = { relayStateChangeReason: parseInt(commands[i + 1], 16) }
 						} else {
 							command_len = 1
 							let offset = (parseInt(commands[i + 1], 16) - 28) * 0.176
@@ -1541,6 +1544,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 1
 							data = { displayTemperatureUnits: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.Relay16 || deviceType === DeviceType.Relay16Dry) {
+							command_len = 3
+							let state = parseInt(commands[i + 1], 16)
+							let time = parseInt(commands[i + 2], 16) << 8 | parseInt(commands[i + 3], 16)
+							data = { relayTimerInMilliseconds: { state, time } }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1566,6 +1574,26 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '57'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '58':
+				{
+					try {
+						let data
+						command_len = 3
+						let state = parseInt(commands[i + 1], 16)
+						let time = parseInt(commands[i + 2], 16) << 8 | parseInt(commands[i + 3], 16) 
+						data = { relayTimerInSeconds: { state, time } }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '58'`,
 							hexData,
 							command,
 							deviceType,

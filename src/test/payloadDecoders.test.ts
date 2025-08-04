@@ -614,7 +614,7 @@ describe('ASPM payload decoder', () => {
 		})
 	})
 	test('keepalive with response of commands', () => {
-		expect(uplinkPayloadParser('5C015A01011C034A241805D9E7195201', DeviceType.Relay16)).toStrictEqual({
+		expect(uplinkPayloadParser('54015C015A01011C034A241805D9E7195201', DeviceType.Relay16)).toStrictEqual({
 			internalTemperature: 28,
 			energy: 55190.552,
 			power: 1497,
@@ -623,6 +623,19 @@ describe('ASPM payload decoder', () => {
 			relayState: true,
 			ledIndicationMode: 1,
 			afterOverheatingProtectionRecovery: 1,
+			relayStateChangeReason: 1,
+		})
+	})
+	test('keepalive with response of new commands', () => {
+		expect(uplinkPayloadParser('560000FF58000001011C034A241805D9E7195201', DeviceType.Relay16)).toStrictEqual({
+			internalTemperature: 28,
+			energy: 55190.552,
+			power: 1497,
+			acVoltage: 231,
+			acCurrent: 6482,
+			relayState: true,
+			relayTimerInSeconds: { state: 0, time: 1 },
+			relayTimerInMilliseconds: { state: 0, time: 255 },
 		})
 	})
 	test('all settings ', () => {
@@ -660,11 +673,14 @@ describe('ADS payload decoder', () => {
 		})
 	})
 	test('keepalive with response of commands', () => {
-		expect(uplinkPayloadParser('5C015A01011E00', DeviceType.Relay16Dry)).toStrictEqual({
+		expect(uplinkPayloadParser('560000FF5800000154015C015A01011E00', DeviceType.Relay16Dry)).toStrictEqual({
 			internalTemperature: 30,
 			relayState: false,
 			ledIndicationMode: 1,
 			afterOverheatingProtectionRecovery: 1,
+			relayStateChangeReason: 1,
+			relayTimerInSeconds: { state: 0, time: 1 },
+			relayTimerInMilliseconds: { state: 0, time: 255 },
 		})
 	})
 	test('all settings ', () => {

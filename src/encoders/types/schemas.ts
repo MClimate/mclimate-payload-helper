@@ -335,6 +335,17 @@ const Relay16CommandSchemas = {
 		state: z.boolean(),
 	}),
 	getRelayState: z.object({}),
+	setRelayTimerInMiliseconds: z.object({
+		state: z.number(),
+		time: z.number(),
+	}),
+	getRelayTimerInMiliseconds: z.object({}),
+	setRelayTimerInSeconds: z.object({
+		state: z.number(),
+		time: z.number(),
+	}),
+	getRelayTimerInSeconds: z.object({}),
+	getRelayStateChangeReason: z.object({}),
 	getOverheatingEvents: z.object({}),
 	getOvervoltageEvents: z.object({}),
 	getOvercurrentEvents: z.object({}),
@@ -352,6 +363,8 @@ export namespace Relay16CommandTypes {
 	export type SetLedIndicationModeParams = z.infer<typeof Relay16CommandSchemas.setLedIndicationMode>
 	export type SetRelayRecoveryStateParams = z.infer<typeof Relay16CommandSchemas.setRelayRecoveryState>
 	export type SetRelayStateParams = z.infer<typeof Relay16CommandSchemas.setRelayState>
+	export type SetRelayTimerInMilisecondsParams = z.infer<typeof Relay16CommandSchemas.setRelayTimerInMiliseconds>
+	export type SetRelayTimerInSecondsParams = z.infer<typeof Relay16CommandSchemas.setRelayTimerInSeconds>
 }
 
 /* --------------------------------------- RELAY 16 DRY COMMANDS --------------------------------------- */
@@ -366,6 +379,17 @@ const Relay16DryCommandSchemas = {
 	setAfterOverheatingProtectionRecovery: z.object({
 		state: z.number(),
 	}),
+	setRelayTimerInMiliseconds: z.object({
+		state: z.number(),
+		time: z.number(),
+	}),
+	getRelayTimerInMiliseconds: z.object({}),
+	setRelayTimerInSeconds: z.object({
+		state: z.number(),
+		time: z.number(),
+	}),
+	getRelayTimerInSeconds: z.object({}),
+	getRelayStateChangeReason: z.object({}),
 	getAfterOverheatingProtectionRecovery: z.object({}),
 	setLedIndicationMode: z.object({
 		mode: z.number(),

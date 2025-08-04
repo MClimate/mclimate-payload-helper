@@ -244,4 +244,60 @@ export class Relay16Commands extends GeneralCommands {
 	static getOverpowerRecoveryTemp() {
 		return new BaseCommand('GetOverpowerRecoveryTemp', 0x73)
 	}
+
+	static setRelayTimerInMiliseconds(params: Relay16CommandTypes.SetRelayTimerInMilisecondsParams) {
+		try {
+			DeviceCommandSchemas.Relay16CommandSchemas.setRelayTimerInMiliseconds.parse(params)
+			const { state, time } = params
+			return new BaseCommand('SetRelayTimerInMiliseconds', 0x55, decToHex(state), dec2hex(time))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetRelayTimerInMiliseconds execution',
+					command: 'SetRelayTimerInMiliseconds',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetRelayTimerInMiliseconds execution',
+					command: 'SetRelayTimerInMiliseconds',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getRelayTimerInMiliseconds() {
+		return new BaseCommand('GetRelayTimerInMiliseconds', 0x56)
+	}
+
+	static setRelayTimerInSeconds(params: Relay16CommandTypes.SetRelayTimerInSecondsParams) {
+		try {
+			DeviceCommandSchemas.Relay16CommandSchemas.setRelayTimerInSeconds.parse(params)
+			const { state, time } = params
+			return new BaseCommand('SetRelayTimerInSeconds', 0x57, decToHex(state), dec2hex(time))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetRelayTimerInSeconds execution',
+					command: 'SetRelayTimerInSeconds',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetRelayTimerInSeconds execution',
+					command: 'SetRelayTimerInSeconds',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getRelayTimerInSeconds() {
+		return new BaseCommand('GetRelayTimerInSeconds', 0x58)
+	}
+
+	static getRelayStateChangeReason() {
+		return new BaseCommand('GetRelayStateChangeReason', 0x54)
+	}
 }
