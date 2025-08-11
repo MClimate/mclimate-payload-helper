@@ -300,8 +300,6 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 4
 							let enabled = !!parseInt(commands[i + 1], 16)
 							let duration = parseInt(commands[i + 2], 16) * 5
-							// TODO: discuss/test below
-
 							let motorPos1 = parseInt(commands[i + 4], 16) >> 4 // upper 4 bits of Byte 4
 							let motorPos2 = parseInt(commands[i + 3], 16) & 0xff // lower 8 bits of Byte 3
 							let motorPosition = (motorPos1 << 8) | motorPos2
@@ -399,7 +397,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '17':
 				{
 					try {
-						let data;
+						let data
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 4
 							data = {
@@ -408,7 +406,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									heatingTempMax: parseInt(commands[i + 2], 16),
 									coolingTempMin: parseInt(commands[i + 3], 16),
 									coolingTempMax: parseInt(commands[i + 4], 16),
-								}
+								},
 							}
 						} else {
 							command_len = 2
@@ -886,8 +884,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '2f':
 				{
 					try {
-						let data;
-						if (deviceType === DeviceType.CO2DisplayLite || deviceType === DeviceType.CO2PirLite || deviceType === DeviceType.HTPirLite) {
+						let data
+						if (
+							deviceType === DeviceType.CO2DisplayLite ||
+							deviceType === DeviceType.CO2PirLite ||
+							deviceType === DeviceType.HTPirLite
+						) {
 							command_len = 1
 							data = { uplinkSendingOnButtonPress: parseInt(commands[i + 1], 16) }
 						} else {
@@ -1547,7 +1549,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						} else if (deviceType === DeviceType.Relay16 || deviceType === DeviceType.Relay16Dry) {
 							command_len = 3
 							let state = parseInt(commands[i + 1], 16)
-							let time = parseInt(commands[i + 2], 16) << 8 | parseInt(commands[i + 3], 16)
+							let time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
 							data = { relayTimerInMilliseconds: { state, time } }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1588,7 +1590,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data
 						command_len = 3
 						let state = parseInt(commands[i + 1], 16)
-						let time = parseInt(commands[i + 2], 16) << 8 | parseInt(commands[i + 3], 16) 
+						let time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
 						data = { relayTimerInSeconds: { state, time } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -2053,7 +2055,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									heatingTempMax: parseInt(commands[i + 2], 16),
 									coolingTempMin: parseInt(commands[i + 3], 16),
 									coolingTempMax: parseInt(commands[i + 4], 16),
-								}
+								},
 							}
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -2189,10 +2191,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case 'b1':
 				{
 					try {
-						let data;
+						let data
 						if (deviceType === DeviceType.MCButton) {
 							command_len = 3
-							data = { singlePressEventCounter: (parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16) }
+							data = {
+								singlePressEventCounter:
+									(parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
+							}
 						} else {
 							command_len = 1
 							data = { relayState: parseInt(commands[i + 1], 16) === 0x01 }
@@ -2213,7 +2218,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 3
-						let data = { doublePressEventCounter: (parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16) }
+						let data = {
+							doublePressEventCounter:
+								(parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
+						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -2230,7 +2238,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 3
-						let data = { triplePressEventCounter: (parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16) }
+						let data = {
+							triplePressEventCounter:
+								(parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
+						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
