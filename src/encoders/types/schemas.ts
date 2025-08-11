@@ -2,104 +2,76 @@ import { z } from 'zod'
 
 /* ---------------------------------------TYPE HELPERS--------------------------------------- */
 
-// Helper functions to create type-safe enums that match schema types
-function createNumberEnum<T extends Record<number, string>>(enum_: T): T {
-	return enum_
+// Strict type helpers that prevent key type mismatches
+// This type will cause an error if any key is not a number literal
+type NumberEnum<K extends number = number> = {
+	[P in K]: string
 }
 
-function createStringEnum<T extends Record<string, string>>(enum_: T): T {
-	return enum_
+type StringEnum<K extends string = string> = {
+	[P in K]: string
 }
-
-// Type to extract the expected key type from a Zod schema
-type ExtractSchemaKeyType<T> =
-	T extends z.ZodObject<infer Shape>
-		? Shape extends { state: infer S }
-			? S extends z.ZodNumber
-				? number
-				: S extends z.ZodEnum<any>
-					? string
-					: never
-			: Shape extends { value: infer V }
-				? V extends z.ZodNumber
-					? number
-					: V extends z.ZodEnum<any>
-						? string
-						: never
-				: Shape extends { mode: infer M }
-					? M extends z.ZodNumber
-						? number
-						: M extends z.ZodEnum<any>
-							? string
-							: never
-					: never
-		: never
 
 /* ---------------------------------------HELPER ENUM DEFINITIONS--------------------------------------- */
 
 // Enum helper objects that include both values and descriptions for frontend use
-export const VickiEnums = {
+export const GeneralCommandsEnums = {
 	uplinkType: {
 		'01': 'confirmedUplinks',
 		'00': 'unconfirmedUplinks',
-	},
+	} satisfies StringEnum,
+} as const
+
+export const VickiEnums = {
 	operationalMode: {
-		'00': 'OnlineManualControl',
-		'01': 'AutomaticControl',
-		'02': 'AutomaticControlWithExtSensor',
-	},
+		'00': 'Online manual control mode',
+		'01': 'Online automatic control mode',
+		'02': 'Online automatic control mode with external temperature reading',
+	} satisfies StringEnum<'00' | '01' | '02'>,
 	primaryOperationalMode: {
-		'00': 'HeatingMode',
-		'01': 'CoolingMode',
-	},
+		'00': 'Heating mode',
+		'01': 'Cooling mode',
+	} satisfies StringEnum<'00' | '01'>,
 	temperatureControlAlgorithm: {
-		'00': 'ProportionalControl',
-		'01': 'EqualDirectionalControl',
-		'02': 'ProportionalIntegralControl',
-	},
+		'00': 'Proportional control',
+		'01': 'Equal directional control',
+		'02': 'Proportional integral control ',
+	} satisfies StringEnum<'00' | '01' | '02'>,
 	childLockBehavior: {
-		0: 'AutomaticlyDisabled',
-		1: 'RemainsUnchanged',
-	},
+		0: 'Automaticly disabled',
+		1: 'Remains unchanged',
+	} satisfies NumberEnum<0 | 1>,
 } as const
 
 export const Relay16Enums = {
-	uplinkType: {
-		'01': 'confirmedUplinks',
-		'00': 'unconfirmedUplinks',
-	},
 	relayState: {
 		0: 'OFF',
 		1: 'ON',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	afterOverheatingProtectionRecovery: {
 		0: 'lastState',
 		1: 'OFF',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	ledIndicationMode: {
 		0: 'OFF',
 		1: 'ON',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	relayRecoveryState: {
 		0: 'lastState',
 		1: 'ON',
 		2: 'OFF',
-	},
+	} satisfies NumberEnum<0 | 1 | 2>,
 } as const
 
 export const FanCoilThermostatEnums = {
-	uplinkType: {
-		'01': 'confirmedUplinks',
-		'00': 'unconfirmedUplinks',
-	},
 	humidityVisibility: {
 		0: 'hide',
 		1: 'show',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	currentTemperatureVisibility: {
 		0: 'hide',
 		1: 'show',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	keysLock: {
 		0: 'No keys locked',
 		1: 'Lock all keys',
@@ -107,11 +79,11 @@ export const FanCoilThermostatEnums = {
 		3: 'Lock ON/OFF',
 		4: 'Lock all keys except ON/OFF key',
 		5: 'Lock mode change',
-	},
+	} satisfies NumberEnum,
 	extAutomaticTemperatureControl: {
 		0: 'deactivated',
 		1: 'activated',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	fanSpeed: {
 		0: 'automatic',
 		1: 'low/1',
@@ -120,105 +92,93 @@ export const FanCoilThermostatEnums = {
 		4: 'medium/4',
 		5: 'high/5',
 		6: 'high/6',
-	},
+	} satisfies NumberEnum,
 	fanSpeedLimit: {
 		0: 'low/medium/high',
 		1: 'low/medium',
 		2: 'low',
 		3: 'controlDeactivated',
-	},
+	} satisfies NumberEnum,
 	operationalMode: {
 		0: 'ventilation',
 		1: 'heating',
 		2: 'cooling',
-	},
+	} satisfies NumberEnum<0 | 1 | 2>,
 	allowedOperationalModes: {
 		0: 'ventilation/heating/cooling',
 		1: 'ventilation/heating',
 		2: 'ventilation/cooling',
-	},
+	} satisfies NumberEnum,
 	fanSpeedNotOccupied: {
 		0: 'low',
 		1: 'automatic',
 		2: 'dontChange',
-	},
+	} satisfies NumberEnum,
 	deviceStatus: {
 		0: 'off',
 		1: 'on',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	returnOfPowerOperation: {
 		0: 'lastStatus',
 		1: 'on',
 		2: 'off',
-	},
+	} satisfies NumberEnum<0 | 1 | 2>,
 	additionalFanMode: {
 		0: 'TurnOffOnTargetReach',
 		1: 'KeepOnTargetReach',
 		2: 'FanAlwaysOn',
-	},
+	} satisfies NumberEnum,
 	userInterfaceLanguage: {
 		0: 'English',
 		1: 'French',
 		2: 'German',
 		3: 'Spanish',
-	},
+	} satisfies NumberEnum,
 } as const
 
 export const TValveEnums = {
-	uplinkType: {
-		'01': 'confirmedUplinks',
-		'00': 'unconfirmedUplinks',
-	},
 	valveState: {
 		0: 'open',
 		1: 'close',
-	},
+	} satisfies NumberEnum<0 | 1>,
 } as const
 
 export const WirelessThermostatEnums = {
-	uplinkType: {
-		'01': 'confirmedUplinks',
-		'00': 'unconfirmedUplinks',
-	},
 	humidityVisibility: {
 		0: 'hide',
 		1: 'show',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	lightIntensityVisibility: {
 		0: 'hide',
 		1: 'show',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	currentTemperatureVisibility: {
 		0: 'hide',
 		1: 'show',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	pirSensorStatus: {
 		0: 'disabled',
 		1: 'enabled',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	heatingStatus: {
 		0: 'disabled',
 		1: 'enabled',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	automaticHeatingStatus: {
 		0: 'turnOffAutomaticMode',
 		1: 'turnOnAutomaticMode',
-	},
+	} satisfies NumberEnum<0 | 1>,
 	sensorMode: {
 		0: 'turnOffSensorMode',
 		1: 'turnOnSensorMode',
-	},
+	} satisfies NumberEnum<0 | 1>,
 } as const
 
 export const ButtonEnums = {
-	uplinkType: {
-		'01': 'confirmedUplinks',
-		'00': 'unconfirmedUplinks',
-	},
 	sendEventLater: {
 		1: 'send later when allowed',
 		0: "Don't send later when allowed",
-	},
+	} satisfies NumberEnum<0 | 1>,
 } as const
 
 /* ---------------------------------------GENERAL COMMANDS--------------------------------------- */
@@ -425,7 +385,7 @@ const VickiCommandSchemas = {
 		targetTemperature: z.number().min(5).max(30),
 	}),
 	setChildLockBehavior: z.object({
-		behavior: z.union([z.literal(0), z.literal(1)]),
+		behavior: z.number().min(0).max(1),
 	}),
 	getChildLockBehavior: z.object({}),
 	setProportionalGain: z.object({
@@ -542,28 +502,28 @@ const Relay16CommandSchemas = {
 	getOverpowerThreshold: z.object({}),
 	clearAcumulatedEnergy: z.object({}),
 	setAfterOverheatingProtectionRecovery: z.object({
-		state: z.number().min(0).max(1), // 00: lastState, 01: OFF
+		state: z.number().min(0).max(1), // 0: lastState, 1: OFF
 	}),
 	getAfterOverheatingProtectionRecovery: z.object({}),
 	setLedIndicationMode: z.object({
-		mode: z.number().min(0).max(1), // 00: OFF, 01: ON
+		mode: z.number().min(0).max(1), // 0: OFF, 1: ON
 	}),
 	getLedIndicationMode: z.object({}),
 	setRelayRecoveryState: z.object({
-		state: z.number().min(0).max(2), // 00: lastState, 01: ON, 02: OFF
+		state: z.number().min(0).max(2), // 0: lastState, 1: ON, 2: OFF
 	}),
 	getRelayRecoveryState: z.object({}),
 	setRelayState: z.object({
-		state: z.number().min(0).max(1), // 00: OFF, 01: ON
+		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 	}),
 	getRelayState: z.object({}),
 	setRelayTimerInMilliseconds: z.object({
-		state: z.number().min(0).max(1), // 00: OFF, 01: ON
+		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
 	}),
 	getRelayTimerInMiliseconds: z.object({}),
 	setRelayTimerInSeconds: z.object({
-		state: z.number().min(0).max(1), // 00: OFF, 01: ON
+		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
 	}),
 	getRelayTimerInMinutes: z.object({}),
@@ -599,30 +559,30 @@ const Relay16DryCommandSchemas = {
 	}),
 	getOverheatingThresholds: z.object({}),
 	setAfterOverheatingProtectionRecovery: z.object({
-		state: z.number().min(0).max(1), // 00: lastState, 01: OFF
+		state: z.number().min(0).max(1), // 0: lastState, 1: OFF
 	}),
 	setRelayTimerInMiliseconds: z.object({
-		state: z.number().min(0).max(1), // 00: OFF, 01: ON
+		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
 	}),
 	getRelayTimerInMiliseconds: z.object({}),
 	setRelayTimerInMinutes: z.object({
-		state: z.number().min(0).max(1), // 00: OFF, 01: ON
+		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
 	}),
 	getRelayTimerInMinutes: z.object({}),
 	getRelayStateChangeReason: z.object({}),
 	getAfterOverheatingProtectionRecovery: z.object({}),
 	setLedIndicationMode: z.object({
-		mode: z.number().min(0).max(1), // 00: OFF, 01: ON
+		mode: z.number().min(0).max(1), // 0: OFF, 1: ON
 	}),
 	getLedIndicationMode: z.object({}),
 	setRelayRecoveryState: z.object({
-		state: z.number().min(0).max(2), // 00: lastState, 01: ON, 02: OFF
+		state: z.number().min(0).max(2), // 0: lastState, 1: ON, 2: OFF
 	}),
 	getRelayRecoveryState: z.object({}),
 	setRelayState: z.object({
-		state: z.number().min(0).max(1), // 00: OFF, 01: ON
+		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 	}),
 	getRelayState: z.object({}),
 	getOverheatingEvents: z.object({}),
@@ -730,11 +690,11 @@ const FanCoilThermostatCommandSchemas = {
 	}),
 	getDisplayRefreshPeriod: z.object({}),
 	setHumidityVisibility: z.object({
-		state: z.number().min(0).max(1), // 00: hide, 01: show
+		state: z.number().min(0).max(1), // 0: hide, 1: show
 	}),
 	getHumidityVisibility: z.object({}),
 	setCurrentTemperatureVisibility: z.object({
-		state: z.number().min(0).max(1), // 00: hide, 01: show
+		state: z.number().min(0).max(1), // 0: hide, 1: show
 	}),
 	getCurrentTemperatureVisibility: z.object({}),
 	setTargetTemperatureStep: z.object({
@@ -753,7 +713,7 @@ const FanCoilThermostatCommandSchemas = {
 	}),
 	getValveOpenCloseTime: z.object({}),
 	setExtAutomaticTemperatureControl: z.object({
-		value: z.number().min(0).max(1), // 00: deactivated, 01: activated
+		value: z.number().min(0).max(1), // 0: deactivated, 1: activated
 	}),
 	getExtAutomaticTemperatureControl: z.object({}),
 	setFanSpeed: z.object({
