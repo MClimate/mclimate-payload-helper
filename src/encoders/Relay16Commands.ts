@@ -190,8 +190,7 @@ export class Relay16Commands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.Relay16CommandSchemas.setRelayState.parse(params)
 			let { state } = params
-			const convertedState = state ? 1 : 0
-			return new BaseCommand('SetRelayState', 0xc1, decToHex(convertedState))
+			return new BaseCommand('SetRelayState', 0xc1, decToHex(state))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -247,7 +246,7 @@ export class Relay16Commands extends GeneralCommands {
 
 	static setRelayTimerInMiliseconds(params: Relay16CommandTypes.SetRelayTimerInMilisecondsParams) {
 		try {
-			DeviceCommandSchemas.Relay16CommandSchemas.setRelayTimerInMiliseconds.parse(params)
+			DeviceCommandSchemas.Relay16CommandSchemas.setRelayTimerInMilliseconds.parse(params)
 			const { state, time } = params
 			return new BaseCommand('SetRelayTimerInMiliseconds', 0x55, decToHex(state), dec2hex(time))
 		} catch (e) {

@@ -86,7 +86,7 @@ export class GeneralCommands {
 		try {
 			DeviceCommandSchemas.GeneralCommandSchemas.setUplinkType.parse(params)
 			const { type } = params
-			return new BaseCommand('SetUplinkType', 0x11, type.toString())
+			return new BaseCommand('SetUplinkType', 0x11, type)
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
