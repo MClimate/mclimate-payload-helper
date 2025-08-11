@@ -233,6 +233,7 @@ const TemperatureCommandSchemas = {
 		min: z.number().min(5).max(30),
 		max: z.number().min(5).max(30),
 	}),
+	getTargetTemperature: z.object({}),
 }
 
 export namespace TemperatureCommandTypes {
@@ -679,11 +680,7 @@ export namespace TValveCommandTypes {
 
 const FanCoilThermostatCommandSchemas = {
 	...GeneralCommandSchemas,
-	setTemperatureRange: z.object({
-		min: z.number().min(5).max(99),
-		max: z.number().min(5).max(99),
-	}),
-	getTargetTemperature: z.object({}),
+	...TemperatureCommandSchemas,
 	setDisplayRefreshPeriod: z.object({
 		period: z.number().min(1).max(24),
 	}),
