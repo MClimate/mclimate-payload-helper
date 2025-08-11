@@ -8,42 +8,37 @@ import { decToHex } from '@/utils'
 
 export class Co2PirLiteCommands extends GeneralCommands {
 	static setUplinkSendingOnButtonPress(params: Co2PirLiteCommandTypes.SetUplinkSendingOnButtonPressParams) {
-			try {
-				DeviceCommandSchemas.Co2PirLiteCommandSchemas.setUplinkSendingOnButtonPress.parse(params)
-				const { value } = params
-				return new BaseCommand('SetUplinkSendingOnButtonPress', 0x2e, decToHex(value))
-			} catch (e) {
-				if (e instanceof ZodError) {
-					throw new CustomError({
-						message: 'Zod validation error during SetUplinkSendingOnButtonPress execution',
-						command: 'SetUplinkSendingOnButtonPress',
-						originalError: e,
-					})
-				} else {
-					throw new CustomError({
-						message: 'Error during SetUplinkSendingOnButtonPress execution',
-						command: 'SetUplinkSendingOnButtonPress',
-						originalError: e as Error,
-					})
-				}
+		try {
+			DeviceCommandSchemas.Co2PirLiteCommandSchemas.setUplinkSendingOnButtonPress.parse(params)
+			const { value } = params
+			return new BaseCommand('SetUplinkSendingOnButtonPress', 0x2e, decToHex(value))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetUplinkSendingOnButtonPress execution',
+					command: 'SetUplinkSendingOnButtonPress',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetUplinkSendingOnButtonPress execution',
+					command: 'SetUplinkSendingOnButtonPress',
+					originalError: e as Error,
+				})
 			}
 		}
-	
-		static getUplinkSendingOnButtonPress() {
-			return new BaseCommand('GetUplinkSendingOnButtonPress', 0x2f)
-		}
+	}
 
-		
-		static restartDevice() {
-			return new BaseCommand('RestartDevice', 0xa5)
-		}
+	static getUplinkSendingOnButtonPress() {
+		return new BaseCommand('GetUplinkSendingOnButtonPress', 0x2f)
+	}
+
+	static restartDevice() {
+		return new BaseCommand('RestartDevice', 0xa5)
+	}
 }
 
-applyMixins(Co2PirLiteCommands, [
-	GeneralCommands,
-	PIRCommands,
-	CO2SensorCommands,
-])
+applyMixins(Co2PirLiteCommands, [GeneralCommands, PIRCommands, CO2SensorCommands])
 
 delMethods(Co2PirLiteCommands, [
 	'setPIRInitPeriod',
@@ -55,3 +50,4 @@ delMethods(Co2PirLiteCommands, [
 	'setCo2Led',
 	'getCo2Led',
 ])
+

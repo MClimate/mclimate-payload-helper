@@ -708,7 +708,14 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setHeatingCoolingTargetTempRanges.parse(params)
 			const { heatingTempMin, heatingTempMax, coolingTempMin, coolingTempMax } = params
-			return new BaseCommand('SetHeatingCoolingTargetTempRanges', 0x16, decToHex(heatingTempMin), decToHex(heatingTempMax), decToHex(coolingTempMin), decToHex(coolingTempMax))
+			return new BaseCommand(
+				'SetHeatingCoolingTargetTempRanges',
+				0x16,
+				decToHex(heatingTempMin),
+				decToHex(heatingTempMax),
+				decToHex(coolingTempMin),
+				decToHex(coolingTempMax),
+			)
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -728,11 +735,20 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 	static getHeatingCoolingTargetTempRanges() {
 		return new BaseCommand('GetHeatingCoolingTargetTempRanges', 0x17)
 	}
-	static setHeatingCoolingTargetTempRangesUnoccupied(params: FanCoilThermostatCommandTypes.SetHeatingCoolingTargetTempRangesUnoccupied) {
+	static setHeatingCoolingTargetTempRangesUnoccupied(
+		params: FanCoilThermostatCommandTypes.SetHeatingCoolingTargetTempRangesUnoccupied,
+	) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setHeatingCoolingTargetTempRangesUnoccupied.parse(params)
 			const { heatingTempMin, heatingTempMax, coolingTempMin, coolingTempMax } = params
-			return new BaseCommand('SetHeatingCoolingTargetTempRangesUnoccupied', 0x76, decToHex(heatingTempMin), decToHex(heatingTempMax), decToHex(coolingTempMin), decToHex(coolingTempMax))
+			return new BaseCommand(
+				'SetHeatingCoolingTargetTempRangesUnoccupied',
+				0x76,
+				decToHex(heatingTempMin),
+				decToHex(heatingTempMax),
+				decToHex(coolingTempMin),
+				decToHex(coolingTempMax),
+			)
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -753,7 +769,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		return new BaseCommand('SetHeatingCoolingTargetTempRangesUnoccupied', 0x77)
 	}
 
-	static setFanOffDelayTime(params: FanCoilThermostatCommandTypes.SetFanOffDelayTime) {
+	static setFanOffDelayTime(params: FanCoilThermostatCommandTypes.SetFanOffDelayTimeParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setFanOffDelayTime.parse(params)
 			const { time } = params
@@ -778,7 +794,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 	static getFanOffDelayTime() {
 		return new BaseCommand('getFanOffDelayTime', 0x79)
 	}
-	static setAdditionalFanMode(params: FanCoilThermostatCommandTypes.SetAdditionalFanMode) {
+	static setAdditionalFanMode(params: FanCoilThermostatCommandTypes.SetAdditionalFanModeParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setAdditionalFanMode.parse(params)
 			const { mode } = params
@@ -812,7 +828,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		return new BaseCommand('GetExternalTemperatureSensorError', 0x7d)
 	}
 
-	static setUserInterfaceLanguage(params: FanCoilThermostatCommandTypes.SetUserInterfaceLanguage) {
+	static setUserInterfaceLanguage(params: FanCoilThermostatCommandTypes.SetUserInterfaceLanguageParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setUserInterfaceLanguage.parse(params)
 			const { value } = params
