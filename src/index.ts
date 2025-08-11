@@ -22,7 +22,7 @@ export {
 	Co2PirLiteCommands,
 	HTPirLiteCommands,
 } from '@/encoders'
-export { 
+export {
 	DeviceCommandSchemas,
 	VickiEnums,
 	Relay16Enums,
@@ -30,5 +30,6 @@ export {
 	TValveEnums,
 	WirelessThermostatEnums,
 	ButtonEnums,
+	GeneralCommandsEnums,
 } from '@/encoders/types'
 export { CustomError } from '@/utils'
