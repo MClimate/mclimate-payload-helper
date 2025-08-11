@@ -22,5 +22,14 @@ export {
 	Co2PirLiteCommands,
 	HTPirLiteCommands,
 } from '@/encoders'
-export { DeviceCommandSchemas } from '@/encoders/types'
+export {
+	DeviceCommandSchemas,
+	VickiEnums,
+	Relay16Enums,
+	FanCoilThermostatEnums,
+	TValveEnums,
+	WirelessThermostatEnums,
+	ButtonEnums,
+	GeneralCommandsEnums,
+} from '@/encoders/types'
 export { CustomError } from '@/utils'
