@@ -2,8 +2,6 @@ import { z } from 'zod'
 
 /* ---------------------------------------TYPE HELPERS--------------------------------------- */
 
-// Strict type helpers that prevent key type mismatches
-// This type will cause an error if any key is not a number literal
 type NumberEnum<K extends number = number> = {
 	[P in K]: string
 }
@@ -15,48 +13,49 @@ type StringEnum<K extends string = string> = {
 /* ---------------------------------------HELPER ENUM DEFINITIONS--------------------------------------- */
 
 // Enum helper objects that include both values and descriptions for frontend use
+// WARN: these need to be updated separately if the zod schemas below are changed
 export const GeneralCommandsEnums = {
-	uplinkType: {
+	setUplinkType: {
 		'01': 'confirmedUplinks',
 		'00': 'unconfirmedUplinks',
 	} satisfies StringEnum,
 } as const
 
 export const VickiEnums = {
-	operationalMode: {
+	setOperationalMode: {
 		'00': 'Online manual control mode',
 		'01': 'Online automatic control mode',
 		'02': 'Online automatic control mode with external temperature reading',
 	} satisfies StringEnum<'00' | '01' | '02'>,
-	primaryOperationalMode: {
+	setPrimaryOperationalMode: {
 		'00': 'Heating mode',
 		'01': 'Cooling mode',
 	} satisfies StringEnum<'00' | '01'>,
-	temperatureControlAlgorithm: {
+	setTemperatureControlAlgorithm: {
 		'00': 'Proportional control',
 		'01': 'Equal directional control',
-		'02': 'Proportional integral control ',
+		'02': 'Proportional integral control',
 	} satisfies StringEnum<'00' | '01' | '02'>,
-	childLockBehavior: {
-		0: 'Automaticly disabled',
+	setChildLockBehavior: {
+		0: 'Automatically disabled',
 		1: 'Remains unchanged',
 	} satisfies NumberEnum<0 | 1>,
 } as const
 
 export const Relay16Enums = {
-	relayState: {
+	setRelayState: {
 		0: 'OFF',
 		1: 'ON',
 	} satisfies NumberEnum<0 | 1>,
-	afterOverheatingProtectionRecovery: {
+	setAfterOverheatingProtectionRecovery: {
 		0: 'lastState',
 		1: 'OFF',
 	} satisfies NumberEnum<0 | 1>,
-	ledIndicationMode: {
+	setLedIndicationMode: {
 		0: 'OFF',
 		1: 'ON',
 	} satisfies NumberEnum<0 | 1>,
-	relayRecoveryState: {
+	setRelayRecoveryState: {
 		0: 'lastState',
 		1: 'ON',
 		2: 'OFF',
@@ -64,15 +63,15 @@ export const Relay16Enums = {
 } as const
 
 export const FanCoilThermostatEnums = {
-	humidityVisibility: {
+	setHumidityVisibility: {
 		0: 'hide',
 		1: 'show',
 	} satisfies NumberEnum<0 | 1>,
-	currentTemperatureVisibility: {
+	setCurrentTemperatureVisibility: {
 		0: 'hide',
 		1: 'show',
 	} satisfies NumberEnum<0 | 1>,
-	keysLock: {
+	setKeysLock: {
 		0: 'No keys locked',
 		1: 'Lock all keys',
 		2: 'Lock ON/OFF and mode change',
@@ -80,11 +79,11 @@ export const FanCoilThermostatEnums = {
 		4: 'Lock all keys except ON/OFF key',
 		5: 'Lock mode change',
 	} satisfies NumberEnum,
-	extAutomaticTemperatureControl: {
+	setExtAutomaticTemperatureControl: {
 		0: 'deactivated',
 		1: 'activated',
 	} satisfies NumberEnum<0 | 1>,
-	fanSpeed: {
+	setFanSpeed: {
 		0: 'automatic',
 		1: 'low/1',
 		2: 'low/2',
@@ -93,42 +92,42 @@ export const FanCoilThermostatEnums = {
 		5: 'high/5',
 		6: 'high/6',
 	} satisfies NumberEnum,
-	fanSpeedLimit: {
+	setFanSpeedLimit: {
 		0: 'low/medium/high',
 		1: 'low/medium',
 		2: 'low',
 		3: 'controlDeactivated',
 	} satisfies NumberEnum,
-	operationalMode: {
+	setFctOperationalMode: {
 		0: 'ventilation',
 		1: 'heating',
 		2: 'cooling',
 	} satisfies NumberEnum<0 | 1 | 2>,
-	allowedOperationalModes: {
+	setAllowedOperationalModes: {
 		0: 'ventilation/heating/cooling',
 		1: 'ventilation/heating',
 		2: 'ventilation/cooling',
 	} satisfies NumberEnum,
-	fanSpeedNotOccupied: {
+	setFanSpeedNotOccupied: {
 		0: 'low',
 		1: 'automatic',
 		2: 'dontChange',
 	} satisfies NumberEnum,
-	deviceStatus: {
+	setDeviceStatus: {
 		0: 'off',
 		1: 'on',
 	} satisfies NumberEnum<0 | 1>,
-	returnOfPowerOperation: {
+	setReturnOfPowerOperation: {
 		0: 'lastStatus',
 		1: 'on',
 		2: 'off',
 	} satisfies NumberEnum<0 | 1 | 2>,
-	additionalFanMode: {
+	setAdditionalFanMode: {
 		0: 'TurnOffOnTargetReach',
 		1: 'KeepOnTargetReach',
 		2: 'FanAlwaysOn',
 	} satisfies NumberEnum,
-	userInterfaceLanguage: {
+	setUserInterfaceLanguage: {
 		0: 'English',
 		1: 'French',
 		2: 'German',
@@ -137,45 +136,45 @@ export const FanCoilThermostatEnums = {
 } as const
 
 export const TValveEnums = {
-	valveState: {
+	setValveState: {
 		0: 'open',
 		1: 'close',
 	} satisfies NumberEnum<0 | 1>,
 } as const
 
 export const WirelessThermostatEnums = {
-	humidityVisibility: {
+	setHumidityVisibility: {
 		0: 'hide',
 		1: 'show',
 	} satisfies NumberEnum<0 | 1>,
-	lightIntensityVisibility: {
+	setLightIntensityVisibility: {
 		0: 'hide',
 		1: 'show',
 	} satisfies NumberEnum<0 | 1>,
-	currentTemperatureVisibility: {
+	setCurrentTemperatureVisibility: {
 		0: 'hide',
 		1: 'show',
 	} satisfies NumberEnum<0 | 1>,
-	pirSensorStatus: {
+	setPIRSensorStatus: {
 		0: 'disabled',
 		1: 'enabled',
 	} satisfies NumberEnum<0 | 1>,
-	heatingStatus: {
+	setHeatingStatus: {
 		0: 'disabled',
 		1: 'enabled',
 	} satisfies NumberEnum<0 | 1>,
-	automaticHeatingStatus: {
+	setAutomaticHeatingStatus: {
 		0: 'turnOffAutomaticMode',
 		1: 'turnOnAutomaticMode',
 	} satisfies NumberEnum<0 | 1>,
-	sensorMode: {
+	setSensorMode: {
 		0: 'turnOffSensorMode',
 		1: 'turnOnSensorMode',
 	} satisfies NumberEnum<0 | 1>,
 } as const
 
 export const ButtonEnums = {
-	sendEventLater: {
+	setSendEventLater: {
 		1: 'send later when allowed',
 		0: "Don't send later when allowed",
 	} satisfies NumberEnum<0 | 1>,
