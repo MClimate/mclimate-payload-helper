@@ -932,7 +932,7 @@ const WirelessThermostatCommandSchemas = {
 	}),
 	getSensorMode: z.object({}),
 	setTemperatureHysteresis: z.object({
-		hysteresis: z.number().min(-5).max(5),
+		hysteresis: z.number().min(0.1).max(25.5).multipleOf(0.1),
 	}),
 	getTemperatureHysteresis: z.object({}),
 	setTargetTemperaturePrecisely: z.object({
