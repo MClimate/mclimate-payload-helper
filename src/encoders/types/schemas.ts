@@ -393,7 +393,7 @@ const VickiCommandSchemas = {
 	}),
 	getProportionalGain: z.object({}),
 	setExternalTemperatureFloat: z.object({
-		temp: z.number().int().min(0).max(255),
+		temp: z.number().int().min(0.1).max(255.0).multipleOf(0.1),
 	}),
 	setIntegralGain: z.object({
 		integralGain: z.number().int().min(0).max(127),
@@ -405,13 +405,13 @@ const VickiCommandSchemas = {
 	}),
 	getPiRunPeriod: z.object({}),
 	setTemperatureHysteresis: z.object({
-		hysteresis: z.number().min(0).max(100),
+		hysteresis: z.number().min(0.1).max(10.0).multipleOf(0.1),
 	}),
 	getTemperatureHysteresis: z.object({}),
 	setOpenWindowPrecisely: z.object({
 		enabled: z.boolean(),
 		duration: z.number().min(0).max(51),
-		delta: z.number().min(0).max(15),
+		delta: z.number().min(0.1).max(15.0).multipleOf(0.1),
 	}),
 	getOpenWindowPrecisely: z.object({}),
 	setForceAttach: z.object({
@@ -521,12 +521,12 @@ const Relay16CommandSchemas = {
 		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
 	}),
-	getRelayTimerInMiliseconds: z.object({}),
+	getRelayTimerInMilliseconds: z.object({}),
 	setRelayTimerInSeconds: z.object({
 		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
 	}),
-	getRelayTimerInMinutes: z.object({}),
+	getRelayTimerInSeconds: z.object({}),
 	getRelayStateChangeReason: z.object({}),
 	getOverheatingEvents: z.object({}),
 	getOvervoltageEvents: z.object({}),
@@ -545,7 +545,7 @@ export namespace Relay16CommandTypes {
 	export type SetLedIndicationModeParams = z.infer<typeof Relay16CommandSchemas.setLedIndicationMode>
 	export type SetRelayRecoveryStateParams = z.infer<typeof Relay16CommandSchemas.setRelayRecoveryState>
 	export type SetRelayStateParams = z.infer<typeof Relay16CommandSchemas.setRelayState>
-	export type SetRelayTimerInMilisecondsParams = z.infer<typeof Relay16CommandSchemas.setRelayTimerInMilliseconds>
+	export type SetRelayTimerInMillisecondsParams = z.infer<typeof Relay16CommandSchemas.setRelayTimerInMilliseconds>
 	export type SetRelayTimerInSecondsParams = z.infer<typeof Relay16CommandSchemas.setRelayTimerInSeconds>
 }
 
@@ -561,16 +561,16 @@ const Relay16DryCommandSchemas = {
 	setAfterOverheatingProtectionRecovery: z.object({
 		state: z.number().min(0).max(1), // 0: lastState, 1: OFF
 	}),
-	setRelayTimerInMiliseconds: z.object({
+	setRelayTimerInMilliseconds: z.object({
 		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
 	}),
-	getRelayTimerInMiliseconds: z.object({}),
-	setRelayTimerInMinutes: z.object({
+	getRelayTimerInMilliseconds: z.object({}),
+	setRelayTimerInSeconds: z.object({
 		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
 	}),
-	getRelayTimerInMinutes: z.object({}),
+	getRelayTimerInSeconds: z.object({}),
 	getRelayStateChangeReason: z.object({}),
 	getAfterOverheatingProtectionRecovery: z.object({}),
 	setLedIndicationMode: z.object({
@@ -694,7 +694,7 @@ const FanCoilThermostatCommandSchemas = {
 	}),
 	getCurrentTemperatureVisibility: z.object({}),
 	setTargetTemperatureStep: z.object({
-		value: z.number().min(0.1).max(10),
+		value: z.number().min(0.1).max(10).multipleOf(0.1),
 	}),
 	getTargetTemperatureStep: z.object({}),
 	setKeysLock: z.object({
@@ -759,7 +759,7 @@ const FanCoilThermostatCommandSchemas = {
 	getHeatingSetpointNotOccupied: z.object({}),
 	setTempSensorCompensation: z.object({
 		compensation: z.number().min(0).max(1),
-		temperature: z.number().min(-5).max(5),
+		temperature: z.number().min(-5).max(5).multipleOf(0.1),
 	}),
 	getTempSensorCompensation: z.object({}),
 	setFanSpeedNotOccupied: z.object({
@@ -792,12 +792,12 @@ const FanCoilThermostatCommandSchemas = {
 	}),
 	getReturnOfPowerOperation: z.object({}),
 	setDeltaTemperature1: z.object({
-		value: z.number().min(0.5).max(10),
+		value: z.number().min(0.5).max(10).multipleOf(0.5),
 	}),
 	getDeltaTemperature1: z.object({}),
 	setDeltaTemperature2and3: z.object({
-		deltaTemperature2: z.number().min(0.5).max(10),
-		deltaTemperature3: z.number().min(0.5).max(10),
+		deltaTemperature2: z.number().min(0.5).max(10).multipleOf(0.5),
+		deltaTemperature3: z.number().min(0.5).max(10).multipleOf(0.5),
 	}),
 	getDeltaTemperature2and3: z.object({}),
 	getFrostProtectionStatus: z.object({}),
@@ -936,11 +936,11 @@ const WirelessThermostatCommandSchemas = {
 	}),
 	getTemperatureHysteresis: z.object({}),
 	setTargetTemperaturePrecisely: z.object({
-		targetTemperature: z.number().min(5).max(99),
+		targetTemperature: z.number().min(5).max(99).multipleOf(0.1),
 	}),
 	getTargetTemperaturePrecisely: z.object({}),
 	setTargetTemperatureStep: z.object({
-		value: z.number().min(0.1).max(10),
+		value: z.number().min(0.1).max(10).multipleOf(0.1),
 	}),
 	getTargetTemperatureStep: z.object({}),
 }
@@ -1118,12 +1118,12 @@ const HTSensorCommandSchemas = {
 	...GeneralCommandSchemas,
 	setTemperatureCompensation: z.object({
 		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
-		compensation: z.number().min(0).max(255),
+		compensation: z.number().min(0).max(255).multipleOf(0.1),
 	}),
 	getTemperatureCompensation: z.object({}),
 	setHumidityCompensation: z.object({
 		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
-		compensation: z.number().min(0).max(255),
+		compensation: z.number().min(0).max(255).multipleOf(0.1),
 	}),
 	getHumidityCompensation: z.object({}),
 }

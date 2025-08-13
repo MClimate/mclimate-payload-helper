@@ -244,30 +244,30 @@ export class Relay16Commands extends GeneralCommands {
 		return new BaseCommand('GetOverpowerRecoveryTemp', 0x73)
 	}
 
-	static setRelayTimerInMiliseconds(params: Relay16CommandTypes.SetRelayTimerInMilisecondsParams) {
+	static setRelayTimerInMilliseconds(params: Relay16CommandTypes.SetRelayTimerInMillisecondsParams) {
 		try {
 			DeviceCommandSchemas.Relay16CommandSchemas.setRelayTimerInMilliseconds.parse(params)
 			const { state, time } = params
-			return new BaseCommand('SetRelayTimerInMiliseconds', 0x55, decToHex(state), dec2hex(time))
+			return new BaseCommand('SetRelayTimerInMilliseconds', 0x55, decToHex(state), dec2hex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
-					message: 'Zod validation error during SetRelayTimerInMiliseconds execution',
-					command: 'SetRelayTimerInMiliseconds',
+					message: 'Zod validation error during SetRelayTimerInMilliseconds execution',
+					command: 'SetRelayTimerInMilliseconds',
 					originalError: e,
 				})
 			} else {
 				throw new CustomError({
-					message: 'Error during SetRelayTimerInMiliseconds execution',
-					command: 'SetRelayTimerInMiliseconds',
+					message: 'Error during SetRelayTimerInMilliseconds execution',
+					command: 'SetRelayTimerInMilliseconds',
 					originalError: e as Error,
 				})
 			}
 		}
 	}
 
-	static getRelayTimerInMiliseconds() {
-		return new BaseCommand('GetRelayTimerInMiliseconds', 0x56)
+	static getRelayTimerInMilliseconds() {
+		return new BaseCommand('GetRelayTimerInMilliseconds', 0x56)
 	}
 
 	static setRelayTimerInSeconds(params: Relay16CommandTypes.SetRelayTimerInSecondsParams) {
