@@ -29,18 +29,18 @@ describe('Relay commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('relay_16')
 
 	test('SetRelayState command', () => {
-		expect(commandBuilder.build('SetRelayState', { state: true })).toStrictEqual(
+		expect(commandBuilder.build('SetRelayState', { state: 1 })).toStrictEqual(
 			new BaseCommand('SetRelayState', 0xc1, '01'),
 		)
 	})
-	test('SetRelayTimerInMiliseconds command', () => {
-		expect(commandBuilder.build('SetRelayTimerInMiliseconds', { state: 0, time: 500 })).toStrictEqual(
-			new BaseCommand('SetRelayTimerInMiliseconds', 0x55, '00', '01F4'),
+	test('SetRelayTimerInMilliseconds command', () => {
+		expect(commandBuilder.build('SetRelayTimerInMilliseconds', { state: 0, time: 500 })).toStrictEqual(
+			new BaseCommand('SetRelayTimerInMilliseconds', 0x55, '00', '01F4'),
 		)
 	})
-	test('GetRelayTimerInMiliseconds command', () => {
-		expect(commandBuilder.build('GetRelayTimerInMiliseconds')).toStrictEqual(
-			new BaseCommand('GetRelayTimerInMiliseconds', 0x56),
+	test('GetRelayTimerInMilliseconds command', () => {
+		expect(commandBuilder.build('GetRelayTimerInMilliseconds')).toStrictEqual(
+			new BaseCommand('GetRelayTimerInMilliseconds', 0x56),
 		)
 	})
 	test('SetRelayTimerInSeconds command', () => {
@@ -63,18 +63,18 @@ describe('16 ADS commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('relay_16_dry')
 
 	test('SetRelayState command', () => {
-		expect(commandBuilder.build('SetRelayState', { state: true })).toStrictEqual(
+		expect(commandBuilder.build('SetRelayState', { state: 1 })).toStrictEqual(
 			new BaseCommand('SetRelayState', 0xc1, '01'),
 		)
 	})
-	test('SetRelayTimerInMiliseconds command', () => {
-		expect(commandBuilder.build('SetRelayTimerInMiliseconds', { state: 0, time: 500 })).toStrictEqual(
-			new BaseCommand('SetRelayTimerInMiliseconds', 0x55, '00', '01F4'),
+	test('SetRelayTimerInMilliseconds command', () => {
+		expect(commandBuilder.build('SetRelayTimerInMilliseconds', { state: 0, time: 500 })).toStrictEqual(
+			new BaseCommand('SetRelayTimerInMilliseconds', 0x55, '00', '01F4'),
 		)
 	})
-	test('GetRelayTimerInMiliseconds command', () => {
-		expect(commandBuilder.build('GetRelayTimerInMiliseconds')).toStrictEqual(
-			new BaseCommand('GetRelayTimerInMiliseconds', 0x56),
+	test('GetRelayTimerInMilliseconds command', () => {
+		expect(commandBuilder.build('GetRelayTimerInMilliseconds')).toStrictEqual(
+			new BaseCommand('GetRelayTimerInMilliseconds', 0x56),
 		)
 	})
 	test('SetRelayTimerInSeconds command', () => {
@@ -241,8 +241,8 @@ describe('FanCoilThermostat Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('fan_coil_thermostat')
 
 	test('Set Target Temperature Step', () => {
-		expect(commandBuilder.build('SetTargetTemperatureStep', { value: 22 })).toStrictEqual(
-			new BaseCommand('SetTargetTemperatureStep', 0x03, 'DC'),
+		expect(commandBuilder.build('SetTargetTemperatureStep', { value: 2.2 })).toStrictEqual(
+			new BaseCommand('SetTargetTemperatureStep', 0x03, '16'),
 		)
 	})
 
@@ -262,8 +262,8 @@ describe('FanCoilThermostat Commands payload encoder', () => {
 	})
 
 	test('Set FCT Operational Mode', () => {
-		expect(commandBuilder.build('SetFctOperationalMode', { value: 3 })).toStrictEqual(
-			new BaseCommand('SetFctOperationalMode', 0x52, '03'),
+		expect(commandBuilder.build('SetFctOperationalMode', { value: 2 })).toStrictEqual(
+			new BaseCommand('SetFctOperationalMode', 0x52, '02'),
 		)
 	})
 
@@ -290,8 +290,8 @@ describe('FanCoilThermostat Commands payload encoder', () => {
 	})
 
 	test('Set ECM Voltage Range', () => {
-		expect(commandBuilder.build('SetEcmVoltageRange', { min: 20, max: 25 })).toStrictEqual(
-			new BaseCommand('SetEcmVoltageRange', 0x48, 'C8', 'FA'),
+		expect(commandBuilder.build('SetEcmVoltageRange', { min: 2, max: 5 })).toStrictEqual(
+			new BaseCommand('SetEcmVoltageRange', 0x48, '14', '32'),
 		)
 	})
 
@@ -336,8 +336,8 @@ describe('FanCoilThermostat Commands payload encoder', () => {
 	})
 
 	test('Set Temperature Sensor Compensation', () => {
-		expect(commandBuilder.build('SetTempSensorCompensation', { compensation: 2, temperature: 25 })).toStrictEqual(
-			new BaseCommand('SetTempSensorCompensation', 0x5a, '02', 'FA'),
+		expect(commandBuilder.build('SetTempSensorCompensation', { compensation: 1, temperature: 2.5 })).toStrictEqual(
+			new BaseCommand('SetTempSensorCompensation', 0x5a, '01', '19'),
 		)
 	})
 
@@ -446,8 +446,8 @@ describe('Vicki Commands payload encoder', () => {
 	})
 
 	test('Set Operational Mode', () => {
-		expect(commandBuilder.build('SetOperationalMode', { mode: '1' })).toStrictEqual(
-			new BaseCommand('SetOperationalMode', 0x0d, '1'),
+		expect(commandBuilder.build('SetOperationalMode', { mode: '01' })).toStrictEqual(
+			new BaseCommand('SetOperationalMode', 0x0d, '01'),
 		)
 	})
 
@@ -479,8 +479,8 @@ describe('Vicki Commands payload encoder', () => {
 	})
 
 	test('Set Primary Operational Mode', () => {
-		expect(commandBuilder.build('SetPrimaryOperationalMode', { mode: '2' })).toStrictEqual(
-			new BaseCommand('SetPrimaryOperationalMode', 0x1e, '2'),
+		expect(commandBuilder.build('SetPrimaryOperationalMode', { mode: '01' })).toStrictEqual(
+			new BaseCommand('SetPrimaryOperationalMode', 0x1e, '01'),
 		)
 	})
 
@@ -608,8 +608,8 @@ describe('TFlood Commands payload encoder', () => {
 	})
 
 	test('Set Flood Event Uplink Type', () => {
-		expect(commandBuilder.build('SetFloodEventUplinkType', { type: '2' })).toStrictEqual(
-			new BaseCommand('SetFloodEventUplinkType', 0x13, '2'),
+		expect(commandBuilder.build('SetFloodEventUplinkType', { type: '01' })).toStrictEqual(
+			new BaseCommand('SetFloodEventUplinkType', 0x13, '01'),
 		)
 	})
 })
