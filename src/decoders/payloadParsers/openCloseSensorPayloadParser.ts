@@ -7,36 +7,59 @@ export const openCloseSensorPayloadParser = (hexData: string) => {
 	let deviceData = {}
 
 	try {
+		// Calculate battery voltage from raw value
+		const calculateBatteryVoltage = (byte: number): number => {
+			return byte * 8 + 1600;
+		};
+
+		// Calculate temperature from raw temperature value
+		const calculateTemperature = (rawTemp: number): number => {
+			return rawTemp / 10.0;
+		};
+
+		const handleKeepalive = (bytes: number[], data: any) => {
+			// Byte 1: Device battery voltage
+			var batteryVoltage = calculateBatteryVoltage(bytes[1]) / 1000;
+			data.batteryVoltage = Number(batteryVoltage.toFixed(2));
+
+			// Byte 2: Thermistor operational status and temperature data (bits 9:8)
+			var thermistorConnected = (bytes[2] & 0x04) === 0; // Bit 2
+			var temperatureHighBits = bytes[2] & 0x03; // Bits 1:0
+
+			// Byte 3: Thermistor temperature data (bits 7:0)
+			var temperatureLowBits = bytes[3];
+			var temperatureRaw = (temperatureHighBits << 8) | temperatureLowBits;
+			var temperatureCelsius = calculateTemperature(temperatureRaw);
+			data.thermistorProperlyConnected = thermistorConnected;
+			data.sensorTemperature = Number(temperatureCelsius.toFixed(2));
+
+			// Byte 4-6: Counter data
+			var counter = ((bytes[4] << 16) | (bytes[5] << 8) | bytes[6]);
+			data.counter = counter;
+
+			// Byte 7: Status and event code
+			const status = bytes[7];
+			const events: { [key: string]: string } = { '01': 'keepalive', '32': 'reed switch', '33': 'push button' };
+			const eventKey = (bytes[0] < 10 ? '0' : '') + bytes[0].toString();
+			const event = events[eventKey];
+
+			data.status = status;
+			data.event = event;
+
+			return data;
+		};
+
+		// Handler for keepalive data that adapts the string input to the new function
 		const handleKeepAliveData = (data: string) => {
-			const hexArray = byteArrayParser(data)
-			if (!hexArray) return
+			const hexArray = byteArrayParser(data);
+			if (!hexArray) return;
 
-			const batteryTmp = '0' + hexArray[1].toString(16).substr(-2)
-			const batteryVoltageCalculated = (parseInt('0x' + batteryTmp, 16) * 8 + 1600) / 1000
-			const thermistorProperlyConnected = parseInt(decbin(hexArray[2])[5]) == 0
-			const extT1 = ('0' + hexArray[2].toString(16)).substr(-2)[1]
-			const extT2 = '0' + hexArray[3].toString(16).substr(-2)
-			const temperature = (thermistorProperlyConnected ? parseInt(`0x${extT1}${extT2}`, 16) * 0.1 : 0).toFixed(2)
-			const counter = ((hexArray[4] << 16) | (hexArray[5] << 8) | hexArray[6])
-			const status = hexArray[7]
-
-			const events: { [key: string]: string } = { '01': 'keepalive', '32': 'reed switch', '33': 'push button' }
-			const eventKey = hexArray[0].toString().padStart(2, '0')
-			const event = events[eventKey]
-
-			let keepaliveData = {
-				event,
-				status: status,
-				counter: counter,
-				batteryVoltage: batteryVoltageCalculated,
-				thermistorProperlyConnected: thermistorProperlyConnected,
-				sensorTemperature: Number(temperature),
-			}
-			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
-		}
+			let keepaliveData = handleKeepalive(hexArray, {});
+			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData });
+		};
 
 		if (hexData) {
-			if (hexData.substr(0, 2) == '01' || hexData.substr(0, 2) == '20' || hexData.substr(0, 2) == '21') {
+			if (hexData.slice(0, 2) == '01' || hexData.slice(0, 2) == '20' || hexData.slice(0, 2) == '21') {
 				// its a keeapalive
 				handleKeepAliveData(hexData)
 			} else {

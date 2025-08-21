@@ -246,7 +246,7 @@ describe('Open/Close payload decoder', () => {
 			event: 'keepalive',
 			status: 1,
 			counter: 1,
-			batteryVoltage: 3.152,
+			batteryVoltage: 3.15,
 			thermistorProperlyConnected: true,
 			sensorTemperature: 15,
 		})
@@ -257,7 +257,7 @@ describe('Open/Close payload decoder', () => {
 			event: 'keepalive',
 			status: 1,
 			counter: 1,
-			batteryVoltage: 3.152,
+			batteryVoltage: 3.15,
 			thermistorProperlyConnected: true,
 			sensorTemperature: 15,
 			deviceVersions: { hardware: 13, software: 10 },
@@ -277,7 +277,7 @@ describe('Open/Close payload decoder', () => {
 				event: 'reed switch',
 				status: 0,
 				counter: 1,
-				batteryVoltage: 3.408,
+				batteryVoltage: 3.41,
 				thermistorProperlyConnected: true,
 				sensorTemperature: 21.5,
 			},
@@ -289,10 +289,26 @@ describe('Open/Close payload decoder', () => {
 			event: 'keepalive',
 			status: 1,
 			counter: 1,
-			batteryVoltage: 3.152,
+			batteryVoltage: 3.15,
 			thermistorProperlyConnected: true,
 			sensorTemperature: 15,
 			deviceVersions: { hardware: 13, software: 10 },
+		})
+	})
+	test('keepalive with response of commands all', () => {
+		expect(uplinkPayloadParser('04131212f019781b011d02181f0020f101160000050001f1011600000500', DeviceType.OpenCloseSensor)).toStrictEqual({
+			event: 'keepalive',
+			status: 0,
+			counter: 5,
+			batteryVoltage: 3.53,
+			thermistorProperlyConnected: true,
+			sensorTemperature: 27.8,
+			deviceVersions: { hardware: 13, software: 12 },
+			keepAliveTime: 240,
+			joinRetryPeriod: 10,
+			uplinkType: '01',
+			watchDogParams: { wdpC: 2, wdpUc: 24 },
+			notificationBlindTime: 0,
 		})
 	})
 })
