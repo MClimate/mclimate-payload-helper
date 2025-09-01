@@ -291,7 +291,7 @@ const DisplayCommandSchemas = {
 	}),
 	getDisplayRefreshPeriod: z.object({}),
 	setDeepSleepMode: z.object({
-		state: z.number(),
+		state: z.number().min(1).max(1),
 	}),
 	setHumidityVisibility: z.object({
 		state: z.number().min(0).max(1), // 0: hide, 1: show
