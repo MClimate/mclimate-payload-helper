@@ -1251,7 +1251,7 @@ const HTPirLiteCommandSchemas = {
 	...GeneralCommandSchemas,
 	...PIRCommandSchemas,
 	setUplinkSendingOnButtonPress: z.object({
-		value: z.number(),
+		value: z.number().min(0).max(1),
 	}),
 	getUplinkSendingOnButtonPress: z.object({}),
 	restartDevice: z.object({}),
@@ -1268,7 +1268,7 @@ const Co2PirLiteCommandSchemas = {
 	...GeneralCommandSchemas,
 	...PIRCommandSchemas,
 	setUplinkSendingOnButtonPress: z.object({
-		value: z.number(),
+		value: z.number().min(0).max(1),
 	}),
 	getUplinkSendingOnButtonPress: z.object({}),
 	restartDevice: z.object({}),
