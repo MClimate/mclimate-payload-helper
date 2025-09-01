@@ -137,8 +137,8 @@ export const FanCoilThermostatEnums = {
 
 export const TValveEnums = {
 	setValveState: {
-		0: 'Open',
-		1: 'Close',
+		0: 'Close',
+		1: 'Open',
 	} satisfies NumberEnum<0 | 1>,
 } as const
 
