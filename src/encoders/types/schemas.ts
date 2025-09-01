@@ -178,6 +178,11 @@ export const ButtonEnums = {
 		1: 'Send later when allowed',
 		0: "Don't send later when allowed",
 	} satisfies NumberEnum<0 | 1>,
+	clearPressEventCounter: {
+		1: 'Single',
+		2: 'Double',
+		3: 'Triple',
+	} satisfies NumberEnum<1 | 2 | 3>,
 } as const
 
 /* ---------------------------------------GENERAL COMMANDS--------------------------------------- */
@@ -1228,7 +1233,7 @@ const ButtonCommandSchemas = {
 	}),
 	getSendEventLater: z.object({}),
 	clearPressEventCounter: z.object({
-		value: z.number(),
+		value: z.number().min(1).max(3),
 	}),
 	restartDevice: z.object({}),
 	getSinglePressEventCounter: z.object({}),
