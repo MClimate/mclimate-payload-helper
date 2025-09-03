@@ -393,7 +393,7 @@ const VickiCommandSchemas = {
 	}),
 	getProportionalGain: z.object({}),
 	setExternalTemperatureFloat: z.object({
-		temp: z.number().int().min(0.1).max(255.0).multipleOf(0.1),
+		temp: z.number().min(0.1).max(255.0).multipleOf(0.1),
 	}),
 	setIntegralGain: z.object({
 		integralGain: z.number().int().min(0).max(127),
