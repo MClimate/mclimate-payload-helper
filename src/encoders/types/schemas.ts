@@ -373,7 +373,7 @@ const VickiCommandSchemas = {
 	setBatteryRangesOverVoltage: z.object({
 		Range1: z.number().int().min(0).max(255),
 		Range2: z.number().int().min(0).max(255),
-		Range3: z.number().int().min(0).max(65535),
+		Range3: z.number().int().min(0).max(255),
 	}),
 	setOvac: z.object({
 		ovac: z.number().int().min(0).max(255),
@@ -771,7 +771,11 @@ const FanCoilThermostatCommandSchemas = {
 	getHeatingSetpointNotOccupied: z.object({}),
 	setTempSensorCompensation: z.object({
 		compensation: z.number().min(0).max(1),
-		temperature: z.number().min(-5).max(5).multipleOf(0.1),
+		temperature: z.number().min(-5).max(5).refine((val) => {
+			// Use a custom validation to avoid floating-point precision issues with multipleOf
+			const rounded = Math.round(val * 10) / 10;
+			return Math.abs(val - rounded) < 1e-10;
+		}),
 	}),
 	getTempSensorCompensation: z.object({}),
 	setFanSpeedNotOccupied: z.object({
