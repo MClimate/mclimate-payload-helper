@@ -1130,7 +1130,7 @@ const HTSensorCommandSchemas = {
 	...GeneralCommandSchemas,
 	setTemperatureCompensation: z.object({
 		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
-		compensation: z.number().min(0).max(255).multipleOf(0.1),
+		compensation: z.number().min(0).max(25.5).multipleOf(0.1),
 	}),
 	getTemperatureCompensation: z.object({}),
 	setHumidityCompensation: z.object({
