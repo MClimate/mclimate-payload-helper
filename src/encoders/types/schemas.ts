@@ -44,9 +44,9 @@ export const VickiEnums = {
 
 export const Relay16Enums = {
 	setRelayState: {
-		0: 'Off',
-		1: 'On',
-	} satisfies NumberEnum<0 | 1>,
+		false: 'Off',
+		true: 'On',
+	},
 	setAfterOverheatingProtectionRecovery: {
 		0: 'Last state',
 		1: 'Off',
@@ -398,7 +398,7 @@ const VickiCommandSchemas = {
 	}),
 	getProportionalGain: z.object({}),
 	setExternalTemperatureFloat: z.object({
-		temp: z.number().int().min(0.1).max(255.0).multipleOf(0.1),
+		temp: z.number().min(0.1).max(255.0).multipleOf(0.1),
 	}),
 	setIntegralGain: z.object({
 		integralGain: z.number().int().min(0).max(127),
@@ -519,7 +519,7 @@ const Relay16CommandSchemas = {
 	}),
 	getRelayRecoveryState: z.object({}),
 	setRelayState: z.object({
-		state: z.number().min(0).max(1), // 0: OFF, 1: ON
+		state: z.boolean(), // 0: OFF, 1: ON
 	}),
 	getRelayState: z.object({}),
 	setRelayTimerInMilliseconds: z.object({
@@ -587,7 +587,7 @@ const Relay16DryCommandSchemas = {
 	}),
 	getRelayRecoveryState: z.object({}),
 	setRelayState: z.object({
-		state: z.number().min(0).max(1), // 0: OFF, 1: ON
+		state: z.boolean(), // 0: OFF, 1: ON
 	}),
 	getRelayState: z.object({}),
 	getOverheatingEvents: z.object({}),

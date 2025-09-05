@@ -189,8 +189,9 @@ export class Relay16Commands extends GeneralCommands {
 	static setRelayState(params: Relay16CommandTypes.SetRelayStateParams) {
 		try {
 			DeviceCommandSchemas.Relay16CommandSchemas.setRelayState.parse(params)
-			let { state } = params
-			return new BaseCommand('SetRelayState', 0xc1, decToHex(state))
+			const { state } = params
+			const mappedState = state === true ? 1 : 0
+			return new BaseCommand('SetRelayState', 0xc1, decToHex(mappedState))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({

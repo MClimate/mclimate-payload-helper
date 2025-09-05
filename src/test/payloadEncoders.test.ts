@@ -29,7 +29,7 @@ describe('Relay commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('relay_16')
 
 	test('SetRelayState command', () => {
-		expect(commandBuilder.build('SetRelayState', { state: 1 })).toStrictEqual(
+		expect(commandBuilder.build('SetRelayState', { state: true })).toStrictEqual(
 			new BaseCommand('SetRelayState', 0xc1, '01'),
 		)
 	})
@@ -49,9 +49,7 @@ describe('Relay commands payload encoder', () => {
 		)
 	})
 	test('GetRelayTimerInSeconds command', () => {
-		expect(commandBuilder.build('GetRelayTimerInSeconds')).toStrictEqual(
-			new BaseCommand('GetRelayTimerInSeconds', 0x58),
-		)
+		expect(commandBuilder.build('GetRelayTimerInSeconds')).toStrictEqual(new BaseCommand('GetRelayTimerInSeconds', 0x58))
 	})
 	test('GetRelayStateChangeReason command', () => {
 		expect(commandBuilder.build('GetRelayStateChangeReason')).toStrictEqual(
@@ -63,7 +61,7 @@ describe('16 ADS commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('relay_16_dry')
 
 	test('SetRelayState command', () => {
-		expect(commandBuilder.build('SetRelayState', { state: 1 })).toStrictEqual(
+		expect(commandBuilder.build('SetRelayState', { state: true })).toStrictEqual(
 			new BaseCommand('SetRelayState', 0xc1, '01'),
 		)
 	})
@@ -83,9 +81,7 @@ describe('16 ADS commands payload encoder', () => {
 		)
 	})
 	test('GetRelayTimerInSeconds command', () => {
-		expect(commandBuilder.build('GetRelayTimerInSeconds')).toStrictEqual(
-			new BaseCommand('GetRelayTimerInSeconds', 0x58),
-		)
+		expect(commandBuilder.build('GetRelayTimerInSeconds')).toStrictEqual(new BaseCommand('GetRelayTimerInSeconds', 0x58))
 	})
 	test('GetRelayStateChangeReason command', () => {
 		expect(commandBuilder.build('GetRelayStateChangeReason')).toStrictEqual(
@@ -117,8 +113,7 @@ describe('CO2DisplayLite Commands payload encoder', () => {
 	})
 
 	test('Restart Device', () => {
-		expect(commandBuilder.build('RestartDevice'),
-		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})
 
 	test('Throw error on invalid Set Uplink Sending On Button Press params', () => {
@@ -253,7 +248,6 @@ describe('FanCoilThermostat Commands payload encoder', () => {
 	test('Set Keys Lock', () => {
 		expect(commandBuilder.build('SetKeysLock', { value: 1 })).toStrictEqual(new BaseCommand('SetKeysLock', 0x07, '01'))
 	})
-
 
 	test('Set Target Temperature', () => {
 		expect(commandBuilder.build('SetTargetTemperature', { targetTemperature: 25 })).toStrictEqual(
@@ -396,15 +390,25 @@ describe('FanCoilThermostat Commands payload encoder', () => {
 	})
 
 	test('Set Heating Cooling Target Temp Ranges', () => {
-		expect(commandBuilder.build('SetHeatingCoolingTargetTempRanges', { heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29 })).toStrictEqual(
-			new BaseCommand('SetHeatingCoolingTargetTempRanges', 0x16, '10', '18', '14', '1D'),
-		)
+		expect(
+			commandBuilder.build('SetHeatingCoolingTargetTempRanges', {
+				heatingTempMin: 16,
+				heatingTempMax: 24,
+				coolingTempMin: 20,
+				coolingTempMax: 29,
+			}),
+		).toStrictEqual(new BaseCommand('SetHeatingCoolingTargetTempRanges', 0x16, '10', '18', '14', '1D'))
 	})
 
 	test('Set Heating Cooling Target Temp Ranges Unoccupied', () => {
-		expect(commandBuilder.build('SetHeatingCoolingTargetTempRangesUnoccupied', { heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29 })).toStrictEqual(
-			new BaseCommand('SetHeatingCoolingTargetTempRangesUnoccupied', 0x76, '10', '18', '14', '1D'),
-		)
+		expect(
+			commandBuilder.build('SetHeatingCoolingTargetTempRangesUnoccupied', {
+				heatingTempMin: 16,
+				heatingTempMax: 24,
+				coolingTempMin: 20,
+				coolingTempMax: 29,
+			}),
+		).toStrictEqual(new BaseCommand('SetHeatingCoolingTargetTempRangesUnoccupied', 0x76, '10', '18', '14', '1D'))
 	})
 })
 
@@ -634,28 +638,26 @@ describe('MC Button Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('mc_button')
 
 	test('Clear Press Event Counter ', () => {
-		expect(
-			commandBuilder.build('ClearPressEventCounter', { value: 1 }),
-		).toStrictEqual(new BaseCommand('ClearPressEventCounter', 0x20, '01'))
+		expect(commandBuilder.build('ClearPressEventCounter', { value: 1 })).toStrictEqual(
+			new BaseCommand('ClearPressEventCounter', 0x20, '01'),
+		)
 	})
 
 	test('Restart Device', () => {
-		expect(
-			commandBuilder.build('RestartDevice'),
-		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})
 })
 describe('CO2 PIR Lite Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('co2_pir_lite')
 	test('Set CO2 Measurement Time', () => {
-		expect(commandBuilder.build('SetCo2MeasurementPeriod', { good_zone: 10, medium_zone: 20, bad_zone: 30 })).toStrictEqual(
-			new BaseCommand('SetCo2MeasurementPeriod', 0x24, '0A', '14', '1E'),
-		)
+		expect(
+			commandBuilder.build('SetCo2MeasurementPeriod', { good_zone: 10, medium_zone: 20, bad_zone: 30 }),
+		).toStrictEqual(new BaseCommand('SetCo2MeasurementPeriod', 0x24, '0A', '14', '1E'))
 	})
 	test('Set PIR Sensor Status ', () => {
-		expect(
-			commandBuilder.build('SetPIRSensorStatus', { state: 1 }),
-		).toStrictEqual(new BaseCommand('SetPIRSensorStatus', 0x3c, '01'))
+		expect(commandBuilder.build('SetPIRSensorStatus', { state: 1 })).toStrictEqual(
+			new BaseCommand('SetPIRSensorStatus', 0x3c, '01'),
+		)
 	})
 	test('Set Uplink Sending On Button Press', () => {
 		expect(commandBuilder.build('SetUplinkSendingOnButtonPress', { value: 1 })).toStrictEqual(
@@ -668,17 +670,15 @@ describe('CO2 PIR Lite Commands payload encoder', () => {
 		)
 	})
 	test('Restart Device', () => {
-		expect(
-			commandBuilder.build('RestartDevice'),
-		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})
 })
 describe('HT PIR Lite Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('ht_pir_lite')
 	test('Set PIR Sensor Status ', () => {
-		expect(
-			commandBuilder.build('SetPIRSensorStatus', { state: 1 }),
-		).toStrictEqual(new BaseCommand('SetPIRSensorStatus', 0x3c, '01'))
+		expect(commandBuilder.build('SetPIRSensorStatus', { state: 1 })).toStrictEqual(
+			new BaseCommand('SetPIRSensorStatus', 0x3c, '01'),
+		)
 	})
 	test('Set Uplink Sending On Button Press', () => {
 		expect(commandBuilder.build('SetUplinkSendingOnButtonPress', { value: 1 })).toStrictEqual(
@@ -691,8 +691,6 @@ describe('HT PIR Lite Commands payload encoder', () => {
 		)
 	})
 	test('Restart Device', () => {
-		expect(
-			commandBuilder.build('RestartDevice'),
-		).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})
 })
