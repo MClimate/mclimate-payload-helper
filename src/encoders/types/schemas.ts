@@ -771,11 +771,7 @@ const FanCoilThermostatCommandSchemas = {
 	getHeatingSetpointNotOccupied: z.object({}),
 	setTempSensorCompensation: z.object({
 		compensation: z.number().min(0).max(1),
-		temperature: z.number().min(-5).max(5).refine((val) => {
-			// Use a custom validation to avoid floating-point precision issues with multipleOf
-			const rounded = Math.round(val * 10) / 10;
-			return Math.abs(val - rounded) < 1e-10;
-		}),
+		temperature: z.number().min(-5).max(5).step(0.1),
 	}),
 	getTempSensorCompensation: z.object({}),
 	setFanSpeedNotOccupied: z.object({
