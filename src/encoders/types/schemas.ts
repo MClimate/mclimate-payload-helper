@@ -771,7 +771,7 @@ const FanCoilThermostatCommandSchemas = {
 	getHeatingSetpointNotOccupied: z.object({}),
 	setTempSensorCompensation: z.object({
 		compensation: z.number().min(0).max(1),
-		temperature: z.coerce.number().min(-5).max(5).multipleOf(0.1),
+		temperature: z.number().min(-5).max(5).multipleOf(0.1),
 	}),
 	getTempSensorCompensation: z.object({}),
 	setFanSpeedNotOccupied: z.object({
