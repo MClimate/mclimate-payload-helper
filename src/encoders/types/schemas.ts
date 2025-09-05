@@ -142,6 +142,13 @@ export const TValveEnums = {
 	} satisfies NumberEnum<0 | 1>,
 } as const
 
+export const FloodEnums = {
+	setFloodEventUplinkType: {
+		'00': 'Unconfirmed',
+		'01': 'Confirmed',
+	} satisfies StringEnum<'00' | '01'>,
+} as const
+
 export const WirelessThermostatEnums = {
 	setHumidityVisibility: {
 		0: 'Hide',
