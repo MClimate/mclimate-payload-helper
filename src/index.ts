@@ -31,5 +31,6 @@ export {
 	WirelessThermostatEnums,
 	ButtonEnums,
 	GeneralCommandsEnums,
+	FloodEnums,
 } from '@/encoders/types'
 export { CustomError } from '@/utils'

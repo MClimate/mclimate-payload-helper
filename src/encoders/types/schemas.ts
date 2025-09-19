@@ -137,9 +137,16 @@ export const FanCoilThermostatEnums = {
 
 export const TValveEnums = {
 	setValveState: {
-		0: 'Open',
-		1: 'Close',
+		0: 'Close',
+		1: 'Open',
 	} satisfies NumberEnum<0 | 1>,
+} as const
+
+export const FloodEnums = {
+	setFloodEventUplinkType: {
+		'00': 'Unconfirmed',
+		'01': 'Confirmed',
+	} satisfies StringEnum<'00' | '01'>,
 } as const
 
 export const WirelessThermostatEnums = {
@@ -178,6 +185,11 @@ export const ButtonEnums = {
 		1: 'Send later when allowed',
 		0: "Don't send later when allowed",
 	} satisfies NumberEnum<0 | 1>,
+	clearPressEventCounter: {
+		1: 'Single',
+		2: 'Double',
+		3: 'Triple',
+	} satisfies NumberEnum<1 | 2 | 3>,
 } as const
 
 /* ---------------------------------------GENERAL COMMANDS--------------------------------------- */
@@ -286,7 +298,7 @@ const DisplayCommandSchemas = {
 	}),
 	getDisplayRefreshPeriod: z.object({}),
 	setDeepSleepMode: z.object({
-		state: z.number(),
+		state: z.number().min(1).max(1),
 	}),
 	setHumidityVisibility: z.object({
 		state: z.number().min(0).max(1), // 0: hide, 1: show
@@ -361,7 +373,7 @@ const VickiCommandSchemas = {
 	setBatteryRangesOverVoltage: z.object({
 		Range1: z.number().int().min(0).max(255),
 		Range2: z.number().int().min(0).max(255),
-		Range3: z.number().int().min(0).max(65535),
+		Range3: z.number().int().min(0).max(255),
 	}),
 	setOvac: z.object({
 		ovac: z.number().int().min(0).max(255),
@@ -1186,7 +1198,7 @@ const HTSensorCommandSchemas = {
 	...GeneralCommandSchemas,
 	setTemperatureCompensation: z.object({
 		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
-		compensation: z.number().min(0).max(255).multipleOf(0.1),
+		compensation: z.number().min(0).max(25.5).multipleOf(0.1),
 	}),
 	getTemperatureCompensation: z.object({}),
 	setHumidityCompensation: z.object({
@@ -1296,7 +1308,7 @@ const ButtonCommandSchemas = {
 	}),
 	getSendEventLater: z.object({}),
 	clearPressEventCounter: z.object({
-		value: z.number(),
+		value: z.number().min(1).max(3),
 	}),
 	restartDevice: z.object({}),
 	getSinglePressEventCounter: z.object({}),
@@ -1314,7 +1326,7 @@ const HTPirLiteCommandSchemas = {
 	...GeneralCommandSchemas,
 	...PIRCommandSchemas,
 	setUplinkSendingOnButtonPress: z.object({
-		value: z.number(),
+		value: z.number().min(0).max(1),
 	}),
 	getUplinkSendingOnButtonPress: z.object({}),
 	restartDevice: z.object({}),
@@ -1331,7 +1343,7 @@ const Co2PirLiteCommandSchemas = {
 	...GeneralCommandSchemas,
 	...PIRCommandSchemas,
 	setUplinkSendingOnButtonPress: z.object({
-		value: z.number(),
+		value: z.number().min(0).max(1),
 	}),
 	getUplinkSendingOnButtonPress: z.object({}),
 	restartDevice: z.object({}),
