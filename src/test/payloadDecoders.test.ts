@@ -53,7 +53,116 @@ describe('Vicki payload decoder', () => {
 			displayTemperatureUnits: 1,
 		})
 	})
-
+	test('keepalive with response of commands heating events', () => {
+		expect(uplinkPayloadParser('5A02070100DC1F080101021F090100F01F060F00B4400000000000000000000000000000000000000000', DeviceType.Vicki)).toStrictEqual( {
+			heatingEventGroup: '16-19',
+			heatingEvents:  [
+				{
+				  index: 16,
+				  start: '07:01',
+				  targetTemperature: 22,
+				  weekdays: {
+					monday: true,
+					tuesday: true,
+					wednesday: true,
+					thursday: true,
+					friday: true,
+					saturday: false,
+					sunday: false
+				  }
+				},
+				{
+				  index: 17,
+				  start: '08:01',
+				  targetTemperature: 25.8,
+				  weekdays: {
+					monday: true,
+					tuesday: true,
+					wednesday: true,
+					thursday: true,
+					friday: true,
+					saturday: false,
+					sunday: false
+				  }
+				},
+				{
+				  index: 18,
+				  start: '09:01',
+				  targetTemperature: 24,
+				  weekdays: {
+					monday: true,
+					tuesday: true,
+					wednesday: true,
+					thursday: true,
+					friday: true,
+					saturday: false,
+					sunday: false
+				  }
+				},
+				{
+				  index: 19,
+				  start: '06:15',
+				  targetTemperature: 18,
+				  weekdays: {
+					monday: false,
+					tuesday: false,
+					wednesday: false,
+					thursday: false,
+					friday: false,
+					saturday: false,
+					sunday: true
+				  }
+				}
+			  ]
+		  })
+	})
+	test('keepalive with response of commands heating events active', () => {
+		expect(uplinkPayloadParser('5C0A0103016C00078003811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual(
+			{
+				heatingSchedule: { start: '1 November', end: '1 April' },
+				heatingEventStates: {
+					'0': true,
+					'1': true,
+					'2': false,
+					'3': false,
+					'4': false,
+					'5': false,
+					'6': false,
+					'7': false,
+					'8': false,
+					'9': false,
+					'10': false,
+					'11': false,
+					'12': false,
+					'13': false,
+					'14': false,
+					'15': true,
+					'16': true,
+					'17': true,
+					'18': true,
+					'19': false
+				},
+				reason: 129,
+				targetTemperature: 27,
+				sensorTemperature: 25.88238397927527,
+				relativeHumidity: 29.296875,
+				motorRange: 554,
+				motorPosition: 427,
+				batteryVoltage: 2.9,
+				openWindow: false,
+				highMotorConsumption: false,
+				lowMotorConsumption: false,
+				brokenSensor: false,
+				childLock: false,
+				calibrationFailed: false,
+				attachedBackplate: true,
+				perceiveAsOnline: true,
+				antiFreezeProtection: false,
+				targetTemperatureFloat: '27.00',
+				valveOpenness: 23,
+			}
+		)
+	})
 	test('response of commands without keepalive', () => {
 		expect(
 			uplinkPayloadParser(

@@ -440,6 +440,63 @@ const VickiCommandSchemas = {
 		value: z.number().min(-5).max(5),
 	}),
 	getTemperatureOffset: z.object({}),
+	setHeatingEvent: z.object({
+		eventIndex: z.number().int().min(0).max(19),
+		startHour: z.number().int().min(0).max(23),
+		startMinute: z.number().int().min(0).max(59),
+		targetTemperature: z.number().min(0.1).max(30.0).multipleOf(0.1),
+		daysActive: z.object({
+			monday: z.boolean(),
+			tuesday: z.boolean(),
+			wednesday: z.boolean(),
+			thursday: z.boolean(),
+			friday: z.boolean(),
+			saturday: z.boolean(),
+			sunday: z.boolean(),
+		}),
+	}),
+	setHeatingEventState: z.object({
+		eventIndex: z.number().int().min(0).max(19),
+		active: z.boolean(),
+	}),
+	setTimeRequestByMACcommand: z.object({
+		enabled: z.boolean(),
+	}),
+	setHeatingSchedule: z.object({
+		startMonth: z.number().int().min(0).max(11),
+		startDay: z.number().int().min(0).max(31), // 0 disables schedule handling
+		endMonth: z.number().int().min(0).max(11),
+		endDay: z.number().int().min(0).max(31), // 0 disables schedule handling
+	}),
+	setDeviceTime: z.object({
+		timestamp: z.number().int().min(0).max(4294967295), // Unsigned 32-bit integer max value
+	}),
+	setDeviceTimeZone: z.object({
+		offsetHours: z.number().int().min(-12).max(12), // Time zone offset in hours, range [-12:12]
+	}),
+	setAutomaticSetpointRestore: z.object({
+		time: z.number().int().min(0).max(255), // Time in 10-minute increments (0-2550 minutes), 0 disables the functionality
+	}),
+	setOfflineTargetTemperature: z.object({
+		targetTemperature: z.union([
+			z.literal(0), // To disable the feature
+			z.number().min(5).max(30).multipleOf(0.1), // Temperature range 5.0-30.0°C with 0.1°C increments
+		])
+	}),
+	setInternalAlgoTemporaryState: z.object({
+		enabled: z.boolean(), // true = enable algorithm (00), false = disable algorithm temporarily (01)
+	}),
+	setTemperatureLevels: z.object({
+		scaleLevel0: z.number().min(5).max(30).multipleOf(0.1),
+		scaleLevel1: z.number().min(5).max(30).multipleOf(0.1),
+		scaleLevel2: z.number().min(5).max(30).multipleOf(0.1),
+		scaleLevel3: z.number().min(5).max(30).multipleOf(0.1),
+		scaleLevel4: z.number().min(5).max(30).multipleOf(0.1),
+		scaleLevel5: z.number().min(5).max(30).multipleOf(0.1)
+	}),
+	setLedIndicationDuration: z.object({
+		duration: z.number().min(0.5).max(20).multipleOf(0.5) // Duration in range [0.5:20] with 0.5s resolution
+	})
 }
 
 export namespace VickiCommandTypes {
@@ -476,6 +533,17 @@ export namespace VickiCommandTypes {
 		typeof VickiCommandSchemas.setValveOpennessRangeInPercentage
 	>
 	export type SetTemperatureOffsetParams = z.infer<typeof VickiCommandSchemas.setTemperatureOffset>
+	export type SetHeatingEventParams = z.infer<typeof VickiCommandSchemas.setHeatingEvent>
+	export type SetHeatingEventStateParams = z.infer<typeof VickiCommandSchemas.setHeatingEventState>
+	export type SetTimeRequestByMACcommandParams = z.infer<typeof VickiCommandSchemas.setTimeRequestByMACcommand>
+	export type SetHeatingScheduleParams = z.infer<typeof VickiCommandSchemas.setHeatingSchedule>
+	export type SetDeviceTimeParams = z.infer<typeof VickiCommandSchemas.setDeviceTime>
+	export type SetDeviceTimeZoneParams = z.infer<typeof VickiCommandSchemas.setDeviceTimeZone>
+	export type SetAutomaticSetpointRestoreParams = z.infer<typeof VickiCommandSchemas.setAutomaticSetpointRestore>
+	export type SetOfflineTargetTemperatureParams = z.infer<typeof VickiCommandSchemas.setOfflineTargetTemperature>
+	export type SetInternalAlgoTemporaryStateParams = z.infer<typeof VickiCommandSchemas.setInternalAlgoTemporaryState>
+	export type SetTemperatureLevelsParams = z.infer<typeof VickiCommandSchemas.setTemperatureLevels>
+	export type SetLedIndicationDurationParams = z.infer<typeof VickiCommandSchemas.setLedIndicationDuration>
 }
 
 /* --------------------------------------- RELAY 16 COMMANDS --------------------------------------- */
