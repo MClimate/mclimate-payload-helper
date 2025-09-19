@@ -743,6 +743,396 @@ export class VickiCommands extends GeneralCommands {
 	static getTemperatureOffset() {
 		return new BaseCommand('GetTemperatureOffset', 0x54)
 	}
+
+	static setHeatingEvent(params: VickiCommandTypes.SetHeatingEventParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setHeatingEvent.parse(params)
+			const { eventIndex, startHour, startMinute, targetTemperature, daysActive } = params
+			// Target temperature is in Celsius degrees multiplied by 10, as per the documentation
+			// 5900080101021F
+			const tempValue = targetTemperature * 10
+			// Calculate days active bitmap: bit 0 (LSB) = Monday, bit 6 = Sunday
+			const daysActiveValue = (daysActive.monday ? 1 : 0) |
+				(daysActive.tuesday ? 2 : 0) |
+				(daysActive.wednesday ? 4 : 0) |
+				(daysActive.thursday ? 8 : 0) |
+				(daysActive.friday ? 16 : 0) |
+				(daysActive.saturday ? 32 : 0) |
+				(daysActive.sunday ? 64 : 0)
+			return new BaseCommand(
+				'SetHeatingEvent', 
+				0x59, 
+				decToHex(eventIndex),
+				decToHex(startHour),
+				decToHex(startMinute),
+				dec2hex(tempValue),
+				decToHex(daysActiveValue)
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetHeatingEvent execution',
+					command: 'SetHeatingEvent',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetHeatingEvent execution',
+					command: 'SetHeatingEvent',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getHeatingEvent() {
+		return new BaseCommand('GetHeatingEvent', 0x50)
+	}
+
+	static setHeatingEventState(params: VickiCommandTypes.SetHeatingEventStateParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setHeatingEventState.parse(params)
+			const state = params.active ? 1 : 0
+			return new BaseCommand('SetHeatingEventState', 0x6b, decToHex(params.eventIndex), decToHex(state))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetHeatingEventState execution',
+					command: 'SetHeatingEventState',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetHeatingEventState execution',
+					command: 'SetHeatingEventState',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+	static getHeatingEventState() {
+		return new BaseCommand('GetHeatingEventState', 0x6c)
+	}
+
+	static setTimeRequestByMACcommand(params: VickiCommandTypes.SetTimeRequestByMACcommandParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setTimeRequestByMACcommand.parse(params)
+			const state = params.enabled ? 1 : 0
+			return new BaseCommand('SetTimeRequestByMACcommand', 0x6d, decToHex(state))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetTimeRequestByMACcommand execution',
+					command: 'SetTimeRequestByMACcommand',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetTimeRequestByMACcommand execution',
+					command: 'SetTimeRequestByMACcommand',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+	static getTimeRequestByMACcommand() {
+		return new BaseCommand('GetTimeRequestByMACcommand', 0x6e)
+	}
+
+	static setHeatingSchedule(params: VickiCommandTypes.SetHeatingScheduleParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setHeatingSchedule.parse(params)
+			const { startMonth, startDay, endMonth, endDay } = params
+			return new BaseCommand(
+				'SetHeatingSchedule',
+				0x5b,
+				decToHex(startMonth), // 0-11 (Jan-Dec)
+				decToHex(startDay),  // 1-31 (0 disables schedule handling)
+				decToHex(endMonth),  // 0-11 (Jan-Dec)
+				decToHex(endDay)     // 1-31 (0 disables schedule handling)
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetHeatingSchedule execution',
+					command: 'SetHeatingSchedule',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetHeatingSchedule execution',
+					command: 'SetHeatingSchedule',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getHeatingSchedule() {
+		return new BaseCommand('GetHeatingSchedule', 0x5c)
+	}
+
+	static setDeviceTime(params: VickiCommandTypes.SetDeviceTimeParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setDeviceTime.parse(params)
+			// Convert to 4-byte hex representation (unsigned 32-bit UNIX timestamp)
+			const timestampHex = params.timestamp.toString(16).padStart(8, '0').toUpperCase()
+			const byte1 = timestampHex.substring(0, 2) // MSB
+			const byte2 = timestampHex.substring(2, 4)
+			const byte3 = timestampHex.substring(4, 6)
+			const byte4 = timestampHex.substring(6, 8) // LSB
+
+			return new BaseCommand(
+				'SetDeviceTime',
+				0x5d,
+				byte1,
+				byte2,
+				byte3,
+				byte4
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetDeviceTime execution',
+					command: 'SetDeviceTime',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetDeviceTime execution',
+					command: 'SetDeviceTime',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getDeviceTime() {
+		return new BaseCommand('GetDeviceTime', 0x5e)
+	}
+
+	static setDeviceTimeZone(params: VickiCommandTypes.SetDeviceTimeZoneParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setDeviceTimeZone.parse(params)
+			// Convert offset hours to two's complement for negative values
+			// For positive values (0-12), just use the value directly
+			// For negative values (-12 to -1), use two's complement
+			let offsetByte: number
+			if (params.offsetHours >= 0) {
+				offsetByte = params.offsetHours
+			} else {
+				// Two's complement calculation for negative values
+				offsetByte = 256 + params.offsetHours // 256 = 2^8, adding to negative gives two's complement
+			}
+
+			return new BaseCommand(
+				'SetDeviceTimeZone', 
+				0x5f,
+				decToHex(offsetByte)
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetDeviceTimeZone execution',
+					command: 'SetDeviceTimeZone',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetDeviceTimeZone execution',
+					command: 'SetDeviceTimeZone',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getDeviceTimeZone() {
+		return new BaseCommand('GetDeviceTimeZone', 0x60)
+	}
+
+	static setAutomaticSetpointRestore(params: VickiCommandTypes.SetAutomaticSetpointRestoreParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setAutomaticSetpointRestore.parse(params)
+			// The time parameter is in 10-minute increments (0-255)
+			let timeValue = params.time / 10;
+			return new BaseCommand(
+				'SetAutomaticSetpointRestore',
+				0x61,
+				decToHex(timeValue)
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetAutomaticSetpointRestore execution',
+					command: 'SetAutomaticSetpointRestore',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetAutomaticSetpointRestore execution',
+					command: 'SetAutomaticSetpointRestore',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getAutomaticSetpointRestore() {
+		return new BaseCommand('GetAutomaticSetpointRestore', 0x62)
+	}
+
+	static setOfflineTargetTemperature(params: VickiCommandTypes.SetOfflineTargetTemperatureParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setOfflineTargetTemperature.parse(params)
+
+			// If targetTemperature is 0, disable the feature
+			if (params.targetTemperature === 0) {
+				return new BaseCommand(
+					'SetOfflineTargetTemperature',
+					0x65,
+					'0000'
+				)
+			}
+
+			// Convert temperature to the required format: multiply by 10 to get an integer value
+			// Example: 21.5°C becomes 215
+			const tempValue = params.targetTemperature * 10
+			return new BaseCommand(
+				'SetOfflineTargetTemperature',
+				0x65,
+				dec2hex(tempValue)
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetOfflineTargetTemperature execution',
+					command: 'SetOfflineTargetTemperature',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetOfflineTargetTemperature execution',
+					command: 'SetOfflineTargetTemperature',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getOfflineTargetTemperature() {
+		return new BaseCommand('GetOfflineTargetTemperature', 0x66)
+	}
+
+	static setInternalAlgoTemporaryState(params: VickiCommandTypes.SetInternalAlgoTemporaryStateParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setInternalAlgoTemporaryState.parse(params)
+			
+			// According to the docs:
+			// 00 - Enable internal algorithm operation (if it was temporarily disabled)
+			// 01 - Disable internal algorithm operation temporarily
+			const state = params.enabled ? '00' : '01'
+			
+			return new BaseCommand(
+				'SetInternalAlgoTemporaryState', 
+				0x67, 
+				state
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetInternalAlgoTemporaryState execution',
+					command: 'SetInternalAlgoTemporaryState',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetInternalAlgoTemporaryState execution',
+					command: 'SetInternalAlgoTemporaryState',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getInternalAlgoTemporaryState() {
+		return new BaseCommand('GetInternalAlgoTemporaryState', 0x68)
+	}
+
+	static setTemperatureLevels(params: VickiCommandTypes.SetTemperatureLevelsParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setTemperatureLevels.parse(params)
+			
+			// Convert each temperature to a value multiplied by 10
+			// and use dec2hex to convert to MSB/LSB hex values
+			const level0 = dec2hex(params.scaleLevel0 * 10)
+			const level1 = dec2hex(params.scaleLevel1 * 10)
+			const level2 = dec2hex(params.scaleLevel2 * 10)
+			const level3 = dec2hex(params.scaleLevel3 * 10)
+			const level4 = dec2hex(params.scaleLevel4 * 10)
+			const level5 = dec2hex(params.scaleLevel5 * 10)
+
+			return new BaseCommand(
+				'SetTemperatureLevels',
+				0x69,
+				level0, // Level 0 temperature (MSB,LSB) - first byte returned by dec2hex
+				level1, // Level 1 temperature (MSB,LSB)
+				level2, // Level 2 temperature (MSB,LSB)
+				level3, // Level 3 temperature (MSB,LSB)
+				level4, // Level 4 temperature (MSB,LSB)
+				level5  // Level 5 temperature (MSB,LSB)
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetTemperatureLevels execution',
+					command: 'SetTemperatureLevels',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetTemperatureLevels execution',
+					command: 'SetTemperatureLevels',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getTemperatureLevels() {
+		return new BaseCommand('GetTemperatureLevels', 0x6A)
+	}
+
+	static setLedIndicationDuration(params: VickiCommandTypes.SetLedIndicationDurationParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setLedIndicationDuration.parse(params)
+			
+			let durationValue = params.duration * 2;
+			return new BaseCommand(
+				'SetLedIndicationDuration',
+				0x63,
+				decToHex(durationValue)
+			)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetLedIndicationDuration execution',
+					command: 'SetLedIndicationDuration',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetLedIndicationDuration execution',
+					command: 'SetLedIndicationDuration',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getLedIndicationDuration() {
+		return new BaseCommand('GetLedIndicationDuration', 0x64)
+	}
 }
 
 applyMixins(VickiCommands, [TemperatureCommonCommands, ChildLockCommands])
