@@ -1588,10 +1588,24 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						let data
-						command_len = 3
-						let state = parseInt(commands[i + 1], 16)
-						let time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
-						data = { relayTimerInSeconds: { state, time } }
+						if (deviceType === DeviceType.Vicki) {
+							command_len = 2;
+							let notificationByte = parseInt(commands[i + 1], 16);
+							// Extract notification flags from bits
+							let temperatureRestoredAfterManualBoost = !!(notificationByte & 0x01);  // Bit 0
+							let temperatureChangedByHeatingSchedule = !!(notificationByte & 0x02);   // Bit 1
+							data = {
+								notifications: {
+									temperatureRestoredAfterManualBoost: temperatureRestoredAfterManualBoost,
+									temperatureChangedByHeatingSchedule: temperatureChangedByHeatingSchedule
+								}
+							};
+						}else{
+							command_len = 3
+							let state = parseInt(commands[i + 1], 16)
+							let time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
+							data = { relayTimerInSeconds: { state, time } }
+						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1656,6 +1670,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { fanSpeedNotOccupied: parseInt(commands[i + 1], 16) }
+						}else{
+							command_len = 1
+							data = { manualChangeRelayState: parseInt(commands[i + 1], 16) }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1701,6 +1718,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							data = {
 								overheatingEvents: { events: parseInt(commands[i + 1], 16), temperature: parseInt(commands[i + 2], 16) },
 							}
+						} else if (deviceType === DeviceType.Vicki) {
+							command_len = 1;
+							let offsetByte = parseInt(commands[i + 1], 16);
+							let offsetHours = (offsetByte & 0x80) ? (offsetByte - 256) : offsetByte;
+							data = { deviceTimeZone: offsetHours };
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1754,6 +1776,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									current: (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
 								},
 							}
+						}else{
+							command_len = 1;
+							let timeValue = parseInt(commands[i + 1], 16);
+							data = { autoSetpointRestoreStatus: timeValue === 0 ? 0 : timeValue * 10 };
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1893,6 +1919,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { frostProtectionStatus: parseInt(commands[i + 1], 16) }
+						}else{
+							command_len = 1;
+							data = { timeRequestByMACcommand: parseInt(commands[i + 1], 16) };
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -2307,23 +2336,6 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
-			case '58': {
-				command_len = 1;
-				let notificationByte = parseInt(commands[i + 1], 16);
-
-				// Extract notification flags from bits
-				let temperatureRestoredAfterManualBoost = !!(notificationByte & 0x01);  // Bit 0
-				let temperatureChangedByHeatingSchedule = !!(notificationByte & 0x02);   // Bit 1
-
-				let data = {
-					notifications: {
-						temperatureRestoredAfterManualBoost: temperatureRestoredAfterManualBoost,
-						temperatureChangedByHeatingSchedule: temperatureChangedByHeatingSchedule
-					}
-				};
-				Object.assign(resultToPass, { ...resultToPass }, { ...data })
-			}
-				break;
 			case '5a':
 				{
 					try {
@@ -2441,24 +2453,6 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
-			case '5d':
-				{
-					try {
-						command_len = 1
-						let data = { manualChangeRelayState: parseInt(commands[i + 1], 16) }
-
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
-					} catch (e) {
-						throw new CustomError({
-							message: `Failed to process command '5d'`,
-							hexData,
-							command,
-							deviceType,
-							originalError: e as Error,
-						})
-					}
-				}
-				break
 			case '5e':
 				{
 					try {
@@ -2487,116 +2481,142 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						})
 					}
 				}
-				break
-			case '60': {
-				command_len = 1;
-				let offsetByte = parseInt(commands[i + 1], 16);
-				let offsetHours = (offsetByte & 0x80) ? (offsetByte - 256) : offsetByte;
-				let data = { deviceTimeZone: offsetHours };
-				Object.assign(resultToPass, { ...resultToPass }, { ...data })
-			}
 				break;
-			case '62': {
-				command_len = 1;
-				let timeValue = parseInt(commands[i + 1], 16);
-				let data = { autoSetpointRestoreStatus: timeValue === 0 ? 0 : timeValue * 10 };
-				Object.assign(resultToPass, { ...resultToPass }, { ...data })
-			}
-				break;
-
 			case '64': {
-				command_len = 1;
-				let ledDurationValue = parseInt(commands[i + 1], 16);
-				let durationInSeconds = ledDurationValue / 2; // As per the docs, value is divided by 2 to get seconds
+				try {
+					command_len = 1;
+					let ledDurationValue = parseInt(commands[i + 1], 16);
+					let durationInSeconds = ledDurationValue / 2; // As per the docs, value is divided by 2 to get seconds
 
-				let data = {
-					ledIndicationDuration: durationInSeconds
-				};
-				Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					let data = {
+						ledIndicationDuration: durationInSeconds
+					};
+					Object.assign(resultToPass, { ...resultToPass }, { ...data })
+				} catch (e) {
+					throw new CustomError({
+						message: `Failed to process command '64'`,
+						hexData,
+						command,
+						deviceType,
+						originalError: e as Error,
+					})
+				}
 			}
 				break;
-
 			case '66': {
-				command_len = 2;
+				try {
+					command_len = 2;
 
-				let tempHigh = parseInt(commands[i + 1], 16);
-				let tempLow = parseInt(commands[i + 2], 16);
-				let targetTemp = (tempHigh << 8) | tempLow;
-				let data = {
-					offlineTargetTemperature: targetTemp === 0 ? 0 : targetTemp / 10
-				};
-				Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					let tempHigh = parseInt(commands[i + 1], 16);
+					let tempLow = parseInt(commands[i + 2], 16);
+					let targetTemp = (tempHigh << 8) | tempLow;
+					let data = {
+						offlineTargetTemperature: targetTemp === 0 ? 0 : targetTemp / 10
+					};
+					Object.assign(resultToPass, { ...resultToPass }, { ...data })
+				} catch (e) {
+					throw new CustomError({
+						message: `Failed to process command '66'`,
+						hexData,
+						command,
+						deviceType,
+						originalError: e as Error,
+					})
+				}
 			}
 				break;
 			case '68': {
-				command_len = 1;
-				let data = { internalAlgoTemporaryState: parseInt(commands[i + 1], 16) === 0 ? true : false };
-				Object.assign(resultToPass, { ...resultToPass }, { ...data })
+				try {
+					command_len = 1;
+					let data = { internalAlgoTemporaryState: parseInt(commands[i + 1], 16) === 0 ? true : false };
+					Object.assign(resultToPass, { ...resultToPass }, { ...data })
+				} catch (e) {
+					throw new CustomError({
+						message: `Failed to process command '68'`,
+						hexData,
+						command,
+						deviceType,
+						originalError: e as Error,
+					})
+				}
 			}
 				break;
 			case '6a': {
-				command_len = 12;
-				let temperatureLevels: { [key: string]: number } = {};
+				try {
+					command_len = 12;
+					let temperatureLevels: { [key: string]: number } = {};
 
-				// Process 6 scale levels (0-5), each with a 2-byte temperature value
-				for (let level = 0; level < 6; level++) {
-					let tempHighByte = parseInt(commands[i + 1 + (level * 2)], 16);
-					let tempLowByte = parseInt(commands[i + 2 + (level * 2)], 16);
-					let tempValue = (tempHighByte << 8) | tempLowByte;
+					// Process 6 scale levels (0-5), each with a 2-byte temperature value
+					for (let level = 0; level < 6; level++) {
+						let tempHighByte = parseInt(commands[i + 1 + (level * 2)], 16);
+						let tempLowByte = parseInt(commands[i + 2 + (level * 2)], 16);
+						let tempValue = (tempHighByte << 8) | tempLowByte;
 
-					// The temperature values are pre-multiplied by 10
-					temperatureLevels['level' + level] = tempValue / 10;
+						// The temperature values are pre-multiplied by 10
+						temperatureLevels['level' + level] = tempValue / 10;
+					}
+
+					let data = {
+						temperatureLevels: temperatureLevels
+					};
+
+					Object.assign(resultToPass, { ...resultToPass }, { ...data })
+				} catch (e) {
+					throw new CustomError({
+						message: `Failed to process command '6a'`,
+						hexData,
+						command,
+						deviceType,
+						originalError: e as Error,
+					})
 				}
-
-				let data = {
-					temperatureLevels: temperatureLevels
-				};
-
-				Object.assign(resultToPass, { ...resultToPass }, { ...data })
 			}
 				break;
 			case '6c': {
-				command_len = 4;
-				let eventsHighByte = parseInt(commands[i + 2], 16);   // Events 19-16
-				let eventsMidByte = parseInt(commands[i + 3], 16);    // Events 15-8
-				let eventsLowByte = parseInt(commands[i + 4], 16);    // Events 7-0
+				try {
+					command_len = 4;
+					let eventsHighByte = parseInt(commands[i + 2], 16);   // Events 19-16
+					let eventsMidByte = parseInt(commands[i + 3], 16);    // Events 15-8
+					let eventsLowByte = parseInt(commands[i + 4], 16);    // Events 7-0
 
-				// Create a more structured and readable format for heating events
-				let heatingEventStates: { [key: string]: boolean } = {};
+					// Create a more structured and readable format for heating events
+					let heatingEventStates: { [key: string]: boolean } = {};
 
-				// Process all 20 events (0-19) in a single loop
-				for (let eventIdx = 0; eventIdx < 20; eventIdx++) {
-					// Calculate which bit to check
-					let bitPosition;
-					if (eventIdx >= 16) {
-						// Events 16-19 in high byte
-						bitPosition = eventIdx - 16;
-						heatingEventStates[eventIdx] = !!(eventsHighByte & (1 << bitPosition));
-					} else if (eventIdx >= 8) {
-						// Events 8-15 in mid byte
-						bitPosition = eventIdx - 8;
-						heatingEventStates[eventIdx] = !!(eventsMidByte & (1 << bitPosition));
-					} else {
-						// Events 0-7 in low byte
-						bitPosition = eventIdx;
-						heatingEventStates[eventIdx] = !!(eventsLowByte & (1 << bitPosition));
+					// Process all 20 events (0-19) in a single loop
+					for (let eventIdx = 0; eventIdx < 20; eventIdx++) {
+						// Calculate which bit to check
+						let bitPosition;
+						if (eventIdx >= 16) {
+							// Events 16-19 in high byte
+							bitPosition = eventIdx - 16;
+							heatingEventStates[eventIdx] = !!(eventsHighByte & (1 << bitPosition));
+						} else if (eventIdx >= 8) {
+							// Events 8-15 in mid byte
+							bitPosition = eventIdx - 8;
+							heatingEventStates[eventIdx] = !!(eventsMidByte & (1 << bitPosition));
+						} else {
+							// Events 0-7 in low byte
+							bitPosition = eventIdx;
+							heatingEventStates[eventIdx] = !!(eventsLowByte & (1 << bitPosition));
+						}
 					}
+
+					let data = {
+						heatingEventStates: heatingEventStates
+					};
+
+					Object.assign(resultToPass, { ...resultToPass }, { ...data });
+				} catch (e) {
+					throw new CustomError({
+						message: `Failed to process command '6c'`,
+						hexData,
+						command,
+						deviceType,
+						originalError: e as Error,
+					})
 				}
-
-				let data = {
-					heatingEventStates: heatingEventStates
-				};
-
-				Object.assign(resultToPass, { ...resultToPass }, { ...data });
 				break;
 			}
-			case '6e': {
-				command_len = 1;
-				let data = { timeRequestByMACcommand: parseInt(commands[i + 1], 16) };
-				Object.assign(resultToPass, { ...resultToPass }, { ...data });
-				break;
-			}
-
 			case '9b':
 				{
 					try {
