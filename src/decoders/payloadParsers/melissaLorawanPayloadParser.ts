@@ -1,28 +1,31 @@
 import { commandsReadingHelper } from '@/decoders/commandsReadingHelper'
-import { DeviceType, RelayKeepAliveData } from '@/decoders/payloadParsers/types'
+import { DeviceType } from '@/decoders/payloadParsers/types'
 import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
+interface MelissaKeepAliveData {
+	sensorTemperature?: number
+	relativeHumidity?: number
+	isIrCodeRecordingRequested?: boolean
+}
 export const melissaLorawanPayloadParser = (hexData: string) => {
 	let deviceData = {}
 
 	try {
 		const handleKeepAliveData = (bytes: number[]) => {
-			let keepaliveData: RelayKeepAliveData = {}
+			let keepaliveData: MelissaKeepAliveData = {}
+			// Internal temperature sensor data from bytes 1-2 (16 bits)
+			// According to the screenshot: t[°C] = (T[15:0] - 400) / 10
+			const rawTemperature = (bytes[1] << 8) | bytes[2];
+			keepaliveData.sensorTemperature = Number(((rawTemperature - 400) / 10).toFixed(2));
 
-			// Internal temperature sensor
-			const isNegative = (bytes[1] & 0x80) !== 0; // Check the 7th bit for the sign
-			let temperature = bytes[1] & 0x7F; // Mask out the 7th bit to get the temperature value
-			keepaliveData.internalTemperature = isNegative ? -temperature : temperature;
+			// Relative Humidity from byte 3
+			// According to the screenshot: RH[%] = (XX * 100) / 256
+			keepaliveData.relativeHumidity = Number(((bytes[3] * 100) / 256).toFixed(2));
 
-			// Energy data
-			keepaliveData.energy = ((bytes[2] << 24) | (bytes[3] << 16) | (bytes[4] << 8) | bytes[5]) / 1000
-
-			// Power data
-			keepaliveData.power = (bytes[6] << 8) | bytes[7]
-
-			// AC voltage
-			keepaliveData.acVoltage = bytes[8]
+			// Device status information (byte 4)
+			// Bit 7 indicates if IR code recording is requested (1) or not (0)
+			keepaliveData.isIrCodeRecordingRequested = ((bytes[4] & 0x80) !== 0);
 
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
@@ -35,7 +38,7 @@ export const melissaLorawanPayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				let data = commandsReadingHelper(hexData, 18, DeviceType.MelissaLorawan)
+				let data = commandsReadingHelper(hexData, 10, DeviceType.MelissaLorawan)
 				if (!data) return
 				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
 				if ('decodeKeepalive' in data) {
@@ -46,7 +49,7 @@ export const melissaLorawanPayloadParser = (hexData: string) => {
 
 				// get only keepalive from device response
 				if (shouldKeepAlive) {
-					let keepaliveData = hexData.slice(-18)
+					let keepaliveData = hexData.slice(-10)
 					let dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 					handleKeepAliveData(dataToPass)

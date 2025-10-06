@@ -198,6 +198,68 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
+			case '0a':
+				{
+					try {
+						let data;
+						if (deviceType === DeviceType.MelissaLorawan) {
+							command_len = 4;
+							let recordedIrCodeSize = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
+							let bytesSent = `${commands[i + 3]}${commands[i + 4]}`
+							data = { recordedIrInfo: { recordedIrCodeSize, bytesSent } }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '0a'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break;
+			case '0b':
+				{
+					try {
+						let data;
+						if (deviceType === DeviceType.MelissaLorawan) {
+							// First byte after command indicates how many bytes follow
+							const bytesCount = parseInt(commands[i + 1], 16);
+							command_len = 1 + bytesCount; // 1 for bytesCount + the actual bytes
+
+							// Next two bytes are buffer offset
+							const bufferOffsetMSB = parseInt(commands[i + 2], 16);
+							const bufferOffsetLSB = parseInt(commands[i + 3], 16);
+							const address = (bufferOffsetMSB << 8) | bufferOffsetLSB;
+
+							// The rest is IR code data
+							let irCodeDataString = '';
+							for (let j = 4; j < 4 + bytesCount - 2; j++) { // -2 to account for the offset bytes
+								irCodeDataString += commands[i + j];
+							}
+
+							data = { 
+								irCodeData: {
+									bytesCount: bytesCount - 2,
+									address,
+									data: irCodeDataString
+								}
+							};
+							Object.assign(resultToPass, { ...resultToPass }, { ...data });
+						}
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '0b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break;
 			case '0e':
 				{
 					try {

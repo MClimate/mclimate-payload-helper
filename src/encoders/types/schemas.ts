@@ -1377,6 +1377,22 @@ export namespace Co2PirLiteCommandTypes {
 	>
 	export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
 }
+
+
+
+/* --------------------------------------- Melissa --------------------------------------- */
+const MelissaCommandSchemas = {
+	...GeneralCommandSchemas,
+	setIrCodeRecording: z.object({
+		time: z.number().min(0).max(255),
+	}),
+}
+
+export namespace MelissaCommandTypes {
+	export type SetIrCodeRecordingParams = z.infer<
+		typeof MelissaCommandSchemas.setIrCodeRecording
+	>
+}
 /* --------------------------------------- EXPORT ALL SCHEMA GROUPS --------------------------------------- */
 export const DeviceCommandSchemas = {
 	GeneralCommandSchemas,
@@ -1402,4 +1418,5 @@ export const DeviceCommandSchemas = {
 	Relay16DryCommandSchemas,
 	HTPirLiteCommandSchemas,
 	Co2PirLiteCommandSchemas,
+	MelissaCommandSchemas,
 }

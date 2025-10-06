@@ -816,3 +816,11 @@ describe('HT PIR Lite Commands payload encoder', () => {
 		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})
 })
+describe('Melissa Commands payload encoder', () => {
+	const commandBuilder = new CommandBuilder('melissa_lorawan')
+	test('Set IR Code Recording ', () => {
+		expect(commandBuilder.build('SetIrCodeRecording', { time: 15 })).toStrictEqual(
+			new BaseCommand('SetIrCodeRecording', 0x09, '0F'),
+		)
+	})
+})

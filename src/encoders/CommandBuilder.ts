@@ -19,6 +19,7 @@ import {
 	Relay16DryCommands,
 	HTPirLiteCommands,
 	Co2PirLiteCommands,
+	MelissaCommands,
 } from '@/encoders'
 
 import { CustomError, toCamelCase } from '@/utils'
@@ -48,6 +49,7 @@ export class CommandBuilder {
 			relay_16_dry: Relay16DryCommands,
 			ht_pir_lite: HTPirLiteCommands,
 			co2_pir_lite: Co2PirLiteCommands,
+			melissa_lorawan: MelissaCommands,
 		}
 	}
 

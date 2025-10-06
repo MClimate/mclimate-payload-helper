@@ -824,23 +824,42 @@ describe('ADS payload decoder', () => {
 })
 describe('Melissa payload decoder', () => {
 	test('simple keepalive', () => {
-		expect(uplinkPayloadParser('010031010A1D0218A4', DeviceType.MelissaLorawan)).toStrictEqual({
-			internalTemperature: 0,
-			energy: 822151.709,
-			power: 536,
-			acVoltage: 164
-		})
+		expect(uplinkPayloadParser('01027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
+			sensorTemperature: 23.8,
+			relativeHumidity: 27.34,
+			isIrCodeRecordingRequested: false
+		  })
 		
 	})
 	test('keepalive with response of preloaded code', () => {
-		expect(uplinkPayloadParser('060042010031010A1D0218A4', DeviceType.MelissaLorawan)).toStrictEqual({
-			internalTemperature: 0,
-			energy: 822151.709,
-			power: 536,
-			acVoltage: 164,
+		expect(uplinkPayloadParser('06004201027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
+			sensorTemperature: 23.8,
+			relativeHumidity: 27.34,
+			isIrCodeRecordingRequested: false,
 			preloadedCode: { codeAddress: 66, codeAddressRaw: '0042' }
 		})
 	})
+	test('keepalive with response of recorded code', () => {
+		expect(uplinkPayloadParser('0a0020002001027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
+			sensorTemperature: 23.8,
+			relativeHumidity: 27.34,
+			isIrCodeRecordingRequested: false,
+			recordedIrInfo: { recordedIrCodeSize: 32, bytesSent: '0020' }
+		})
+	})
+	test('keepalive with response of transfered code', () => {
+		expect(uplinkPayloadParser('0b2200000063320612062e062e000606000508120004040008080005180008081100050c01027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
+			sensorTemperature: 23.8,
+			relativeHumidity: 27.34,
+			isIrCodeRecordingRequested: false,
+			irCodeData: {
+				bytesCount: 32,
+				address: 0,
+				data: "0063320612062e062e000606000508120004040008080005180008081100050c"
+			}
+		})
+	})
+
 })
 describe('CO2PirLite payload decoder', () => {
 	test('simple keepalive', () => {
