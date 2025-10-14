@@ -22,6 +22,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			decodeKeepalive = true
 		} else if ((potentialKeepAlive[0] === '00' || potentialKeepAlive[0] === '88') && deviceType === DeviceType.TFlood) {
 			decodeKeepalive = true
+		} else if (potentialKeepAlive[0] === '82' && deviceType === DeviceType.MultiSensor) {
+			decodeKeepalive = true
 		} else if (
 			(potentialKeepAlive[0] === '01' || potentialKeepAlive[0] === '20' || potentialKeepAlive[0] === '21') &&
 			deviceType === DeviceType.OpenCloseSensor
@@ -609,6 +611,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 								overheatingThresholds: { trigger: parseInt(commands[i + 1], 16), recovery: parseInt(commands[i + 2], 16) },
 							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.MultiSensor) {
+							command_len = 1
+							let data = { lightEnabled: parseInt(commands[i + 1], 16) === 1 }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 4
 							let good_medium = parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16)
@@ -648,6 +654,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									recovery: parseInt(commands[i + 3], 16),
 								},
 							}
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.MultiSensor) {
+							command_len = 1
+							let data = { hallEnabled: parseInt(commands[i + 1], 16) === 1 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType !== DeviceType.OpenCloseSensor) {
 							command_len = 2
@@ -705,11 +715,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 1
 							let data = { overcurrentThreshold: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.MultiSensor) {
+							command_len = 2
+							let data = { hallBlindPeriod: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 3
 							let good_zone = parseInt(commands[i + 1], 16)
 							let medium_zone = parseInt(commands[i + 2], 16)
 							let bad_zone = parseInt(commands[i + 3], 16)
+
 							let data = {
 								notifyPeriod: { good_zone: Number(good_zone), medium_zone: Number(medium_zone), bad_zone: Number(bad_zone) },
 							}
@@ -729,7 +744,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '25':
 				{
 					try {
-						let data = {}
+						let data
 						if (deviceType == DeviceType.Relay16) {
 							command_len = 2
 							data = { overpowerThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
@@ -779,6 +794,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 										parseInt(commands[i + 31], 16),
 								},
 							}
+						} else if (deviceType === DeviceType.MultiSensor) {
+							command_len = 1
+							data = { microphoneEnabled: parseInt(commands[i + 1], 16) === 1 }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 3
 							let good_zone = parseInt(commands[i + 1], 16)
@@ -792,8 +811,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									bad_zone: Number(bad_zone),
 								},
 							}
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '25'`,
@@ -811,6 +830,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 1
 							let data = { OVAC: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.MultiSensor) {
+							command_len = 2
+							let data = {
+								microphoneSamplingPeriod: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16),
+							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 9
@@ -864,6 +889,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							let coefficient = parseInt(commands[i + 1], 16)
 							let period = parseInt(commands[i + 2], 16)
 							let data = { proportionalAlgorithmParameters: { coefficient: Number(coefficient), period: Number(period) } }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.MultiSensor) {
+							command_len = 1
+							let data = { gasEnabled: parseInt(commands[i + 1], 16) === 1 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 15
@@ -927,6 +956,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							}
 							let data = { temperatureControlAlgorithm: algo }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.MultiSensor) {
+							command_len = 1
+							let data = { gasMeasurementPeriodMinutes: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
 							let data = { autoZeroPeriod: parseInt(commands[i + 1], 16) }
@@ -943,11 +976,34 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
+			case '2d':
+				{
+					try {
+						if (deviceType === DeviceType.MultiSensor) {
+							command_len = 1
+							let data = { pirEnabled: parseInt(commands[i + 1], 16) === 1 }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '2d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
 			case '2f':
 				{
 					try {
 						let data
-						if (
+						if (deviceType === DeviceType.MultiSensor) {
+							command_len = 2
+							data = { pirBlindPeriod: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (
 							deviceType === DeviceType.CO2DisplayLite ||
 							deviceType === DeviceType.CO2PirLite ||
 							deviceType === DeviceType.HTPirLite
@@ -987,6 +1043,24 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '30'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+
+			case 'a4':
+				{
+					try {
+						command_len = 1
+						let data = { region: parseInt(commands[i + 1], 16) }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command 'a4'`,
 							hexData,
 							command,
 							deviceType,
