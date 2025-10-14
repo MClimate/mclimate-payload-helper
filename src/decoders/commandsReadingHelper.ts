@@ -203,9 +203,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '0a':
 				{
 					try {
-						let data;
+						let data
 						if (deviceType === DeviceType.MelissaLorawan) {
-							command_len = 4;
+							command_len = 4
 							let recordedIrCodeSize = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
 							let bytesSent = `${commands[i + 3]}${commands[i + 4]}`
 							data = { recordedIrInfo: { recordedIrCodeSize, bytesSent } }
@@ -221,35 +221,36 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						})
 					}
 				}
-				break;
+				break
 			case '0b':
 				{
 					try {
-						let data;
+						let data
 						if (deviceType === DeviceType.MelissaLorawan) {
 							// First byte after command indicates how many bytes follow
-							const bytesCount = parseInt(commands[i + 1], 16);
-							command_len = 1 + bytesCount; // 1 for bytesCount + the actual bytes
+							const bytesCount = parseInt(commands[i + 1], 16)
+							command_len = 1 + bytesCount // 1 for bytesCount + the actual bytes
 
 							// Next two bytes are buffer offset
-							const bufferOffsetMSB = parseInt(commands[i + 2], 16);
-							const bufferOffsetLSB = parseInt(commands[i + 3], 16);
-							const address = (bufferOffsetMSB << 8) | bufferOffsetLSB;
+							const bufferOffsetMSB = parseInt(commands[i + 2], 16)
+							const bufferOffsetLSB = parseInt(commands[i + 3], 16)
+							const address = (bufferOffsetMSB << 8) | bufferOffsetLSB
 
 							// The rest is IR code data
-							let irCodeDataString = '';
-							for (let j = 4; j < 4 + bytesCount - 2; j++) { // -2 to account for the offset bytes
-								irCodeDataString += commands[i + j];
+							let irCodeDataString = ''
+							for (let j = 4; j < 4 + bytesCount - 2; j++) {
+								// -2 to account for the offset bytes
+								irCodeDataString += commands[i + j]
 							}
 
-							data = { 
+							data = {
 								irCodeData: {
 									bytesCount: bytesCount - 2,
 									address,
-									data: irCodeDataString
-								}
-							};
-							Object.assign(resultToPass, { ...resultToPass }, { ...data });
+									data: irCodeDataString,
+								},
+							}
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
 						throw new CustomError({
@@ -261,7 +262,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						})
 					}
 				}
-				break;
+				break
 			case '0e':
 				{
 					try {
@@ -1725,18 +1726,18 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						let data
 						if (deviceType === DeviceType.Vicki) {
-							command_len = 2;
-							let notificationByte = parseInt(commands[i + 1], 16);
+							command_len = 2
+							let notificationByte = parseInt(commands[i + 1], 16)
 							// Extract notification flags from bits
-							let temperatureRestoredAfterManualBoost = !!(notificationByte & 0x01);  // Bit 0
-							let temperatureChangedByHeatingSchedule = !!(notificationByte & 0x02);   // Bit 1
+							let temperatureRestoredAfterManualBoost = !!(notificationByte & 0x01) // Bit 0
+							let temperatureChangedByHeatingSchedule = !!(notificationByte & 0x02) // Bit 1
 							data = {
 								notifications: {
 									temperatureRestoredAfterManualBoost: temperatureRestoredAfterManualBoost,
-									temperatureChangedByHeatingSchedule: temperatureChangedByHeatingSchedule
-								}
-							};
-						}else{
+									temperatureChangedByHeatingSchedule: temperatureChangedByHeatingSchedule,
+								},
+							}
+						} else {
 							command_len = 3
 							let state = parseInt(commands[i + 1], 16)
 							let time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
@@ -1806,7 +1807,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { fanSpeedNotOccupied: parseInt(commands[i + 1], 16) }
-						}else{
+						} else {
 							command_len = 1
 							data = { manualChangeRelayState: parseInt(commands[i + 1], 16) }
 						}
@@ -1855,10 +1856,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 								overheatingEvents: { events: parseInt(commands[i + 1], 16), temperature: parseInt(commands[i + 2], 16) },
 							}
 						} else if (deviceType === DeviceType.Vicki) {
-							command_len = 1;
-							let offsetByte = parseInt(commands[i + 1], 16);
-							let offsetHours = (offsetByte & 0x80) ? (offsetByte - 256) : offsetByte;
-							data = { deviceTimeZone: offsetHours };
+							command_len = 1
+							let offsetByte = parseInt(commands[i + 1], 16)
+							let offsetHours = offsetByte & 0x80 ? offsetByte - 256 : offsetByte
+							data = { deviceTimeZone: offsetHours }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -1912,10 +1913,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									current: (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
 								},
 							}
-						}else{
-							command_len = 1;
-							let timeValue = parseInt(commands[i + 1], 16);
-							data = { autoSetpointRestoreStatus: timeValue === 0 ? 0 : timeValue * 10 };
+						} else {
+							command_len = 1
+							let timeValue = parseInt(commands[i + 1], 16)
+							data = { autoSetpointRestoreStatus: timeValue === 0 ? 0 : timeValue * 10 }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -2055,9 +2056,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
 							data = { frostProtectionStatus: parseInt(commands[i + 1], 16) }
-						}else{
-							command_len = 1;
-							data = { timeRequestByMACcommand: parseInt(commands[i + 1], 16) };
+						} else {
+							command_len = 1
+							data = { timeRequestByMACcommand: parseInt(commands[i + 1], 16) }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -2438,23 +2439,6 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
-			case 'a4':
-				{
-					try {
-						command_len = 1
-						let data = { region: parseInt(commands[i + 1], 16) }
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
-					} catch (e) {
-						throw new CustomError({
-							message: `Failed to process command 'a4'`,
-							hexData,
-							command,
-							deviceType,
-							originalError: e as Error,
-						})
-					}
-				}
-				break
 			case 'a6':
 				{
 					try {
@@ -2475,66 +2459,72 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '5a':
 				{
 					try {
-						let data;
+						let data
 						if (deviceType === DeviceType.Relay16 || deviceType === DeviceType.Relay16Dry) {
 							command_len = 1
 							data = { afterOverheatingProtectionRecovery: parseInt(commands[i + 1], 16) }
 						} else {
-							command_len = 41;
-							let eventsGroup = parseInt(commands[i + 1], 16); // 0 = events 0-7, 1 = events 8-15, 2 = events 16-19
-							let eventGroupIndex = ['0-7', '8-15', '16-19'];
-							let heatingEvents = [];
+							command_len = 41
+							let eventsGroup = parseInt(commands[i + 1], 16) // 0 = events 0-7, 1 = events 8-15, 2 = events 16-19
+							let eventGroupIndex = ['0-7', '8-15', '16-19']
+							let heatingEvents = []
 
 							// Process up to 8 events for groups 0 and 1, but only 4 events for group 2
-							let eventsToProcess = (eventsGroup === 2) ? 4 : 8;
+							let eventsToProcess = eventsGroup === 2 ? 4 : 8
 							for (let eventIdx = 0; eventIdx < eventsToProcess; eventIdx++) {
 								// Each event takes 5 bytes (hour, minute, temp high, temp low, weekday bitmask)
-								let offset = i + 2 + (eventIdx * 5);
+								let offset = i + 2 + eventIdx * 5
 
 								// Check if this event is configured
 								// Make sure we have valid values at this offset
 								if (offset >= commands.length || offset + 4 >= commands.length) {
-									continue;
+									continue
 								}
 
-								let hour = parseInt(commands[offset], 16);
-								let minute = parseInt(commands[offset + 1], 16);
-								let tempHigh = parseInt(commands[offset + 2], 16);
-								let tempLow = parseInt(commands[offset + 3], 16);
-								let weekdayByte = parseInt(commands[offset + 4], 16);
+								let hour = parseInt(commands[offset], 16)
+								let minute = parseInt(commands[offset + 1], 16)
+								let tempHigh = parseInt(commands[offset + 2], 16)
+								let tempLow = parseInt(commands[offset + 3], 16)
+								let weekdayByte = parseInt(commands[offset + 4], 16)
 
 								// Skip events that are not configured (zeros or NaN values)
-								if (isNaN(hour) || isNaN(minute) || isNaN(tempHigh) || isNaN(tempLow) || isNaN(weekdayByte) ||
-									(hour === 0 && minute === 0 && tempHigh === 0 && tempLow === 0 && weekdayByte === 0)) {
-									continue;
+								if (
+									isNaN(hour) ||
+									isNaN(minute) ||
+									isNaN(tempHigh) ||
+									isNaN(tempLow) ||
+									isNaN(weekdayByte) ||
+									(hour === 0 && minute === 0 && tempHigh === 0 && tempLow === 0 && weekdayByte === 0)
+								) {
+									continue
 								}
 
 								// Calculate actual event index in the full range (0-23)
-								let globalEventIndex = (eventsGroup * 8) + eventIdx;
+								let globalEventIndex = eventsGroup * 8 + eventIdx
 								// Decode weekday bitmask (bit 0=Mon, bit 1=Tue, bit 2=Wed, bit 3=Thu, bit 4=Fri, bit 5=Sat, bit 6=Sun)
 								let weekdays = {
-									monday: !!(weekdayByte & 0x01),     // bit 0
-									tuesday: !!(weekdayByte & 0x02),    // bit 1
-									wednesday: !!(weekdayByte & 0x04),  // bit 2
-									thursday: !!(weekdayByte & 0x08),   // bit 3
-									friday: !!(weekdayByte & 0x10),     // bit 4
-									saturday: !!(weekdayByte & 0x20),   // bit 5
-									sunday: !!(weekdayByte & 0x40)      // bit 6
-								};
+									monday: !!(weekdayByte & 0x01), // bit 0
+									tuesday: !!(weekdayByte & 0x02), // bit 1
+									wednesday: !!(weekdayByte & 0x04), // bit 2
+									thursday: !!(weekdayByte & 0x08), // bit 3
+									friday: !!(weekdayByte & 0x10), // bit 4
+									saturday: !!(weekdayByte & 0x20), // bit 5
+									sunday: !!(weekdayByte & 0x40), // bit 6
+								}
 
 								// Create heating event object
 								let heatingEvent = {
 									index: globalEventIndex,
 									start: (hour < 10 ? '0' + hour : hour) + ':' + (minute < 10 ? '0' + minute : minute),
 									targetTemperature: ((tempHigh << 8) | tempLow) / 10,
-									weekdays: weekdays
-								};
-								heatingEvents.push(heatingEvent);
+									weekdays: weekdays,
+								}
+								heatingEvents.push(heatingEvent)
 							}
 							data = {
 								heatingEventGroup: eventGroupIndex[eventsGroup],
-								heatingEvents: heatingEvents
-							};
+								heatingEvents: heatingEvents,
+							}
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -2551,30 +2541,40 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '5c':
 				{
 					try {
-						let data;
+						let data
 						if (deviceType === DeviceType.Vicki) {
-							command_len = 4;
+							command_len = 4
 							// Note: Months are 0-11 (January=0, December=11)
-							let startMonth = parseInt(commands[i + 1], 16);
-							let startDay = parseInt(commands[i + 2], 16);
-							let endMonth = parseInt(commands[i + 3], 16);
-							let endDay = parseInt(commands[i + 4], 16);
+							let startMonth = parseInt(commands[i + 1], 16)
+							let startDay = parseInt(commands[i + 2], 16)
+							let endMonth = parseInt(commands[i + 3], 16)
+							let endDay = parseInt(commands[i + 4], 16)
 
 							// Convert to human-readable month names
 							let monthNames = [
-								'January', 'February', 'March', 'April', 'May', 'June',
-								'July', 'August', 'September', 'October', 'November', 'December'
-							];
+								'January',
+								'February',
+								'March',
+								'April',
+								'May',
+								'June',
+								'July',
+								'August',
+								'September',
+								'October',
+								'November',
+								'December',
+							]
 
 							data = {
 								heatingSchedule: {
 									start: startDay + ' ' + monthNames[startMonth],
 									end: endDay + ' ' + monthNames[endMonth],
-								}
-							};
-							Object.assign(resultToPass, { ...resultToPass }, { ...data });
+								},
+							}
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
-							command_len = 1;
+							command_len = 1
 							data = { ledIndicationMode: parseInt(commands[i + 1], 16) }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -2592,20 +2592,21 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '5e':
 				{
 					try {
-						command_len = 4;
+						command_len = 4
 						// Parse 32-bit UNIX timestamp (4 bytes)
-						var unixTimestamp = (parseInt(commands[i + 1], 16) << 24) |
+						var unixTimestamp =
+							(parseInt(commands[i + 1], 16) << 24) |
 							(parseInt(commands[i + 2], 16) << 16) |
 							(parseInt(commands[i + 3], 16) << 8) |
-							parseInt(commands[i + 4], 16);
+							parseInt(commands[i + 4], 16)
 
 						// Convert UNIX timestamp to JavaScript Date
-						let dateObj = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+						let dateObj = new Date(unixTimestamp * 1000) // Convert seconds to milliseconds
 						let date = dateObj.getUTCDate() + '/' + (dateObj.getUTCMonth() + 1) + '/' + dateObj.getUTCFullYear()
 						let time = dateObj.getUTCHours() + ':' + (dateObj.getUTCMinutes() < 10 ? '0' : '') + dateObj.getUTCMinutes()
 						let data = {
-							deviceTime: "" + date + " " + time
-						};
+							deviceTime: '' + date + ' ' + time,
+						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -2617,131 +2618,135 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						})
 					}
 				}
-				break;
-			case '64': {
-				try {
-					command_len = 1;
-					let ledDurationValue = parseInt(commands[i + 1], 16);
-					let durationInSeconds = ledDurationValue / 2; // As per the docs, value is divided by 2 to get seconds
+				break
+			case '64':
+				{
+					try {
+						command_len = 1
+						let ledDurationValue = parseInt(commands[i + 1], 16)
+						let durationInSeconds = ledDurationValue / 2 // As per the docs, value is divided by 2 to get seconds
 
-					let data = {
-						ledIndicationDuration: durationInSeconds
-					};
-					Object.assign(resultToPass, { ...resultToPass }, { ...data })
-				} catch (e) {
-					throw new CustomError({
-						message: `Failed to process command '64'`,
-						hexData,
-						command,
-						deviceType,
-						originalError: e as Error,
-					})
-				}
-			}
-				break;
-			case '66': {
-				try {
-					command_len = 2;
-
-					let tempHigh = parseInt(commands[i + 1], 16);
-					let tempLow = parseInt(commands[i + 2], 16);
-					let targetTemp = (tempHigh << 8) | tempLow;
-					let data = {
-						offlineTargetTemperature: targetTemp === 0 ? 0 : targetTemp / 10
-					};
-					Object.assign(resultToPass, { ...resultToPass }, { ...data })
-				} catch (e) {
-					throw new CustomError({
-						message: `Failed to process command '66'`,
-						hexData,
-						command,
-						deviceType,
-						originalError: e as Error,
-					})
-				}
-			}
-				break;
-			case '68': {
-				try {
-					command_len = 1;
-					let data = { internalAlgoTemporaryState: parseInt(commands[i + 1], 16) === 0 ? true : false };
-					Object.assign(resultToPass, { ...resultToPass }, { ...data })
-				} catch (e) {
-					throw new CustomError({
-						message: `Failed to process command '68'`,
-						hexData,
-						command,
-						deviceType,
-						originalError: e as Error,
-					})
-				}
-			}
-				break;
-			case '6a': {
-				try {
-					command_len = 12;
-					let temperatureLevels: { [key: string]: number } = {};
-
-					// Process 6 scale levels (0-5), each with a 2-byte temperature value
-					for (let level = 0; level < 6; level++) {
-						let tempHighByte = parseInt(commands[i + 1 + (level * 2)], 16);
-						let tempLowByte = parseInt(commands[i + 2 + (level * 2)], 16);
-						let tempValue = (tempHighByte << 8) | tempLowByte;
-
-						// The temperature values are pre-multiplied by 10
-						temperatureLevels['level' + level] = tempValue / 10;
+						let data = {
+							ledIndicationDuration: durationInSeconds,
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '64'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
 					}
-
-					let data = {
-						temperatureLevels: temperatureLevels
-					};
-
-					Object.assign(resultToPass, { ...resultToPass }, { ...data })
-				} catch (e) {
-					throw new CustomError({
-						message: `Failed to process command '6a'`,
-						hexData,
-						command,
-						deviceType,
-						originalError: e as Error,
-					})
 				}
-			}
-				break;
+				break
+			case '66':
+				{
+					try {
+						command_len = 2
+
+						let tempHigh = parseInt(commands[i + 1], 16)
+						let tempLow = parseInt(commands[i + 2], 16)
+						let targetTemp = (tempHigh << 8) | tempLow
+						let data = {
+							offlineTargetTemperature: targetTemp === 0 ? 0 : targetTemp / 10,
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '66'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '68':
+				{
+					try {
+						command_len = 1
+						let data = { internalAlgoTemporaryState: parseInt(commands[i + 1], 16) === 0 ? true : false }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '68'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '6a':
+				{
+					try {
+						command_len = 12
+						let temperatureLevels: { [key: string]: number } = {}
+
+						// Process 6 scale levels (0-5), each with a 2-byte temperature value
+						for (let level = 0; level < 6; level++) {
+							let tempHighByte = parseInt(commands[i + 1 + level * 2], 16)
+							let tempLowByte = parseInt(commands[i + 2 + level * 2], 16)
+							let tempValue = (tempHighByte << 8) | tempLowByte
+
+							// The temperature values are pre-multiplied by 10
+							temperatureLevels['level' + level] = tempValue / 10
+						}
+
+						let data = {
+							temperatureLevels: temperatureLevels,
+						}
+
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '6a'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
 			case '6c': {
 				try {
-					command_len = 4;
-					let eventsHighByte = parseInt(commands[i + 2], 16);   // Events 19-16
-					let eventsMidByte = parseInt(commands[i + 3], 16);    // Events 15-8
-					let eventsLowByte = parseInt(commands[i + 4], 16);    // Events 7-0
+					command_len = 4
+					let eventsHighByte = parseInt(commands[i + 2], 16) // Events 19-16
+					let eventsMidByte = parseInt(commands[i + 3], 16) // Events 15-8
+					let eventsLowByte = parseInt(commands[i + 4], 16) // Events 7-0
 
 					// Create a more structured and readable format for heating events
-					let heatingEventStates: { [key: string]: boolean } = {};
+					let heatingEventStates: { [key: string]: boolean } = {}
 
 					// Process all 20 events (0-19) in a single loop
 					for (let eventIdx = 0; eventIdx < 20; eventIdx++) {
 						// Calculate which bit to check
-						let bitPosition;
+						let bitPosition
 						if (eventIdx >= 16) {
 							// Events 16-19 in high byte
-							bitPosition = eventIdx - 16;
-							heatingEventStates[eventIdx] = !!(eventsHighByte & (1 << bitPosition));
+							bitPosition = eventIdx - 16
+							heatingEventStates[eventIdx] = !!(eventsHighByte & (1 << bitPosition))
 						} else if (eventIdx >= 8) {
 							// Events 8-15 in mid byte
-							bitPosition = eventIdx - 8;
-							heatingEventStates[eventIdx] = !!(eventsMidByte & (1 << bitPosition));
+							bitPosition = eventIdx - 8
+							heatingEventStates[eventIdx] = !!(eventsMidByte & (1 << bitPosition))
 						} else {
 							// Events 0-7 in low byte
-							bitPosition = eventIdx;
-							heatingEventStates[eventIdx] = !!(eventsLowByte & (1 << bitPosition));
+							bitPosition = eventIdx
+							heatingEventStates[eventIdx] = !!(eventsLowByte & (1 << bitPosition))
 						}
 					}
 
 					let data = {
-						heatingEventStates: heatingEventStates
-					};
+						heatingEventStates: heatingEventStates,
+					}
 
-					Object.assign(resultToPass, { ...resultToPass }, { ...data });
+					Object.assign(resultToPass, { ...resultToPass }, { ...data })
 				} catch (e) {
 					throw new CustomError({
 						message: `Failed to process command '6c'`,
@@ -2751,7 +2756,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						originalError: e as Error,
 					})
 				}
-				break;
+				break
 			}
 			case '9b':
 				{
