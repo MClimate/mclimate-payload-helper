@@ -493,7 +493,7 @@ const VickiCommandSchemas = {
 		targetTemperature: z.union([
 			z.literal(0), // To disable the feature
 			z.number().min(5).max(30).multipleOf(0.1), // Temperature range 5.0-30.0°C with 0.1°C increments
-		])
+		]),
 	}),
 	setInternalAlgoTemporaryState: z.object({
 		enabled: z.boolean(), // true = enable algorithm (00), false = disable algorithm temporarily (01)
@@ -504,11 +504,11 @@ const VickiCommandSchemas = {
 		scaleLevel2: z.number().min(5).max(30).multipleOf(0.1),
 		scaleLevel3: z.number().min(5).max(30).multipleOf(0.1),
 		scaleLevel4: z.number().min(5).max(30).multipleOf(0.1),
-		scaleLevel5: z.number().min(5).max(30).multipleOf(0.1)
+		scaleLevel5: z.number().min(5).max(30).multipleOf(0.1),
 	}),
 	setLedIndicationDuration: z.object({
-		duration: z.number().min(0.5).max(20).multipleOf(0.5) // Duration in range [0.5:20] with 0.5s resolution
-	})
+		duration: z.number().min(0.5).max(20).multipleOf(0.5), // Duration in range [0.5:20] with 0.5s resolution
+	}),
 }
 
 export namespace VickiCommandTypes {
@@ -1378,8 +1378,6 @@ export namespace Co2PirLiteCommandTypes {
 	export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
 }
 
-
-
 /* --------------------------------------- Melissa --------------------------------------- */
 const MelissaCommandSchemas = {
 	...GeneralCommandSchemas,
@@ -1389,10 +1387,64 @@ const MelissaCommandSchemas = {
 }
 
 export namespace MelissaCommandTypes {
-	export type SetIrCodeRecordingParams = z.infer<
-		typeof MelissaCommandSchemas.setIrCodeRecording
-	>
+	export type SetIrCodeRecordingParams = z.infer<typeof MelissaCommandSchemas.setIrCodeRecording>
 }
+
+/* --------------------------------------- MULTISENSOR COMMANDS --------------------------------------- */
+const MultiSensorCommandSchemas = {
+	...GeneralCommandSchemas,
+	setLightState: z.object({
+		enabled: z.boolean(),
+	}),
+	getLightState: z.object({}),
+	setHallState: z.object({
+		enabled: z.boolean(),
+	}),
+	getHallState: z.object({}),
+	setHallBlindPeriod: z.object({
+		period: z.number().min(0).max(65535),
+	}),
+	getHallBlindPeriod: z.object({}),
+	setMicrophoneState: z.object({
+		enabled: z.boolean(),
+	}),
+	getMicrophoneState: z.object({}),
+	setMicrophoneSamplingPeriod: z.object({
+		period: z.number().min(0).max(65535),
+	}),
+	getMicrophoneSamplingPeriod: z.object({}),
+	setGasState: z.object({
+		enabled: z.boolean(),
+	}),
+	getGasState: z.object({}),
+	setGasMeasurementPeriod: z.object({
+		minutes: z.number().min(0).max(255),
+	}),
+	getGasMeasurementPeriod: z.object({}),
+	setPirState: z.object({
+		enabled: z.boolean(),
+	}),
+	getPirState: z.object({}),
+	setPirActiveReportingPeriod: z.object({
+		time: z.number().min(0).max(65535),
+	}),
+	getPirActiveReportingPeriod: z.object({}),
+	getRegion: z.object({}),
+	restart: z.object({}),
+}
+
+export namespace MultiSensorCommandTypes {
+	export type SetLightStateParams = z.infer<typeof MultiSensorCommandSchemas.setLightState>
+	export type SetHallStateParams = z.infer<typeof MultiSensorCommandSchemas.setHallState>
+	export type SetHallBlindPeriodParams = z.infer<typeof MultiSensorCommandSchemas.setHallBlindPeriod>
+	export type SetMicrophoneStateParams = z.infer<typeof MultiSensorCommandSchemas.setMicrophoneState>
+	export type SetMicrophoneSamplingPeriodParams = z.infer<typeof MultiSensorCommandSchemas.setMicrophoneSamplingPeriod>
+	export type SetGasStateParams = z.infer<typeof MultiSensorCommandSchemas.setGasState>
+	export type SetGasMeasurementPeriodParams = z.infer<typeof MultiSensorCommandSchemas.setGasMeasurementPeriod>
+	export type SetPirStateParams = z.infer<typeof MultiSensorCommandSchemas.setPirState>
+	export type SetPirActiveReportingPeriodParams = z.infer<typeof MultiSensorCommandSchemas.setPirActiveReportingPeriod>
+}
+
 /* --------------------------------------- EXPORT ALL SCHEMA GROUPS --------------------------------------- */
 export const DeviceCommandSchemas = {
 	GeneralCommandSchemas,
@@ -1419,4 +1471,5 @@ export const DeviceCommandSchemas = {
 	HTPirLiteCommandSchemas,
 	Co2PirLiteCommandSchemas,
 	MelissaCommandSchemas,
+	MultiSensorCommandSchemas,
 }
