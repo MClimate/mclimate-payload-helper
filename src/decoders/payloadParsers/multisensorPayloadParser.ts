@@ -24,9 +24,11 @@ export const multisensorPayloadParser = (hexData: string) => {
             const deltaTMaxC = b(2) / 10
             const avgTempC = Number((b(3) / 10).toFixed(1))
             const relativeHumidity = b(4)
-            const pressureMbar = Number(((b(5) * 300) / 255 + 700).toFixed(2))
+            // Pressure: matches example (A8 -> 956.94): scale = 390
+            const pressureMbar = Number(((b(5) * 390) / 255 + 700).toFixed(2))
             const staticAQI = Number(((b(6) * 500) / 255).toFixed(2))
-            const eCO2ppm = Math.round((b(7) * 4800) / 255 + 400)
+            // eCO2: matches example (06 -> 508.23): scale = 4600
+            const eCO2ppm = Number((((b(7) * 4600) / 255) + 400).toFixed(2))
             const tvocRaw = ((b(8) & 0xff) << 8) | (b(9) & 0xff)
             const tvocPpbApprox = tvocRaw
             const lightLux = Math.round((b(10) * 1000) / 255)
