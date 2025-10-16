@@ -54,67 +54,67 @@ describe('Vicki payload decoder', () => {
 		})
 	})
 	test('keepalive with response of commands heating events', () => {
-		expect(uplinkPayloadParser('5A02070100DC1F080101021F090100F01F060F00B4400000000000000000000000000000000000000000', DeviceType.Vicki)).toStrictEqual( {
+		expect(uplinkPayloadParser('5A02070100DC1F080101021F090100F01F060F00B4400000000000000000000000000000000000000000', DeviceType.Vicki)).toStrictEqual({
 			heatingEventGroup: '16-19',
-			heatingEvents:  [
+			heatingEvents: [
 				{
-				  index: 16,
-				  start: '07:01',
-				  targetTemperature: 22,
-				  weekdays: {
-					monday: true,
-					tuesday: true,
-					wednesday: true,
-					thursday: true,
-					friday: true,
-					saturday: false,
-					sunday: false
-				  }
+					index: 16,
+					start: '07:01',
+					targetTemperature: 22,
+					weekdays: {
+						monday: true,
+						tuesday: true,
+						wednesday: true,
+						thursday: true,
+						friday: true,
+						saturday: false,
+						sunday: false
+					}
 				},
 				{
-				  index: 17,
-				  start: '08:01',
-				  targetTemperature: 25.8,
-				  weekdays: {
-					monday: true,
-					tuesday: true,
-					wednesday: true,
-					thursday: true,
-					friday: true,
-					saturday: false,
-					sunday: false
-				  }
+					index: 17,
+					start: '08:01',
+					targetTemperature: 25.8,
+					weekdays: {
+						monday: true,
+						tuesday: true,
+						wednesday: true,
+						thursday: true,
+						friday: true,
+						saturday: false,
+						sunday: false
+					}
 				},
 				{
-				  index: 18,
-				  start: '09:01',
-				  targetTemperature: 24,
-				  weekdays: {
-					monday: true,
-					tuesday: true,
-					wednesday: true,
-					thursday: true,
-					friday: true,
-					saturday: false,
-					sunday: false
-				  }
+					index: 18,
+					start: '09:01',
+					targetTemperature: 24,
+					weekdays: {
+						monday: true,
+						tuesday: true,
+						wednesday: true,
+						thursday: true,
+						friday: true,
+						saturday: false,
+						sunday: false
+					}
 				},
 				{
-				  index: 19,
-				  start: '06:15',
-				  targetTemperature: 18,
-				  weekdays: {
-					monday: false,
-					tuesday: false,
-					wednesday: false,
-					thursday: false,
-					friday: false,
-					saturday: false,
-					sunday: true
-				  }
+					index: 19,
+					start: '06:15',
+					targetTemperature: 18,
+					weekdays: {
+						monday: false,
+						tuesday: false,
+						wednesday: false,
+						thursday: false,
+						friday: false,
+						saturday: false,
+						sunday: true
+					}
 				}
-			  ]
-		  })
+			]
+		})
 	})
 	test('keepalive with response of commands heating events active', () => {
 		expect(uplinkPayloadParser('5C0A0103016C00078003811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual(
@@ -489,8 +489,8 @@ describe('FCT payload decoder', () => {
 			deviceStatus: 1,
 			deviceVersions: { hardware: 12, software: 12 },
 			keepAliveTime: 10,
-			heatingCoolingTargetTempRanges: {heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29},
-			heatingCoolingTargetTempRangesUnoccupied: {heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29},
+			heatingCoolingTargetTempRanges: { heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29 },
+			heatingCoolingTargetTempRangesUnoccupied: { heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29 },
 		})
 	})
 
@@ -764,6 +764,12 @@ describe('ASPM payload decoder', () => {
 		})
 	})
 	test('all settings ', () => {
+		console.log(
+			uplinkPayloadParser(
+				'041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201',
+				DeviceType.Relay16,
+			),
+		)
 		expect(
 			uplinkPayloadParser(
 				'041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201',
@@ -828,8 +834,8 @@ describe('Melissa payload decoder', () => {
 			sensorTemperature: 23.8,
 			relativeHumidity: 27.34,
 			isIrCodeRecordingRequested: false
-		  })
-		
+		})
+
 	})
 	test('keepalive with response of preloaded code', () => {
 		expect(uplinkPayloadParser('06004201027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
@@ -898,6 +904,49 @@ describe('HTPirLite payload decoder', () => {
 			relativeHumidity: 50,
 			batteryVoltage: 2.63,
 			keepAliveTime: 10,
+		})
+	})
+})
+describe('MultiSensor payload decoder', () => {
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('810001061AA91F0E0008133D00E506', DeviceType.MultiSensor)).toStrictEqual({
+			deltaTMinC: 0,
+			deltaTMaxC: 0.1,
+			avgTempC: 0.6,
+			relativeHumidity: 26,
+			pressureMbar: 958.47,
+			staticAQI: 60.78,
+			eCO2ppm: 652.55,
+			tvocRaw: 8,
+			tvocPpbApprox: 8,
+			lightLux: 75,
+			noiseDb: 61,
+			pirTriggerCount: 0,
+			deviceVoltageMv: 3576,
+			deviceVoltage: 3.58,
+			powerSourceRaw: 6,
+			powerSource: 'Battery'
+		})
+	})
+	test('keepalive with response of preloaded code', () => {
+		expect(uplinkPayloadParser('1202810001061AA91F0E0008133D00E506', DeviceType.MultiSensor)).toStrictEqual({
+			keepAliveTime: 2,
+			deltaTMinC: 0,
+			deltaTMaxC: 0.1,
+			avgTempC: 0.6,
+			relativeHumidity: 26,
+			pressureMbar: 958.47,
+			staticAQI: 60.78,
+			eCO2ppm: 652.55,
+			tvocRaw: 8,
+			tvocPpbApprox: 8,
+			lightLux: 75,
+			noiseDb: 61,
+			pirTriggerCount: 0,
+			deviceVoltageMv: 3576,
+			deviceVoltage: 3.58,
+			powerSourceRaw: 6,
+			powerSource: 'Battery'
 		})
 	})
 })

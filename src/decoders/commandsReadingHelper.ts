@@ -17,7 +17,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 
 		if (
 			potentialKeepAlive[0] === '81' &&
-			(deviceType === DeviceType.Vicki || deviceType === DeviceType.WirelessThermostat)
+			(deviceType === DeviceType.Vicki || deviceType === DeviceType.WirelessThermostat || deviceType === DeviceType.MultiSensor)
 		) {
 			decodeKeepalive = true
 		} else if ((potentialKeepAlive[0] === '00' || potentialKeepAlive[0] === '88') && deviceType === DeviceType.TFlood) {

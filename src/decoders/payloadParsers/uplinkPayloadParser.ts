@@ -20,6 +20,7 @@ import {
 	melissaLorawanPayloadParser,
 	co2PirLitePayloadParser,
 	htPirLitePayloadParser,
+	multisensorPayloadParser,
 } from '@/decoders/payloadParsers'
 
 export const uplinkPayloadParser = (hexData: string, deviceType: DeviceType) => {
@@ -64,6 +65,8 @@ export const uplinkPayloadParser = (hexData: string, deviceType: DeviceType) => 
 			return co2PirLitePayloadParser(hexData)
 		case DeviceType.HTPirLite:
 			return htPirLitePayloadParser(hexData)
+		case DeviceType.MultiSensor:
+			return multisensorPayloadParser(hexData)
 		default:
 			// Q: is this OK?
 			return vickiPayloadParser(hexData) // Default case if deviceType is not recognized

@@ -40,7 +40,6 @@ export const multisensorPayloadParser = (hexData: string) => {
             const powerSource = powerSourceRaw === 1 ? 'USB' : 'Battery'
 
             const keepaliveData = {
-                type: 'keep_alive',
                 deltaTMinC,
                 deltaTMaxC,
                 avgTempC,
@@ -56,13 +55,12 @@ export const multisensorPayloadParser = (hexData: string) => {
                 deviceVoltageMv,
                 deviceVoltage,
                 powerSourceRaw,
-                powerSource,
-                raw: toHex(barr),
+                powerSource
             }
             Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
         }
 
-        if (hexData.slice(0, 2).toLowerCase() === '82') {
+        if (hexData.slice(0, 2).toLowerCase() === '82' || hexData.slice(0, 2).toLowerCase() === '81') {
             // keep-alive packet
             handleKeepAliveData(bytes)
         } else {
