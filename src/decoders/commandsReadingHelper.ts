@@ -745,7 +745,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '25':
 				{
 					try {
-						let data
+						let data = {};
 						if (deviceType == DeviceType.Relay16) {
 							command_len = 2
 							data = { overpowerThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
@@ -798,7 +798,6 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						} else if (deviceType === DeviceType.MultiSensor) {
 							command_len = 1
 							data = { microphoneEnabled: parseInt(commands[i + 1], 16) === 1 }
-							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 3
 							let good_zone = parseInt(commands[i + 1], 16)
@@ -812,8 +811,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									bad_zone: Number(bad_zone),
 								},
 							}
-							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '25'`,
