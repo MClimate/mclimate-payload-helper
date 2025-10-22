@@ -4,7 +4,7 @@ import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const AQISensorPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData = {}
 
 	try {
 		// WARN: have refactored this - check if logic correct - we don't need to run thru byte parser twice as in original code
@@ -33,20 +33,20 @@ export const AQISensorPayloadParser = (hexData: string) => {
 		}
 
 		if (hexData) {
-			let byteArray = byteArrayParser(hexData)
+			const byteArray = byteArrayParser(hexData)
 			if (!byteArray) return
 
 			if (byteArray[0] == 1) {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				let data = commandsReadingHelper(hexData, 20, DeviceType.AQISensor)
+				const data = commandsReadingHelper(hexData, 20, DeviceType.AQISensor)
 				Object.assign(deviceData, { ...deviceData }, { ...data })
 
 				// get only keepalive from device response
-				let keepaliveData = hexData.slice(-20)
+				const keepaliveData = hexData.slice(-20)
 
-				let dataToPass = byteArrayParser(keepaliveData)
+				const dataToPass = byteArrayParser(keepaliveData)
 				if (!dataToPass) return
 
 				handleKeepAliveData(dataToPass)

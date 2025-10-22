@@ -4,7 +4,7 @@ import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const CO2SensorPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const handleKeepAliveData = (byteArray: number[]) => {
@@ -16,7 +16,7 @@ export const CO2SensorPayloadParser = (hexData: string) => {
 			const humidity = Number(((byteArray[5] * 100) / 256).toFixed(2))
 			const voltage = Number(((byteArray[6] * 8 + 1600) / 1000).toFixed(2))
 
-			let keepaliveData = {
+			const keepaliveData = {
 				CO2: co2,
 				temperature: temperature,
 				humidity: humidity,
@@ -33,11 +33,11 @@ export const CO2SensorPayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				const data = commandsReadingHelper(hexData, 14, DeviceType.CO2Sensor)
+				const data = commandsReadingHelper(hexData, 14, DeviceType.CO2Sensor) as Record<string, unknown> | undefined
 				// Q: error handling
 				if (!data) return
 
-				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
+				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 				if ('decodeKeepalive' in data) {
 					delete data.decodeKeepalive
 				}

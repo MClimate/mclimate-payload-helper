@@ -5,7 +5,7 @@ import { CustomError } from '@/utils'
 
 // WARN: no tests found for below
 export const DskDevicePayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData = {}
 
 	try {
 		const handleKeepAliveData = (data: string) => {
@@ -13,16 +13,16 @@ export const DskDevicePayloadParser = (hexData: string) => {
 
 			if (!hexArray) return
 
-			let powerSupplyVoltage = ((hexArray[1] * 8 + 1600) / 1000).toFixed(2)
+			const powerSupplyVoltage = ((hexArray[1] * 8 + 1600) / 1000).toFixed(2)
 
-			let thermistorProperlyConnected = parseInt(decbin(hexArray[2])[5]) == 0
+			const thermistorProperlyConnected = parseInt(decbin(hexArray[2])[5]) == 0
 
-			let extT1 = ('0' + hexArray[2].toString(16)).substr(-2)[1]
-			let extT2 = ('0' + hexArray[3].toString(16)).substr(-2)
-			let sensorTemperature = thermistorProperlyConnected ? (parseInt(`0x${extT1}${extT2}`, 16) * 0.1).toFixed(2) : 0
-			let status = hexArray[4]
+			const extT1 = ('0' + hexArray[2].toString(16)).substr(-2)[1]
+			const extT2 = ('0' + hexArray[3].toString(16)).substr(-2)
+			const sensorTemperature = thermistorProperlyConnected ? (parseInt(`0x${extT1}${extT2}`, 16) * 0.1).toFixed(2) : 0
+			const status = hexArray[4]
 
-			let keepaliveData = {
+			const keepaliveData = {
 				sensorTemperature: Number(sensorTemperature),
 				powerSupplyVoltage: Number(powerSupplyVoltage),
 				status,
@@ -37,12 +37,12 @@ export const DskDevicePayloadParser = (hexData: string) => {
 				handleKeepAliveData(hexData)
 			} else {
 				// parse command answers
-				let decodeKeepalive = hexData.length <= 84
-				let data = commandsReadingHelper(hexData, 10, DeviceType.DskDevice)
+				const decodeKeepalive = hexData.length <= 84
+				const data = commandsReadingHelper(hexData, 10, DeviceType.DskDevice)
 				Object.assign(deviceData, { ...deviceData }, { ...data })
 
 				// get only keepalive from device response
-				let keepaliveData = hexData.slice(-10)
+				const keepaliveData = hexData.slice(-10)
 
 				if (decodeKeepalive) handleKeepAliveData(keepaliveData)
 			}

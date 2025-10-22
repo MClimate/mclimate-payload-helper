@@ -19,4 +19,5 @@ export enum DeviceType {
 	MelissaLorawan = 'melissa_lorawan',
 	CO2PirLite = 'co2_pir_lite',
 	HTPirLite = 'ht_pir_lite',
+	MultiSensor = 'multisensor',
 }

@@ -14,23 +14,50 @@ describe('General Commands payload encoder', () => {
 		expect(commandBuilder.build('SetKeepAlive', { time: 5 })).toStrictEqual(new BaseCommand('SetKeepAlive', 2, '05'))
 	})
 
-	test('Set heating event', () => {
+	test('Set heating event (weekend)', () => {
 		//5900080101021F
-		expect(commandBuilder.build('SetHeatingEvent', 
-			{ eventIndex: 0, startHour: 8, startMinute: 1, targetTemperature: 25.8, 
-				daysActive: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false } 
-			})).toStrictEqual(new BaseCommand('SetHeatingEvent', 0x59, '00', '08', '01', '0102', '1F'))
+		expect(
+			commandBuilder.build('SetHeatingEvent', {
+				eventIndex: 0,
+				startHour: 8,
+				startMinute: 1,
+				targetTemperature: 25.8,
+				daysActive: {
+					monday: true,
+					tuesday: true,
+					wednesday: true,
+					thursday: true,
+					friday: true,
+					saturday: false,
+					sunday: false,
+				},
+			}),
+		).toStrictEqual(new BaseCommand('SetHeatingEvent', 0x59, '00', '08', '01', '0102', '1F'))
 	})
 	test('Set heating event', () => {
 		//59020600006460
-		expect(commandBuilder.build('SetHeatingEvent', 
-			{ eventIndex: 2, startHour: 6, startMinute: 0, targetTemperature: 5.0, 
-				daysActive: { monday: false, tuesday: false, wednesday: false, thursday: false, friday: false, saturday: true, sunday: true } 
-			})).toStrictEqual(new BaseCommand('SetHeatingEvent', 0x59, '02', '06', '00', '0032', '60'))
+		expect(
+			commandBuilder.build('SetHeatingEvent', {
+				eventIndex: 2,
+				startHour: 6,
+				startMinute: 0,
+				targetTemperature: 5.0,
+				daysActive: {
+					monday: false,
+					tuesday: false,
+					wednesday: false,
+					thursday: false,
+					friday: false,
+					saturday: true,
+					sunday: true,
+				},
+			}),
+		).toStrictEqual(new BaseCommand('SetHeatingEvent', 0x59, '02', '06', '00', '0032', '60'))
 	})
 	test('Activate heating event (index 16)', () => {
-		expect(commandBuilder.build('SetHeatingEventState', { eventIndex: 16, active: true }))
-			.toStrictEqual(new BaseCommand('SetHeatingEventState', 0x6b, '10', '01'))
+		expect(commandBuilder.build('SetHeatingEventState', { eventIndex: 16, active: true })).toStrictEqual(
+			new BaseCommand('SetHeatingEventState', 0x6b, '10', '01'),
+		)
 	})
 })
 
@@ -558,99 +585,101 @@ describe('Vicki Commands payload encoder', () => {
 
 	test('Set Heating Schedule', () => {
 		// Example 1: Set schedule from 1st November to 1st April
-		expect(commandBuilder.build('SetHeatingSchedule', {
-			startMonth: 10, // November (0-based indexing)
-			startDay: 1,
-			endMonth: 3,  // April (0-based indexing)
-			endDay: 1
-		})).toStrictEqual(
-			new BaseCommand('SetHeatingSchedule', 0x5b, '0A', '01', '03', '01')
-		)
+		expect(
+			commandBuilder.build('SetHeatingSchedule', {
+				startMonth: 10, // November (0-based indexing)
+				startDay: 1,
+				endMonth: 3, // April (0-based indexing)
+				endDay: 1,
+			}),
+		).toStrictEqual(new BaseCommand('SetHeatingSchedule', 0x5b, '0A', '01', '03', '01'))
 	})
 
 	test('Set Device Time', () => {
 		// Example from documentation: June 29, 2025 06:00:00 GMT
 		// UNIX timestamp: 1751176800
-		expect(commandBuilder.build('SetDeviceTime', {
-			timestamp: 1751176800
-		})).toStrictEqual(
-			new BaseCommand('SetDeviceTime', 0x5d, '68', '60', 'D6', '60')
-		)
+		expect(
+			commandBuilder.build('SetDeviceTime', {
+				timestamp: 1751176800,
+			}),
+		).toStrictEqual(new BaseCommand('SetDeviceTime', 0x5d, '68', '60', 'D6', '60'))
 	})
 
 	test('Set Device Time Zone', () => {
 		// Test positive offset: +2 hours
-		expect(commandBuilder.build('SetDeviceTimeZone', {
-			offsetHours: 2
-		})).toStrictEqual(
-			new BaseCommand('SetDeviceTimeZone', 0x5f, '02')
-		)
+		expect(
+			commandBuilder.build('SetDeviceTimeZone', {
+				offsetHours: 2,
+			}),
+		).toStrictEqual(new BaseCommand('SetDeviceTimeZone', 0x5f, '02'))
 
 		// Test negative offset: -3 hours (example from documentation)
-		expect(commandBuilder.build('SetDeviceTimeZone', {
-			offsetHours: -3
-		})).toStrictEqual(
-			new BaseCommand('SetDeviceTimeZone', 0x5f, 'FD')
-		)
+		expect(
+			commandBuilder.build('SetDeviceTimeZone', {
+				offsetHours: -3,
+			}),
+		).toStrictEqual(new BaseCommand('SetDeviceTimeZone', 0x5f, 'FD'))
 	})
 
 	test('Set Automatic Setpoint Restore', () => {
 		// Test with 60 minutes (example from documentation - 6*10=60 minutes)
-		expect(commandBuilder.build('SetAutomaticSetpointRestore', {
-			time: 60 // minutes
-		})).toStrictEqual(
-			new BaseCommand('SetAutomaticSetpointRestore', 0x61, '06')
-		)
+		expect(
+			commandBuilder.build('SetAutomaticSetpointRestore', {
+				time: 60, // minutes
+			}),
+		).toStrictEqual(new BaseCommand('SetAutomaticSetpointRestore', 0x61, '06'))
 	})
 
 	test('Set Offline Target Temperature', () => {
 		// Test with normal temperature - 21.5°C (example from documentation)
-		expect(commandBuilder.build('SetOfflineTargetTemperature', {
-			targetTemperature: 21.5 
-		})).toStrictEqual(
-			new BaseCommand('SetOfflineTargetTemperature', 0x65, '00D7')
-		)
+		expect(
+			commandBuilder.build('SetOfflineTargetTemperature', {
+				targetTemperature: 21.5,
+			}),
+		).toStrictEqual(new BaseCommand('SetOfflineTargetTemperature', 0x65, '00D7'))
 	})
 
 	test('Set Internal Algorithm Temporary State', () => {
 		// Test temporary disable internal algorithm (example from documentation)
-		expect(commandBuilder.build('SetInternalAlgoTemporaryState', {
-			enabled: false // Disable temporarily
-		})).toStrictEqual(
-			new BaseCommand('SetInternalAlgoTemporaryState', 0x67, '01')
-		)
+		expect(
+			commandBuilder.build('SetInternalAlgoTemporaryState', {
+				enabled: false, // Disable temporarily
+			}),
+		).toStrictEqual(new BaseCommand('SetInternalAlgoTemporaryState', 0x67, '01'))
 	})
 
 	test('Set Temperature Levels', () => {
 		// Test with the example values from documentation
-		expect(commandBuilder.build('SetTemperatureLevels', {
-			scaleLevel0: 7.0,  // 0x0046 = 70
-			scaleLevel1: 18.9, // 0x00BD = 189
-			scaleLevel2: 20.2, // 0x00CA = 202
-			scaleLevel3: 22.5, // 0x00E1 = 225
-			scaleLevel4: 25.0, // 0x00FA = 250
-			scaleLevel5: 30.0  // 0x012C = 300
-		})).toStrictEqual(
+		expect(
+			commandBuilder.build('SetTemperatureLevels', {
+				scaleLevel0: 7.0, // 0x0046 = 70
+				scaleLevel1: 18.9, // 0x00BD = 189
+				scaleLevel2: 20.2, // 0x00CA = 202
+				scaleLevel3: 22.5, // 0x00E1 = 225
+				scaleLevel4: 25.0, // 0x00FA = 250
+				scaleLevel5: 30.0, // 0x012C = 300
+			}),
+		).toStrictEqual(
 			new BaseCommand(
-				'SetTemperatureLevels', 
-				0x69, 
+				'SetTemperatureLevels',
+				0x69,
 				'0046', // Level 0: 7.0°C
 				'00BD', // Level 1: 18.9°C
 				'00CA', // Level 2: 20.2°C
 				'00E1', // Level 3: 22.5°C
 				'00FA', // Level 4: 25.0°C
-				'012C'  // Level 5: 30.0°C
-			)
+				'012C', // Level 5: 30.0°C
+			),
 		)
 	})
-	
+
 	test('Set LED Indication Duration', () => {
 		// Example from documentation: 0x64 - duration value 6 (3 seconds)
-		expect(commandBuilder.build('SetLedIndicationDuration', {
-			duration: 3 // seconds
-		})).toStrictEqual(
-			new BaseCommand('SetLedIndicationDuration', 0x63, '06')
-		)
+		expect(
+			commandBuilder.build('SetLedIndicationDuration', {
+				duration: 3, // seconds
+			}),
+		).toStrictEqual(new BaseCommand('SetLedIndicationDuration', 0x63, '06'))
 	})
 })
 
@@ -759,7 +788,7 @@ describe('HT Sensor Commands payload encoder', () => {
 describe('MC Button Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('mc_button')
 
-	test('Clear Press Event Counter ', () => {
+	test('Clear Press Event Counter (MC Button)', () => {
 		expect(commandBuilder.build('ClearPressEventCounter', { value: 1 })).toStrictEqual(
 			new BaseCommand('ClearPressEventCounter', 0x20, '01'),
 		)
@@ -776,7 +805,7 @@ describe('CO2 PIR Lite Commands payload encoder', () => {
 			commandBuilder.build('SetCo2MeasurementPeriod', { good_zone: 10, medium_zone: 20, bad_zone: 30 }),
 		).toStrictEqual(new BaseCommand('SetCo2MeasurementPeriod', 0x24, '0A', '14', '1E'))
 	})
-	test('Set PIR Sensor Status ', () => {
+	test('Set PIR Sensor Status (CO2 PIR Lite)', () => {
 		expect(commandBuilder.build('SetPIRSensorStatus', { state: 1 })).toStrictEqual(
 			new BaseCommand('SetPIRSensorStatus', 0x3c, '01'),
 		)
@@ -797,7 +826,7 @@ describe('CO2 PIR Lite Commands payload encoder', () => {
 })
 describe('HT PIR Lite Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('ht_pir_lite')
-	test('Set PIR Sensor Status ', () => {
+	test('Set PIR Sensor Status (HT PIR Lite)', () => {
 		expect(commandBuilder.build('SetPIRSensorStatus', { state: 1 })).toStrictEqual(
 			new BaseCommand('SetPIRSensorStatus', 0x3c, '01'),
 		)
@@ -818,7 +847,7 @@ describe('HT PIR Lite Commands payload encoder', () => {
 })
 describe('Melissa Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('melissa_lorawan')
-	test('Set IR Code Recording ', () => {
+	test('Set IR Code Recording (Melissa)', () => {
 		expect(commandBuilder.build('SetIrCodeRecording', { time: 15 })).toStrictEqual(
 			new BaseCommand('SetIrCodeRecording', 0x09, '0F'),
 		)

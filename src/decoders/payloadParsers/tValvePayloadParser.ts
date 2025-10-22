@@ -4,12 +4,12 @@ import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const tValvePayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData = {}
 
 	try {
-		let messageTypes = ['keepalive', 'testButtonPressed', 'floodDetected', 'controlButtonPressed', 'fraudDetected']
+		const messageTypes = ['keepalive', 'testButtonPressed', 'floodDetected', 'controlButtonPressed', 'fraudDetected']
 		const shortPackage = (byteArray: number[]) => {
-			let keepaliveData = {
+			const keepaliveData = {
 				reason: 'keepalive',
 				waterTemp: (byteArray[0] & 0xff) / 2, // Extract all 8 bits (7:0) from byte 0 and divide by 2
 				valveState: !!(byteArray[1] & 0b10000000), // Extract bit 7 from byte 1
@@ -18,7 +18,7 @@ export const tValvePayloadParser = (hexData: string) => {
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
 		const longPackage = (byteArray: number[]) => {
-			let keepaliveData = {
+			const keepaliveData = {
 				reason: messageTypes[(byteArray[0] >> 5) & 0b111], // Extract bits 7:5 using right shift and mask
 				boxTamper: !!(byteArray[0] & (1 << 3)), // Extract bit 3
 				floodDetectionWireState: !!(byteArray[0] & (1 << 2)), // Extract bit 2

@@ -4,33 +4,33 @@ import { VickiKeepAliveData, DeviceType } from '@/decoders/payloadParsers/types'
 import { byteArrayParser, toBool, decbin } from '@/helpers'
 
 export const vickiPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const handleKeepAliveData = (byteArray: number[]) => {
-			let tmp = ('0' + byteArray[6].toString(16)).substr(-2)
-			let motorRange1 = tmp[1]
-			let motorRange2 = ('0' + byteArray[5].toString(16)).substr(-2)
-			let motorRange = parseInt(`0x${motorRange1}${motorRange2}`, 16)
+			const tmp = ('0' + byteArray[6].toString(16)).substr(-2)
+			const motorRange1 = tmp[1]
+			const motorRange2 = ('0' + byteArray[5].toString(16)).substr(-2)
+			const motorRange = parseInt(`0x${motorRange1}${motorRange2}`, 16)
 
-			let motorPos2 = ('0' + byteArray[4].toString(16)).substr(-2)
-			let motorPos1 = tmp[0]
-			let motorPosition = parseInt(`0x${motorPos1}${motorPos2}`, 16)
+			const motorPos2 = ('0' + byteArray[4].toString(16)).substr(-2)
+			const motorPos1 = tmp[0]
+			const motorPosition = parseInt(`0x${motorPos1}${motorPos2}`, 16)
 
-			let batteryTmp = ('0' + byteArray[7].toString(16)).substr(-2)[0]
-			let batteryVoltageCalculated = 2 + parseInt(`0x${batteryTmp}`, 16) * 0.1
+			const batteryTmp = ('0' + byteArray[7].toString(16)).substr(-2)[0]
+			const batteryVoltageCalculated = 2 + parseInt(`0x${batteryTmp}`, 16) * 0.1
 
-			let byte7Bin = decbin(byteArray[7])
-			let openWindow = byte7Bin[4]
-			let highMotorConsumption = byte7Bin[5]
-			let lowMotorConsumption = byte7Bin[6]
-			let brokenSensor = byte7Bin[7]
-			let byte8Bin = decbin(byteArray[8])
-			let childLock = byte8Bin[0]
-			let calibrationFailed = byte8Bin[1]
-			let attachedBackplate = byte8Bin[2]
-			let perceiveAsOnline = byte8Bin[3]
-			let antiFreezeProtection = byte8Bin[4]
+			const byte7Bin = decbin(byteArray[7])
+			const openWindow = byte7Bin[4]
+			const highMotorConsumption = byte7Bin[5]
+			const lowMotorConsumption = byte7Bin[6]
+			const brokenSensor = byte7Bin[7]
+			const byte8Bin = decbin(byteArray[8])
+			const childLock = byte8Bin[0]
+			const calibrationFailed = byte8Bin[1]
+			const attachedBackplate = byte8Bin[2]
+			const perceiveAsOnline = byte8Bin[3]
+			const antiFreezeProtection = byte8Bin[4]
 
 			let sensorTemp
 			if (byteArray[0] == 1) {
@@ -59,14 +59,14 @@ export const vickiPayloadParser = (hexData: string) => {
 				antiFreezeProtection: toBool(antiFreezeProtection),
 				valveOpenness: motorRange != 0 ? Math.round((1 - motorPosition / motorRange) * 100) : 0,
 			}
-			if (!deviceData.hasOwnProperty('targetTemperatureFloat')) {
+			if (!Object.prototype.hasOwnProperty.call(deviceData, 'targetTemperatureFloat')) {
 				keepaliveData.targetTemperatureFloat = byteArray[1].toFixed(2)
 			}
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
 
 		if (hexData) {
-			let byteArray = hexData.match(/.{1,2}/g)?.map((byte) => {
+			const byteArray = hexData.match(/.{1,2}/g)?.map((byte) => {
 				return parseInt(byte, 16)
 			})
 
@@ -78,10 +78,10 @@ export const vickiPayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				let data = commandsReadingHelper(hexData, 18, DeviceType.Vicki)
+				const data = commandsReadingHelper(hexData, 18, DeviceType.Vicki) as Record<string, unknown> | undefined
 				if (!data) return
 
-				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
+				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 
 				if ('decodeKeepalive' in data) {
 					delete data.decodeKeepalive

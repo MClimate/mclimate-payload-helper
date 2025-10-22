@@ -418,10 +418,9 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setTempSensorCompensation.parse(params)
 			const { compensation, temperature } = params
-			// TODO: check if below is accurate
-			//
+
 			// 00: Positive compensation, 01: Negative compensation
-			const compensationByte = temperature >= 0 ? 0 : 1
+			const compensationByte = compensation === 0 ? 0 : 1
 			// Use absolute value of temperature * 10 for the temperature byte
 			const temperatureByte = Math.abs(temperature * 10)
 			return new BaseCommand('SetTempSensorCompensation', 0x5a, decToHex(compensationByte), decToHex(temperatureByte))

@@ -230,27 +230,27 @@ export namespace [YourDeviceCommandTypes] {
 ```typescript
 /* --------------------------------------- CO2 PIR LITE COMMANDS --------------------------------------- */
 const Co2PirLiteCommandSchemas = {
- ...GeneralCommandSchemas,
- ...PIRCommandSchemas,
- setUplinkSendingOnButtonPress: z.object({
-  value: z.number(),
- }),
- getUplinkSendingOnButtonPress: z.object({}),
- restartDevice: z.object({}),
- setCo2BoundaryLevels: z.object({
-  good_medium: z.number(),
-  medium_bad: z.number(),
- }),
- getCo2BoundaryLevels: z.object({}),
- // ... more commands
+	...GeneralCommandSchemas,
+	...PIRCommandSchemas,
+	setUplinkSendingOnButtonPress: z.object({
+		value: z.number(),
+	}),
+	getUplinkSendingOnButtonPress: z.object({}),
+	restartDevice: z.object({}),
+	setCo2BoundaryLevels: z.object({
+		good_medium: z.number(),
+		medium_bad: z.number(),
+	}),
+	getCo2BoundaryLevels: z.object({}),
+	// ... more commands
 }
 
 export namespace Co2PirLiteCommandTypes {
- export type SetUplinkSendingOnButtonPressParams = z.infer<
-  typeof Co2PirLiteCommandSchemas.setUplinkSendingOnButtonPress
- >
- export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
- export type SetCo2BoundaryLevelsParams = z.infer<typeof Co2PirLiteCommandSchemas.setCo2BoundaryLevels>
+	export type SetUplinkSendingOnButtonPressParams = z.infer<
+		typeof Co2PirLiteCommandSchemas.setUplinkSendingOnButtonPress
+	>
+	export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
+	export type SetCo2BoundaryLevelsParams = z.infer<typeof Co2PirLiteCommandSchemas.setCo2BoundaryLevels>
 }
 ```
 
@@ -293,31 +293,31 @@ import { CustomError } from '@/utils'
 import { MyDeviceCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
 export class MyDeviceCommands {
- static setTemperature(params: MyDeviceCommandTypes.SetTemperatureParams) {
-  try {
-   DeviceCommandSchemas.MyDeviceCommandSchemas.setTemperature.parse(params)
-   const { value } = params
-   return new BaseCommand('SetTemperature', 0x15, value)
-  } catch (e) {
-   if (e instanceof ZodError) {
-    throw new CustomError({
-     message: 'Zod validation error during SetTemperature execution',
-     command: 'SetTemperature',
-     originalError: e,
-    })
-   } else {
-    throw new CustomError({
-     message: 'Error during SetTemperature execution',
-     command: 'SetTemperature',
-     originalError: e as Error,
-    })
-   }
-  }
- }
+	static setTemperature(params: MyDeviceCommandTypes.SetTemperatureParams) {
+		try {
+			DeviceCommandSchemas.MyDeviceCommandSchemas.setTemperature.parse(params)
+			const { value } = params
+			return new BaseCommand('SetTemperature', 0x15, value)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetTemperature execution',
+					command: 'SetTemperature',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetTemperature execution',
+					command: 'SetTemperature',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
 
- static getTemperature() {
-  return new BaseCommand('GetTemperature', 0x16)
- }
+	static getTemperature() {
+		return new BaseCommand('GetTemperature', 0x16)
+	}
 }
 ```
 
@@ -326,21 +326,21 @@ export class MyDeviceCommands {
 ```typescript
 /* --------------------------------------- MY DEVICE COMMANDS --------------------------------------- */
 const MyDeviceCommandSchemas = {
- ...GeneralCommandSchemas,
- setTemperature: z.object({
-  value: z.number().min(-40).max(85),
- }),
- getTemperature: z.object({}),
+	...GeneralCommandSchemas,
+	setTemperature: z.object({
+		value: z.number().min(-40).max(85),
+	}),
+	getTemperature: z.object({}),
 }
 
 export namespace MyDeviceCommandTypes {
- export type SetTemperatureParams = z.infer<typeof MyDeviceCommandSchemas.setTemperature>
+	export type SetTemperatureParams = z.infer<typeof MyDeviceCommandSchemas.setTemperature>
 }
 
 // Then add to the export at bottom:
 export const DeviceCommandSchemas = {
- // ... existing schemas
- MyDeviceCommandSchemas,
+	// ... existing schemas
+	MyDeviceCommandSchemas,
 }
 ```
 

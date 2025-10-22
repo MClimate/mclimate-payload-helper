@@ -45,7 +45,7 @@ export class CO2DisplayCommands extends GeneralCommands {
 			const digitalValue = digital_value ? 1 : 0
 			const emojiValue = emoji ? 1 : 0
 
-			let bin = '00000000'.split('')
+			const bin = '00000000'.split('')
 			bin[7] = emojiValue.toString()
 			bin[6] = digitalValue.toString()
 			bin[5] = chartValue.toString()

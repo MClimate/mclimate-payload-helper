@@ -4,21 +4,21 @@ import { decbin, toBool, byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const WirelessThermostatPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const calculateTemperature = (rawData: number) => (rawData - 400) / 10
 		const calculateHumidity = (rawData: number) => (rawData * 100) / 256
 
 		const handleKeepAliveData = (data: number[]) => {
-			let tempHex = ('0' + data[1].toString(16)).substr(-2) + ('0' + data[2].toString(16)).substr(-2)
-			let tempDec = parseInt(tempHex, 16)
-			let temperature = calculateTemperature(tempDec)
-			let humidity = calculateHumidity(data[3])
-			let batteryVoltageCalculated = parseInt(`${decbin(data[4])}${decbin(data[5])}`, 2) / 1000
-			let sensorTemperature = Number(temperature.toFixed(2))
-			let relativeHumidity = Number(humidity.toFixed(2))
-			let batteryVoltage = Number(batteryVoltageCalculated.toFixed(2))
+			const tempHex = ('0' + data[1].toString(16)).substr(-2) + ('0' + data[2].toString(16)).substr(-2)
+			const tempDec = parseInt(tempHex, 16)
+			const temperature = calculateTemperature(tempDec)
+			const humidity = calculateHumidity(data[3])
+			const batteryVoltageCalculated = parseInt(`${decbin(data[4])}${decbin(data[5])}`, 2) / 1000
+			const sensorTemperature = Number(temperature.toFixed(2))
+			const relativeHumidity = Number(humidity.toFixed(2))
+			const batteryVoltage = Number(batteryVoltageCalculated.toFixed(2))
 
 			let targetTemperature, powerSourceStatus, lux, pir
 			if (data[0] == 1) {
@@ -54,14 +54,16 @@ export const WirelessThermostatPayloadParser = (hexData: string) => {
 			} else {
 				// parse command answers
 				let keepaliveLength = 22
-				let potentialKeepAlive = hexData.match(/.{1,2}/g)?.slice(-24 / 2)
+				const potentialKeepAlive = hexData.match(/.{1,2}/g)?.slice(-24 / 2)
 
 				if (potentialKeepAlive && potentialKeepAlive[0] == '81') keepaliveLength = 24
 
-				const data = commandsReadingHelper(hexData, keepaliveLength, DeviceType.WirelessThermostat)
+				const data = commandsReadingHelper(hexData, keepaliveLength, DeviceType.WirelessThermostat) as
+					| Record<string, unknown>
+					| undefined
 				if (!data) return
 
-				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
+				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 				if ('decodeKeepalive' in data) {
 					delete data.decodeKeepalive
 				}
@@ -69,8 +71,8 @@ export const WirelessThermostatPayloadParser = (hexData: string) => {
 				Object.assign(deviceData, { ...deviceData }, { ...data })
 				// get only keepalive from device response
 				if (shouldKeepAlive) {
-					let keepaliveData = hexData.slice(-keepaliveLength)
-					let dataToPass = byteArrayParser(keepaliveData)
+					const keepaliveData = hexData.slice(-keepaliveLength)
+					const dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 					handleKeepAliveData(dataToPass)
 				}

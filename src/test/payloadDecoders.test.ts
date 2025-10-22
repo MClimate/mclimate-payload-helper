@@ -54,114 +54,117 @@ describe('Vicki payload decoder', () => {
 		})
 	})
 	test('keepalive with response of commands heating events', () => {
-		expect(uplinkPayloadParser('5A02070100DC1F080101021F090100F01F060F00B4400000000000000000000000000000000000000000', DeviceType.Vicki)).toStrictEqual( {
+		expect(
+			uplinkPayloadParser(
+				'5A02070100DC1F080101021F090100F01F060F00B4400000000000000000000000000000000000000000',
+				DeviceType.Vicki,
+			),
+		).toStrictEqual({
 			heatingEventGroup: '16-19',
-			heatingEvents:  [
+			heatingEvents: [
 				{
-				  index: 16,
-				  start: '07:01',
-				  targetTemperature: 22,
-				  weekdays: {
-					monday: true,
-					tuesday: true,
-					wednesday: true,
-					thursday: true,
-					friday: true,
-					saturday: false,
-					sunday: false
-				  }
+					index: 16,
+					start: '07:01',
+					targetTemperature: 22,
+					weekdays: {
+						monday: true,
+						tuesday: true,
+						wednesday: true,
+						thursday: true,
+						friday: true,
+						saturday: false,
+						sunday: false,
+					},
 				},
 				{
-				  index: 17,
-				  start: '08:01',
-				  targetTemperature: 25.8,
-				  weekdays: {
-					monday: true,
-					tuesday: true,
-					wednesday: true,
-					thursday: true,
-					friday: true,
-					saturday: false,
-					sunday: false
-				  }
+					index: 17,
+					start: '08:01',
+					targetTemperature: 25.8,
+					weekdays: {
+						monday: true,
+						tuesday: true,
+						wednesday: true,
+						thursday: true,
+						friday: true,
+						saturday: false,
+						sunday: false,
+					},
 				},
 				{
-				  index: 18,
-				  start: '09:01',
-				  targetTemperature: 24,
-				  weekdays: {
-					monday: true,
-					tuesday: true,
-					wednesday: true,
-					thursday: true,
-					friday: true,
-					saturday: false,
-					sunday: false
-				  }
+					index: 18,
+					start: '09:01',
+					targetTemperature: 24,
+					weekdays: {
+						monday: true,
+						tuesday: true,
+						wednesday: true,
+						thursday: true,
+						friday: true,
+						saturday: false,
+						sunday: false,
+					},
 				},
 				{
-				  index: 19,
-				  start: '06:15',
-				  targetTemperature: 18,
-				  weekdays: {
-					monday: false,
-					tuesday: false,
-					wednesday: false,
-					thursday: false,
-					friday: false,
-					saturday: false,
-					sunday: true
-				  }
-				}
-			  ]
-		  })
+					index: 19,
+					start: '06:15',
+					targetTemperature: 18,
+					weekdays: {
+						monday: false,
+						tuesday: false,
+						wednesday: false,
+						thursday: false,
+						friday: false,
+						saturday: false,
+						sunday: true,
+					},
+				},
+			],
+		})
 	})
 	test('keepalive with response of commands heating events active', () => {
-		expect(uplinkPayloadParser('5C0A0103016C00078003811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual(
-			{
-				heatingSchedule: { start: '1 November', end: '1 April' },
-				heatingEventStates: {
-					'0': true,
-					'1': true,
-					'2': false,
-					'3': false,
-					'4': false,
-					'5': false,
-					'6': false,
-					'7': false,
-					'8': false,
-					'9': false,
-					'10': false,
-					'11': false,
-					'12': false,
-					'13': false,
-					'14': false,
-					'15': true,
-					'16': true,
-					'17': true,
-					'18': true,
-					'19': false
-				},
-				reason: 129,
-				targetTemperature: 27,
-				sensorTemperature: 25.88238397927527,
-				relativeHumidity: 29.296875,
-				motorRange: 554,
-				motorPosition: 427,
-				batteryVoltage: 2.9,
-				openWindow: false,
-				highMotorConsumption: false,
-				lowMotorConsumption: false,
-				brokenSensor: false,
-				childLock: false,
-				calibrationFailed: false,
-				attachedBackplate: true,
-				perceiveAsOnline: true,
-				antiFreezeProtection: false,
-				targetTemperatureFloat: '27.00',
-				valveOpenness: 23,
-			}
-		)
+		expect(uplinkPayloadParser('5C0A0103016C00078003811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual({
+			heatingSchedule: { start: '1 November', end: '1 April' },
+			heatingEventStates: {
+				'0': true,
+				'1': true,
+				'2': false,
+				'3': false,
+				'4': false,
+				'5': false,
+				'6': false,
+				'7': false,
+				'8': false,
+				'9': false,
+				'10': false,
+				'11': false,
+				'12': false,
+				'13': false,
+				'14': false,
+				'15': true,
+				'16': true,
+				'17': true,
+				'18': true,
+				'19': false,
+			},
+			reason: 129,
+			targetTemperature: 27,
+			sensorTemperature: 25.88238397927527,
+			relativeHumidity: 29.296875,
+			motorRange: 554,
+			motorPosition: 427,
+			batteryVoltage: 2.9,
+			openWindow: false,
+			highMotorConsumption: false,
+			lowMotorConsumption: false,
+			brokenSensor: false,
+			childLock: false,
+			calibrationFailed: false,
+			attachedBackplate: true,
+			perceiveAsOnline: true,
+			antiFreezeProtection: false,
+			targetTemperatureFloat: '27.00',
+			valveOpenness: 23,
+		})
 	})
 	test('response of commands without keepalive', () => {
 		expect(
@@ -405,7 +408,9 @@ describe('Open/Close payload decoder', () => {
 		})
 	})
 	test('keepalive with response of commands all', () => {
-		expect(uplinkPayloadParser('04131212f019781b011d02181f0020f101160000050001f1011600000500', DeviceType.OpenCloseSensor)).toStrictEqual({
+		expect(
+			uplinkPayloadParser('04131212f019781b011d02181f0020f101160000050001f1011600000500', DeviceType.OpenCloseSensor),
+		).toStrictEqual({
 			event: 'keepalive',
 			status: 0,
 			counter: 5,
@@ -478,7 +483,9 @@ describe('FCT payload decoder', () => {
 	})
 
 	test('keepalive with response of commands', () => {
-		expect(uplinkPayloadParser('120A041212771018141D171018141D01026A4C00DC0100070001', DeviceType.FanCoilThermostat)).toStrictEqual({
+		expect(
+			uplinkPayloadParser('120A041212771018141D171018141D01026A4C00DC0100070001', DeviceType.FanCoilThermostat),
+		).toStrictEqual({
 			sensorTemperature: 21.8,
 			relativeHumidity: 29.69,
 			targetTemperature: 22,
@@ -489,8 +496,13 @@ describe('FCT payload decoder', () => {
 			deviceStatus: 1,
 			deviceVersions: { hardware: 12, software: 12 },
 			keepAliveTime: 10,
-			heatingCoolingTargetTempRanges: {heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29},
-			heatingCoolingTargetTempRangesUnoccupied: {heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29},
+			heatingCoolingTargetTempRanges: { heatingTempMin: 16, heatingTempMax: 24, coolingTempMin: 20, coolingTempMax: 29 },
+			heatingCoolingTargetTempRangesUnoccupied: {
+				heatingTempMin: 16,
+				heatingTempMax: 24,
+				coolingTempMin: 20,
+				coolingTempMax: 29,
+			},
 		})
 	})
 
@@ -572,7 +584,7 @@ describe('CO2 Display Lite payload decoder', () => {
 			lux: 300,
 			deviceVersions: { hardware: 12, software: 10 },
 			keepAliveTime: 15,
-			uplinkSendingOnButtonPress: 1
+			uplinkSendingOnButtonPress: 1,
 		})
 	})
 
@@ -653,7 +665,7 @@ describe('Button payload decoder', () => {
 			thermistorProperlyConnected: true,
 			deviceVersions: { hardware: 12, software: 11 },
 			keepAliveTime: 2,
-			singlePressEventCounter: 426
+			singlePressEventCounter: 426,
 		})
 	})
 
@@ -763,7 +775,13 @@ describe('ASPM payload decoder', () => {
 			relayTimerInMilliseconds: { state: 0, time: 255 },
 		})
 	})
-	test('all settings ', () => {
+	test('all settings (relay)', () => {
+		console.log(
+			uplinkPayloadParser(
+				'041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201',
+				DeviceType.Relay16,
+			),
+		)
 		expect(
 			uplinkPayloadParser(
 				'041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201',
@@ -808,7 +826,7 @@ describe('ADS payload decoder', () => {
 			relayTimerInMilliseconds: { state: 0, time: 255 },
 		})
 	})
-	test('all settings ', () => {
+	test('all settings (relay dry)', () => {
 		expect(uplinkPayloadParser('041010120A19781B001D02181F5F465F00011E00', DeviceType.Relay16Dry)).toStrictEqual({
 			deviceVersions: { hardware: 10, software: 10 },
 			keepAliveTime: 10,
@@ -827,16 +845,15 @@ describe('Melissa payload decoder', () => {
 		expect(uplinkPayloadParser('01027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
 			sensorTemperature: 23.8,
 			relativeHumidity: 27.34,
-			isIrCodeRecordingRequested: false
-		  })
-		
+			isIrCodeRecordingRequested: false,
+		})
 	})
 	test('keepalive with response of preloaded code', () => {
 		expect(uplinkPayloadParser('06004201027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
 			sensorTemperature: 23.8,
 			relativeHumidity: 27.34,
 			isIrCodeRecordingRequested: false,
-			preloadedCode: { codeAddress: 66, codeAddressRaw: '0042' }
+			preloadedCode: { codeAddress: 66, codeAddressRaw: '0042' },
 		})
 	})
 	test('keepalive with response of recorded code', () => {
@@ -844,22 +861,26 @@ describe('Melissa payload decoder', () => {
 			sensorTemperature: 23.8,
 			relativeHumidity: 27.34,
 			isIrCodeRecordingRequested: false,
-			recordedIrInfo: { recordedIrCodeSize: 32, bytesSent: '0020' }
+			recordedIrInfo: { recordedIrCodeSize: 32, bytesSent: '0020' },
 		})
 	})
 	test('keepalive with response of transfered code', () => {
-		expect(uplinkPayloadParser('0b2200000063320612062e062e000606000508120004040008080005180008081100050c01027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
+		expect(
+			uplinkPayloadParser(
+				'0b2200000063320612062e062e000606000508120004040008080005180008081100050c01027E4600',
+				DeviceType.MelissaLorawan,
+			),
+		).toStrictEqual({
 			sensorTemperature: 23.8,
 			relativeHumidity: 27.34,
 			isIrCodeRecordingRequested: false,
 			irCodeData: {
 				bytesCount: 32,
 				address: 0,
-				data: "0063320612062e062e000606000508120004040008080005180008081100050c"
-			}
+				data: '0063320612062e062e000606000508120004040008080005180008081100050c',
+			},
 		})
 	})
-
 })
 describe('CO2PirLite payload decoder', () => {
 	test('simple keepalive', () => {
@@ -898,6 +919,49 @@ describe('HTPirLite payload decoder', () => {
 			relativeHumidity: 50,
 			batteryVoltage: 2.63,
 			keepAliveTime: 10,
+		})
+	})
+})
+describe('MultiSensor payload decoder', () => {
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('810001061AA91F0E0008133D00E506', DeviceType.MultiSensor)).toStrictEqual({
+			deltaTMinC: 0,
+			deltaTMaxC: 0.1,
+			avgTempC: 0.6,
+			relativeHumidity: 26,
+			pressureMbar: 958.47,
+			staticAQI: 60.78,
+			eCO2ppm: 652.55,
+			tvocRaw: 8,
+			tvocPpbApprox: 8,
+			lightLux: 75,
+			noiseDb: 61,
+			pirTriggerCount: 0,
+			deviceVoltageMv: 3576,
+			deviceVoltage: 3.58,
+			powerSourceRaw: 6,
+			powerSource: 'Battery',
+		})
+	})
+	test('keepalive with response of preloaded code', () => {
+		expect(uplinkPayloadParser('1202810001061AA91F0E0008133D00E506', DeviceType.MultiSensor)).toStrictEqual({
+			keepAliveTime: 2,
+			deltaTMinC: 0,
+			deltaTMaxC: 0.1,
+			avgTempC: 0.6,
+			relativeHumidity: 26,
+			pressureMbar: 958.47,
+			staticAQI: 60.78,
+			eCO2ppm: 652.55,
+			tvocRaw: 8,
+			tvocPpbApprox: 8,
+			lightLux: 75,
+			noiseDb: 61,
+			pirTriggerCount: 0,
+			deviceVoltageMv: 3576,
+			deviceVoltage: 3.58,
+			powerSourceRaw: 6,
+			powerSource: 'Battery',
 		})
 	})
 })

@@ -4,17 +4,17 @@ import { toBool } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const tFloodPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData = {}
 
 	try {
 		const handleKeepAliveData = (hexData: string) => {
-			let byteArray = hexData.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16).toString(2).padStart(8, '0'))
+			const byteArray = hexData.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16).toString(2).padStart(8, '0'))
 			if (!byteArray) return
 
-			let messageTypes = ['keepalive', 'testButtonPressed', 'floodDetected', 'fraudDetected', 'fraudDetected']
+			const messageTypes = ['keepalive', 'testButtonPressed', 'floodDetected', 'fraudDetected', 'fraudDetected']
 
 			const shortPackage = (byteArray: string[]) => {
-				let keepaliveData = {
+				const keepaliveData = {
 					reason: messageTypes[parseInt(byteArray[0].slice(0, 3), 2)],
 					boxTamper: toBool(byteArray[0][4]),
 					flood: toBool(byteArray[0][6]),
@@ -23,7 +23,7 @@ export const tFloodPayloadParser = (hexData: string) => {
 				Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 			}
 			const longPackage = (byteArray: string[]) => {
-				let keepaliveData = {
+				const keepaliveData = {
 					reason: messageTypes[parseInt(byteArray[0].slice(0, 3), 2)],
 					boxTamper: toBool(byteArray[0][4]),
 					flood: toBool(byteArray[0][6]),
@@ -42,10 +42,10 @@ export const tFloodPayloadParser = (hexData: string) => {
 
 		if (hexData) {
 			if (hexData.length > 6) {
-				let data = commandsReadingHelper(hexData, 6, DeviceType.TFlood)
+				const data = commandsReadingHelper(hexData, 6, DeviceType.TFlood)
 				Object.assign(deviceData, { ...deviceData }, { ...data })
 				// get only keepalive from device response
-				let keepaliveData = hexData.slice(-6)
+				const keepaliveData = hexData.slice(-6)
 				// let dataToPass = keepaliveData.match(/.{1,2}/g).map(byte => { return parseInt(byte, 16) });
 				handleKeepAliveData(keepaliveData)
 			} else {
