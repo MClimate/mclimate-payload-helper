@@ -752,7 +752,8 @@ export class VickiCommands extends GeneralCommands {
 			// 5900080101021F
 			const tempValue = targetTemperature * 10
 			// Calculate days active bitmap: bit 0 (LSB) = Monday, bit 6 = Sunday
-			const daysActiveValue = (daysActive.monday ? 1 : 0) |
+			const daysActiveValue =
+				(daysActive.monday ? 1 : 0) |
 				(daysActive.tuesday ? 2 : 0) |
 				(daysActive.wednesday ? 4 : 0) |
 				(daysActive.thursday ? 8 : 0) |
@@ -760,13 +761,13 @@ export class VickiCommands extends GeneralCommands {
 				(daysActive.saturday ? 32 : 0) |
 				(daysActive.sunday ? 64 : 0)
 			return new BaseCommand(
-				'SetHeatingEvent', 
-				0x59, 
+				'SetHeatingEvent',
+				0x59,
 				decToHex(eventIndex),
 				decToHex(startHour),
 				decToHex(startMinute),
 				dec2hex(tempValue),
-				decToHex(daysActiveValue)
+				decToHex(daysActiveValue),
 			)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -847,9 +848,9 @@ export class VickiCommands extends GeneralCommands {
 				'SetHeatingSchedule',
 				0x5b,
 				decToHex(startMonth), // 0-11 (Jan-Dec)
-				decToHex(startDay),  // 1-31 (0 disables schedule handling)
-				decToHex(endMonth),  // 0-11 (Jan-Dec)
-				decToHex(endDay)     // 1-31 (0 disables schedule handling)
+				decToHex(startDay), // 1-31 (0 disables schedule handling)
+				decToHex(endMonth), // 0-11 (Jan-Dec)
+				decToHex(endDay), // 1-31 (0 disables schedule handling)
 			)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -882,14 +883,7 @@ export class VickiCommands extends GeneralCommands {
 			const byte3 = timestampHex.substring(4, 6)
 			const byte4 = timestampHex.substring(6, 8) // LSB
 
-			return new BaseCommand(
-				'SetDeviceTime',
-				0x5d,
-				byte1,
-				byte2,
-				byte3,
-				byte4
-			)
+			return new BaseCommand('SetDeviceTime', 0x5d, byte1, byte2, byte3, byte4)
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -925,11 +919,7 @@ export class VickiCommands extends GeneralCommands {
 				offsetByte = 256 + params.offsetHours // 256 = 2^8, adding to negative gives two's complement
 			}
 
-			return new BaseCommand(
-				'SetDeviceTimeZone', 
-				0x5f,
-				decToHex(offsetByte)
-			)
+			return new BaseCommand('SetDeviceTimeZone', 0x5f, decToHex(offsetByte))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -955,12 +945,8 @@ export class VickiCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setAutomaticSetpointRestore.parse(params)
 			// The time parameter is in 10-minute increments (0-255)
-			let timeValue = params.time / 10;
-			return new BaseCommand(
-				'SetAutomaticSetpointRestore',
-				0x61,
-				decToHex(timeValue)
-			)
+			const timeValue = params.time / 10
+			return new BaseCommand('SetAutomaticSetpointRestore', 0x61, decToHex(timeValue))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -988,21 +974,13 @@ export class VickiCommands extends GeneralCommands {
 
 			// If targetTemperature is 0, disable the feature
 			if (params.targetTemperature === 0) {
-				return new BaseCommand(
-					'SetOfflineTargetTemperature',
-					0x65,
-					'0000'
-				)
+				return new BaseCommand('SetOfflineTargetTemperature', 0x65, '0000')
 			}
 
 			// Convert temperature to the required format: multiply by 10 to get an integer value
 			// Example: 21.5°C becomes 215
 			const tempValue = params.targetTemperature * 10
-			return new BaseCommand(
-				'SetOfflineTargetTemperature',
-				0x65,
-				dec2hex(tempValue)
-			)
+			return new BaseCommand('SetOfflineTargetTemperature', 0x65, dec2hex(tempValue))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -1027,17 +1005,13 @@ export class VickiCommands extends GeneralCommands {
 	static setInternalAlgoTemporaryState(params: VickiCommandTypes.SetInternalAlgoTemporaryStateParams) {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setInternalAlgoTemporaryState.parse(params)
-			
+
 			// According to the docs:
 			// 00 - Enable internal algorithm operation (if it was temporarily disabled)
 			// 01 - Disable internal algorithm operation temporarily
 			const state = params.enabled ? '00' : '01'
-			
-			return new BaseCommand(
-				'SetInternalAlgoTemporaryState', 
-				0x67, 
-				state
-			)
+
+			return new BaseCommand('SetInternalAlgoTemporaryState', 0x67, state)
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -1062,7 +1036,7 @@ export class VickiCommands extends GeneralCommands {
 	static setTemperatureLevels(params: VickiCommandTypes.SetTemperatureLevelsParams) {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setTemperatureLevels.parse(params)
-			
+
 			// Convert each temperature to a value multiplied by 10
 			// and use dec2hex to convert to MSB/LSB hex values
 			const level0 = dec2hex(params.scaleLevel0 * 10)
@@ -1080,7 +1054,7 @@ export class VickiCommands extends GeneralCommands {
 				level2, // Level 2 temperature (MSB,LSB)
 				level3, // Level 3 temperature (MSB,LSB)
 				level4, // Level 4 temperature (MSB,LSB)
-				level5  // Level 5 temperature (MSB,LSB)
+				level5, // Level 5 temperature (MSB,LSB)
 			)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -1100,19 +1074,15 @@ export class VickiCommands extends GeneralCommands {
 	}
 
 	static getTemperatureLevels() {
-		return new BaseCommand('GetTemperatureLevels', 0x6A)
+		return new BaseCommand('GetTemperatureLevels', 0x6a)
 	}
 
 	static setLedIndicationDuration(params: VickiCommandTypes.SetLedIndicationDurationParams) {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setLedIndicationDuration.parse(params)
-			
-			let durationValue = params.duration * 2;
-			return new BaseCommand(
-				'SetLedIndicationDuration',
-				0x63,
-				decToHex(durationValue)
-			)
+
+			const durationValue = params.duration * 2
+			return new BaseCommand('SetLedIndicationDuration', 0x63, decToHex(durationValue))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({

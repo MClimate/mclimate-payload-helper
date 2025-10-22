@@ -2,9 +2,9 @@ import { DeviceType } from '@/decoders/payloadParsers/types'
 import { CustomError } from '@/utils'
 
 export const commandsReadingHelper = (hexData: string, payloadLength: number, deviceType: DeviceType) => {
-	let resultToPass = {}
-	let data = hexData
-	let commands = data.match(/.{1,2}/g)
+	const resultToPass = {}
+	const data = hexData
+	const commands = data.match(/.{1,2}/g)
 	let command_len = 0
 
 	const decbin = (byte: number) => {
@@ -17,7 +17,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 
 		if (
 			potentialKeepAlive[0] === '81' &&
-			(deviceType === DeviceType.Vicki || deviceType === DeviceType.WirelessThermostat || deviceType === DeviceType.MultiSensor)
+			(deviceType === DeviceType.Vicki ||
+				deviceType === DeviceType.WirelessThermostat ||
+				deviceType === DeviceType.MultiSensor)
 		) {
 			decodeKeepalive = true
 		} else if ((potentialKeepAlive[0] === '00' || potentialKeepAlive[0] === '88') && deviceType === DeviceType.TFlood) {
@@ -55,7 +57,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.TFlood) {
 							command_len = payloadLength / 2
-							let data = { decodeKeepalive: true }
+							const data = { decodeKeepalive: true }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -73,7 +75,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = payloadLength / 2
-						let data = { decodeKeepalive: true }
+						const data = { decodeKeepalive: true }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -90,7 +92,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = payloadLength / 2
-						let data = { decodeKeepalive: true }
+						const data = { decodeKeepalive: true }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -107,9 +109,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						let hardwareVersion = commands[i + 1]
-						let softwareVersion = commands[i + 2]
-						let data = { deviceVersions: { hardware: Number(hardwareVersion), software: Number(softwareVersion) } }
+						const hardwareVersion = commands[i + 1]
+						const softwareVersion = commands[i + 2]
+						const data = { deviceVersions: { hardware: Number(hardwareVersion), software: Number(softwareVersion) } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -126,7 +128,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { targetTemperatureStep: parseInt(commands[i + 1], 16) / 10 }
+						const data = { targetTemperatureStep: parseInt(commands[i + 1], 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -145,12 +147,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						command_len = 1
 						if (deviceType === DeviceType.MelissaLorawan) {
 							command_len = 2
-							let codeAddress = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
-							let codeAddressRaw = `${commands[i + 1]}${commands[i + 2]}`
-							let data = { preloadedCode: { codeAddress, codeAddressRaw } }
+							const codeAddress = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
+							const codeAddressRaw = `${commands[i + 1]}${commands[i + 2]}`
+							const data = { preloadedCode: { codeAddress, codeAddressRaw } }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
-							let data = { alarmDuration: parseInt(commands[i + 1], 16) }
+							const data = { alarmDuration: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -168,9 +170,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						let hardwareVersion = commands[i + 1]
-						let softwareVersion = commands[i + 2]
-						let data = { deviceVersions: { hardware: Number(hardwareVersion), software: Number(softwareVersion) } }
+						const hardwareVersion = commands[i + 1]
+						const softwareVersion = commands[i + 2]
+						const data = { deviceVersions: { hardware: Number(hardwareVersion), software: Number(softwareVersion) } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -187,7 +189,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { floodEventSendTime: parseInt(commands[i + 1], 16) }
+						const data = { floodEventSendTime: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -206,8 +208,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data
 						if (deviceType === DeviceType.MelissaLorawan) {
 							command_len = 4
-							let recordedIrCodeSize = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
-							let bytesSent = `${commands[i + 3]}${commands[i + 4]}`
+							const recordedIrCodeSize = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
+							const bytesSent = `${commands[i + 3]}${commands[i + 4]}`
 							data = { recordedIrInfo: { recordedIrCodeSize, bytesSent } }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
@@ -267,9 +269,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 4
-						let openingTime = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
-						let closingTime = (parseInt(commands[i + 3], 16) << 8) | parseInt(commands[i + 4], 16)
-						let data = { openCloseTimeExtended: { openingTime: Number(openingTime), closingTime: Number(closingTime) } }
+						const openingTime = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
+						const closingTime = (parseInt(commands[i + 3], 16) << 8) | parseInt(commands[i + 4], 16)
+						const data = { openCloseTimeExtended: { openingTime: Number(openingTime), closingTime: Number(closingTime) } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -286,7 +288,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { emergencyOpenings: parseInt(commands[i + 1], 16) }
+						const data = { emergencyOpenings: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -303,7 +305,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { floodAlarmTime: parseInt(commands[i + 1], 16) }
+						const data = { floodAlarmTime: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -320,7 +322,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { workingVoltage: parseInt(commands[i + 1], 16) * 8 + 1600 }
+						const data = { workingVoltage: parseInt(commands[i + 1], 16) * 8 + 1600 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -363,12 +365,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							data = { deviceFloodSensor: parseInt(commands[i + 1], 16) }
 						} else {
 							command_len = 4
-							let enabled = !!parseInt(commands[i + 1], 16)
-							let duration = parseInt(commands[i + 2], 16) * 5
-							let motorPos1 = parseInt(commands[i + 4], 16) >> 4 // upper 4 bits of Byte 4
-							let motorPos2 = parseInt(commands[i + 3], 16) & 0xff // lower 8 bits of Byte 3
-							let motorPosition = (motorPos1 << 8) | motorPos2
-							let delta = parseInt(commands[i + 4], 16) & 0x0f // lower 4 bits of Byte 4
+							const enabled = !!parseInt(commands[i + 1], 16)
+							const duration = parseInt(commands[i + 2], 16) * 5
+							const motorPos1 = parseInt(commands[i + 4], 16) >> 4 // upper 4 bits of Byte 4
+							const motorPos2 = parseInt(commands[i + 3], 16) & 0xff // lower 8 bits of Byte 3
+							const motorPosition = (motorPos1 << 8) | motorPos2
+							const delta = parseInt(commands[i + 4], 16) & 0x0f // lower 4 bits of Byte 4
 							data = { openWindowParams: { enabled: enabled, duration: duration, motorPosition: motorPosition, delta: delta } }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -413,7 +415,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						let data = {
+						const data = {
 							temperatureRangeSettings: { min: parseInt(commands[i + 1], 16), max: parseInt(commands[i + 2], 16) },
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -434,8 +436,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data
 						if (deviceType === DeviceType.TValve) {
 							command_len = 1
-							let commandResponse = parseInt(commands[i + 1], 16)
-							let periodInMinutes = (commandResponse * 5) / 60
+							const commandResponse = parseInt(commands[i + 1], 16)
+							const periodInMinutes = (commandResponse * 5) / 60
 							data = { joinRetryPeriod: periodInMinutes }
 						} else {
 							command_len = 2
@@ -517,9 +519,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let commandResponse = parseInt(commands[i + 1], 16)
-						let periodInMinutes = (commandResponse * 5) / 60
-						let data = { joinRetryPeriod: periodInMinutes }
+						const commandResponse = parseInt(commands[i + 1], 16)
+						const periodInMinutes = (commandResponse * 5) / 60
+						const data = { joinRetryPeriod: periodInMinutes }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -536,9 +538,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						let wdpC = commands[i + 1] == '00' ? false : parseInt(commands[i + 1], 16)
-						let wdpUc = commands[i + 2] == '00' ? false : parseInt(commands[i + 2], 16)
-						let data = { watchDogParams: { wdpC, wdpUc } }
+						const wdpC = commands[i + 1] == '00' ? false : parseInt(commands[i + 1], 16)
+						const wdpUc = commands[i + 2] == '00' ? false : parseInt(commands[i + 2], 16)
+						const data = { watchDogParams: { wdpC, wdpUc } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -555,7 +557,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { uplinkType: commands[i + 1] }
+						const data = { uplinkType: commands[i + 1] }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -572,9 +574,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						let wdpC = commands[i + 1] == '00' ? false : parseInt(commands[i + 1], 16)
-						let wdpUc = commands[i + 2] == '00' ? false : parseInt(commands[i + 2], 16)
-						let data = { watchDogParams: { wdpC, wdpUc } }
+						const wdpC = commands[i + 1] == '00' ? false : parseInt(commands[i + 1], 16)
+						const wdpUc = commands[i + 2] == '00' ? false : parseInt(commands[i + 2], 16)
+						const data = { watchDogParams: { wdpC, wdpUc } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -592,35 +594,35 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 1
-							let data = { primaryOperationalMode: commands[i + 1] }
+							const data = { primaryOperationalMode: commands[i + 1] }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.DskDevice) {
 							command_len = 1
-							let data = { status: parseInt(commands[i + 1], 16) }
+							const data = { status: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.OpenCloseSensor) {
 							command_len = 1
-							let data = { notificationBlindTime: parseInt(commands[i + 1], 16) }
+							const data = { notificationBlindTime: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.MCButton) {
 							command_len = 1
-							let data = { sendEventLater: parseInt(commands[i + 1], 16) }
+							const data = { sendEventLater: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 2
-							let data = {
+							const data = {
 								overheatingThresholds: { trigger: parseInt(commands[i + 1], 16), recovery: parseInt(commands[i + 2], 16) },
 							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.MultiSensor) {
 							command_len = 1
-							let data = { lightEnabled: parseInt(commands[i + 1], 16) === 1 }
+							const data = { lightEnabled: parseInt(commands[i + 1], 16) === 1 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 4
-							let good_medium = parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16)
-							let medium_bad = parseInt(`${commands[i + 3]}${commands[i + 4]}`, 16)
-							let data = { boundaryLevels: { good_medium: Number(good_medium), medium_bad: Number(medium_bad) } }
+							const good_medium = parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16)
+							const medium_bad = parseInt(`${commands[i + 3]}${commands[i + 4]}`, 16)
+							const data = { boundaryLevels: { good_medium: Number(good_medium), medium_bad: Number(medium_bad) } }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -639,7 +641,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 6
-							let data = {
+							const data = {
 								batteryRangesBoundaries: {
 									Boundary1: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16),
 									Boundary2: parseInt(`${commands[i + 3]}${commands[i + 4]}`, 16),
@@ -649,7 +651,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 3
-							let data = {
+							const data = {
 								overvoltageThresholds: {
 									trigger: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16),
 									recovery: parseInt(commands[i + 3], 16),
@@ -658,11 +660,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.MultiSensor) {
 							command_len = 1
-							let data = { hallEnabled: parseInt(commands[i + 1], 16) === 1 }
+							const data = { hallEnabled: parseInt(commands[i + 1], 16) === 1 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType !== DeviceType.OpenCloseSensor) {
 							command_len = 2
-							let data = { autoZeroValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
+							const data = { autoZeroValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -681,7 +683,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.DskDevice) {
 							command_len = 2
-							let data = { onTime: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
+							const data = { onTime: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -700,7 +702,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 4
-							let data = {
+							const data = {
 								batteryRangesOverVoltage: {
 									Range1: parseInt(commands[i + 2], 16),
 									Range2: parseInt(commands[i + 3], 16),
@@ -710,23 +712,23 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.DskDevice) {
 							command_len = 2
-							let data = { offTime: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
+							const data = { offTime: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 1
-							let data = { overcurrentThreshold: parseInt(commands[i + 1], 16) }
+							const data = { overcurrentThreshold: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.MultiSensor) {
 							command_len = 2
-							let data = { hallBlindPeriod: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+							const data = { hallBlindPeriod: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 3
-							let good_zone = parseInt(commands[i + 1], 16)
-							let medium_zone = parseInt(commands[i + 2], 16)
-							let bad_zone = parseInt(commands[i + 3], 16)
+							const good_zone = parseInt(commands[i + 1], 16)
+							const medium_zone = parseInt(commands[i + 2], 16)
+							const bad_zone = parseInt(commands[i + 3], 16)
 
-							let data = {
+							const data = {
 								notifyPeriod: { good_zone: Number(good_zone), medium_zone: Number(medium_zone), bad_zone: Number(bad_zone) },
 							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -745,7 +747,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '25':
 				{
 					try {
-						let data = {};
+						let data = {}
 						if (deviceType == DeviceType.Relay16) {
 							command_len = 2
 							data = { overpowerThreshold: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
@@ -800,9 +802,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							data = { microphoneEnabled: parseInt(commands[i + 1], 16) === 1 }
 						} else {
 							command_len = 3
-							let good_zone = parseInt(commands[i + 1], 16)
-							let medium_zone = parseInt(commands[i + 2], 16)
-							let bad_zone = parseInt(commands[i + 3], 16)
+							const good_zone = parseInt(commands[i + 1], 16)
+							const medium_zone = parseInt(commands[i + 2], 16)
+							const bad_zone = parseInt(commands[i + 3], 16)
 
 							data = {
 								measurementPeriod: {
@@ -829,26 +831,26 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 1
-							let data = { OVAC: parseInt(commands[i + 1], 16) }
+							const data = { OVAC: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.MultiSensor) {
 							command_len = 2
-							let data = {
+							const data = {
 								microphoneSamplingPeriod: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16),
 							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 9
-							let duration_good_beeping = parseInt(commands[i + 1], 16)
-							let duration_good_loud = parseInt(commands[i + 2], 16) * 10
-							let duration_good_silent = parseInt(commands[i + 3], 16) * 10
-							let duration_medium_beeping = parseInt(commands[i + 4], 16)
-							let duration_medium_loud = parseInt(commands[i + 5], 16) * 10
-							let duration_medium_silent = parseInt(commands[i + 6], 16) * 10
-							let duration_bad_beeping = parseInt(commands[i + 7], 16)
-							let duration_bad_loud = parseInt(commands[i + 8], 16) * 10
-							let duration_bad_silent = parseInt(commands[i + 9], 16) * 10
-							let data = {
+							const duration_good_beeping = parseInt(commands[i + 1], 16)
+							const duration_good_loud = parseInt(commands[i + 2], 16) * 10
+							const duration_good_silent = parseInt(commands[i + 3], 16) * 10
+							const duration_medium_beeping = parseInt(commands[i + 4], 16)
+							const duration_medium_loud = parseInt(commands[i + 5], 16) * 10
+							const duration_medium_silent = parseInt(commands[i + 6], 16) * 10
+							const duration_bad_beeping = parseInt(commands[i + 7], 16)
+							const duration_bad_loud = parseInt(commands[i + 8], 16) * 10
+							const duration_bad_silent = parseInt(commands[i + 9], 16) * 10
+							const data = {
 								buzzerNotification: {
 									duration_good_beeping: Number(duration_good_beeping),
 									duration_good_loud: Number(duration_good_loud),
@@ -877,7 +879,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '28':
 				{
 					command_len = 1
-					let data = { manualTargetTemperatureUpdate: parseInt(commands[i + 1], 16) }
+					const data = { manualTargetTemperatureUpdate: parseInt(commands[i + 1], 16) }
 					Object.assign(resultToPass, { ...resultToPass }, { ...data })
 				}
 				break
@@ -886,29 +888,29 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 2
-							let coefficient = parseInt(commands[i + 1], 16)
-							let period = parseInt(commands[i + 2], 16)
-							let data = { proportionalAlgorithmParameters: { coefficient: Number(coefficient), period: Number(period) } }
+							const coefficient = parseInt(commands[i + 1], 16)
+							const period = parseInt(commands[i + 2], 16)
+							const data = { proportionalAlgorithmParameters: { coefficient: Number(coefficient), period: Number(period) } }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.MultiSensor) {
 							command_len = 1
-							let data = { gasEnabled: parseInt(commands[i + 1], 16) === 1 }
+							const data = { gasEnabled: parseInt(commands[i + 1], 16) === 1 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 15
-							let red_good = parseInt(commands[i + 1], 16)
-							let green_good = parseInt(commands[i + 2], 16)
-							let blue_good = parseInt(commands[i + 3], 16)
-							let duration_good = parseInt(`${commands[i + 4]}${commands[i + 5]}`, 16) * 10
-							let red_medium = parseInt(commands[i + 6], 16)
-							let green_medium = parseInt(commands[i + 7], 16)
-							let blue_medium = parseInt(commands[i + 8], 16)
-							let duration_medium = parseInt(`${commands[i + 9]}${commands[i + 10]}`, 16) * 10
-							let red_bad = parseInt(commands[i + 11], 16)
-							let green_bad = parseInt(commands[i + 12], 16)
-							let blue_bad = parseInt(commands[i + 13], 16)
-							let duration_bad = parseInt(`${commands[i + 14]}${commands[i + 15]}`, 16) * 10
-							let data = {
+							const red_good = parseInt(commands[i + 1], 16)
+							const green_good = parseInt(commands[i + 2], 16)
+							const blue_good = parseInt(commands[i + 3], 16)
+							const duration_good = parseInt(`${commands[i + 4]}${commands[i + 5]}`, 16) * 10
+							const red_medium = parseInt(commands[i + 6], 16)
+							const green_medium = parseInt(commands[i + 7], 16)
+							const blue_medium = parseInt(commands[i + 8], 16)
+							const duration_medium = parseInt(`${commands[i + 9]}${commands[i + 10]}`, 16) * 10
+							const red_bad = parseInt(commands[i + 11], 16)
+							const green_bad = parseInt(commands[i + 12], 16)
+							const blue_bad = parseInt(commands[i + 13], 16)
+							const duration_bad = parseInt(`${commands[i + 14]}${commands[i + 15]}`, 16) * 10
+							const data = {
 								ledNotification: {
 									red_good: Number(red_good),
 									green_good: Number(green_good),
@@ -954,15 +956,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									algo = 'proportionalIntegral'
 									break
 							}
-							let data = { temperatureControlAlgorithm: algo }
+							const data = { temperatureControlAlgorithm: algo }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.MultiSensor) {
 							command_len = 1
-							let data = { gasMeasurementPeriodMinutes: parseInt(commands[i + 1], 16) }
+							const data = { gasMeasurementPeriodMinutes: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
-							let data = { autoZeroPeriod: parseInt(commands[i + 1], 16) }
+							const data = { autoZeroPeriod: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -981,7 +983,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.MultiSensor) {
 							command_len = 1
-							let data = { pirEnabled: parseInt(commands[i + 1], 16) === 1 }
+							const data = { pirEnabled: parseInt(commands[i + 1], 16) === 1 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -1056,7 +1058,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { region: parseInt(commands[i + 1], 16) }
+						const data = { region: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1105,11 +1107,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 1
-							let data = { childLockBehavior: commands[i + 1] }
+							const data = { childLockBehavior: commands[i + 1] }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.HTSensor) {
 							command_len = 2
-							let data = {
+							const data = {
 								humidityCompensation: {
 									negativeCompensation: !!parseInt(commands[i + 1], 16),
 									compensation: parseInt(commands[i + 2], 16),
@@ -1118,7 +1120,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
-							let data = { displayRefreshPeriod: parseInt(commands[i + 1], 16) }
+							const data = { displayRefreshPeriod: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -1137,16 +1139,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 3
-							let kp = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}`, 16) / 131072
-							let data = { proportionalGain: Number(kp).toFixed(5) }
+							const kp = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}`, 16) / 131072
+							const data = { proportionalGain: Number(kp).toFixed(5) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.FanCoilThermostat) {
 							command_len = 1
-							let data = { extAutomaticTemperatureControl: parseInt(commands[i + 1], 16) }
+							const data = { extAutomaticTemperatureControl: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
-							let data = { sendTargetTempDelay: parseInt(commands[i + 1], 16) }
+							const data = { sendTargetTempDelay: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -1164,7 +1166,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { automaticHeatingStatus: parseInt(commands[i + 1], 16) }
+						const data = { automaticHeatingStatus: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1181,7 +1183,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { sensorMode: parseInt(commands[i + 1], 16) }
+						const data = { sensorMode: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1199,12 +1201,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 3
-							let ki = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}`, 16) / 131072
-							let data = { integralGain: Number(ki).toFixed(5) }
+							const ki = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}`, 16) / 131072
+							const data = { integralGain: Number(ki).toFixed(5) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
-							let data = { pirSensorStatus: parseInt(commands[i + 1], 16) }
+							const data = { pirSensorStatus: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -1243,11 +1245,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 2
-							let data = { integralValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
+							const data = { integralValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
-							let data = { pirSensorSensitivity: parseInt(commands[i + 1], 16) }
+							const data = { pirSensorSensitivity: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -1265,7 +1267,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { piRunPeriod: parseInt(commands[i + 1], 16) }
+						const data = { piRunPeriod: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1282,7 +1284,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { currentTemperatureVisibility: parseInt(commands[i + 1], 16) }
+						const data = { currentTemperatureVisibility: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1299,7 +1301,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { tempHysteresis: parseInt(commands[i + 1], 16) / 10 }
+						const data = { tempHysteresis: parseInt(commands[i + 1], 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1316,7 +1318,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { humidityVisibility: parseInt(commands[i + 1], 16) }
+						const data = { humidityVisibility: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1333,7 +1335,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						let data = { extSensorTemperature: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
+						const data = { extSensorTemperature: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1373,10 +1375,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 3
-						let enabled = !!parseInt(commands[i + 1], 16)
-						let duration = parseInt(commands[i + 2], 16) * 5
-						let delta = parseInt(commands[i + 3], 16) / 10
-						let data = { openWindowPrecisely: { enabled: enabled, duration: duration, delta: delta } }
+						const enabled = !!parseInt(commands[i + 1], 16)
+						const duration = parseInt(commands[i + 2], 16) * 5
+						const delta = parseInt(commands[i + 3], 16) / 10
+						const data = { openWindowPrecisely: { enabled: enabled, duration: duration, delta: delta } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1416,7 +1418,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { forceAttach: !!parseInt(commands[i + 1], 16) }
+						const data = { forceAttach: !!parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1456,10 +1458,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 3
-						let activatedTemperature = parseInt(commands[i + 1], 16) / 10
-						let deactivatedTemperature = parseInt(commands[i + 2], 16) / 10
-						let targetTemperature = parseInt(commands[i + 3], 16)
-						let data = { antiFreezeParams: { activatedTemperature, deactivatedTemperature, targetTemperature } }
+						const activatedTemperature = parseInt(commands[i + 1], 16) / 10
+						const deactivatedTemperature = parseInt(commands[i + 2], 16) / 10
+						const targetTemperature = parseInt(commands[i + 3], 16)
+						const data = { antiFreezeParams: { activatedTemperature, deactivatedTemperature, targetTemperature } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1551,7 +1553,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						let data = {
+						const data = {
 							valveOpennessRangeInPercentage: {
 								max: 100 - parseInt(commands[i + 1], 16),
 								min: 100 - parseInt(commands[i + 2], 16),
@@ -1598,7 +1600,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						let data = { targetTemperatureFloat: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
+						const data = { targetTemperatureFloat: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1615,7 +1617,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { targetTemperatureStep: parseInt(commands[i + 1], 16) / 10 }
+						const data = { targetTemperatureStep: parseInt(commands[i + 1], 16) / 10 }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -1640,7 +1642,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							data = { relayStateChangeReason: parseInt(commands[i + 1], 16) }
 						} else {
 							command_len = 1
-							let offset = (parseInt(commands[i + 1], 16) - 28) * 0.176
+							const offset = (parseInt(commands[i + 1], 16) - 28) * 0.176
 							data = { temperatureOffset: offset }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1684,8 +1686,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							data = { displayTemperatureUnits: parseInt(commands[i + 1], 16) }
 						} else if (deviceType === DeviceType.Relay16 || deviceType === DeviceType.Relay16Dry) {
 							command_len = 3
-							let state = parseInt(commands[i + 1], 16)
-							let time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
+							const state = parseInt(commands[i + 1], 16)
+							const time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
 							data = { relayTimerInMilliseconds: { state, time } }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1726,10 +1728,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 2
-							let notificationByte = parseInt(commands[i + 1], 16)
+							const notificationByte = parseInt(commands[i + 1], 16)
 							// Extract notification flags from bits
-							let temperatureRestoredAfterManualBoost = !!(notificationByte & 0x01) // Bit 0
-							let temperatureChangedByHeatingSchedule = !!(notificationByte & 0x02) // Bit 1
+							const temperatureRestoredAfterManualBoost = !!(notificationByte & 0x01) // Bit 0
+							const temperatureChangedByHeatingSchedule = !!(notificationByte & 0x02) // Bit 1
 							data = {
 								notifications: {
 									temperatureRestoredAfterManualBoost: temperatureRestoredAfterManualBoost,
@@ -1738,8 +1740,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							}
 						} else {
 							command_len = 3
-							let state = parseInt(commands[i + 1], 16)
-							let time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
+							const state = parseInt(commands[i + 1], 16)
+							const time = (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16)
 							data = { relayTimerInSeconds: { state, time } }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1856,8 +1858,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							}
 						} else if (deviceType === DeviceType.Vicki) {
 							command_len = 1
-							let offsetByte = parseInt(commands[i + 1], 16)
-							let offsetHours = offsetByte & 0x80 ? offsetByte - 256 : offsetByte
+							const offsetByte = parseInt(commands[i + 1], 16)
+							const offsetHours = offsetByte & 0x80 ? offsetByte - 256 : offsetByte
 							data = { deviceTimeZone: offsetHours }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1914,7 +1916,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							}
 						} else {
 							command_len = 1
-							let timeValue = parseInt(commands[i + 1], 16)
+							const timeValue = parseInt(commands[i + 1], 16)
 							data = { autoSetpointRestoreStatus: timeValue === 0 ? 0 : timeValue * 10 }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -2319,7 +2321,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { measurementBlindTime: parseInt(commands[i + 1], 16) }
+						const data = { measurementBlindTime: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -2336,11 +2338,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let bin = decbin(parseInt(commands[i + 1], 16))
-						let chart = Number(bin[5])
-						let digital_value = Number(bin[6])
-						let emoji = Number(bin[7])
-						let data = { imagesVisibility: { chart, digital_value, emoji } }
+						const bin = decbin(parseInt(commands[i + 1], 16))
+						const chart = Number(bin[5])
+						const digital_value = Number(bin[6])
+						const emoji = Number(bin[7])
+						const data = { imagesVisibility: { chart, digital_value, emoji } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -2383,7 +2385,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 3
-						let data = {
+						const data = {
 							doublePressEventCounter:
 								(parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
 						}
@@ -2403,7 +2405,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 3
-						let data = {
+						const data = {
 							triplePressEventCounter:
 								(parseInt(commands[i + 1], 16) << 16) | (parseInt(commands[i + 2], 16) << 8) | parseInt(commands[i + 3], 16),
 						}
@@ -2423,9 +2425,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 4
-						let fuota_address = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}${commands[i + 4]}`, 16)
-						let fuota_address_raw = `${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}${commands[i + 4]}`
-						let data = { fuota: { fuota_address, fuota_address_raw } }
+						const fuota_address = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}${commands[i + 4]}`, 16)
+						const fuota_address_raw = `${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}${commands[i + 4]}`
+						const data = { fuota: { fuota_address, fuota_address_raw } }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -2442,7 +2444,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { crystalOscillatorError: true }
+						const data = { crystalOscillatorError: true }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -2464,15 +2466,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							data = { afterOverheatingProtectionRecovery: parseInt(commands[i + 1], 16) }
 						} else {
 							command_len = 41
-							let eventsGroup = parseInt(commands[i + 1], 16) // 0 = events 0-7, 1 = events 8-15, 2 = events 16-19
-							let eventGroupIndex = ['0-7', '8-15', '16-19']
-							let heatingEvents = []
+							const eventsGroup = parseInt(commands[i + 1], 16) // 0 = events 0-7, 1 = events 8-15, 2 = events 16-19
+							const eventGroupIndex = ['0-7', '8-15', '16-19']
+							const heatingEvents = []
 
 							// Process up to 8 events for groups 0 and 1, but only 4 events for group 2
-							let eventsToProcess = eventsGroup === 2 ? 4 : 8
+							const eventsToProcess = eventsGroup === 2 ? 4 : 8
 							for (let eventIdx = 0; eventIdx < eventsToProcess; eventIdx++) {
 								// Each event takes 5 bytes (hour, minute, temp high, temp low, weekday bitmask)
-								let offset = i + 2 + eventIdx * 5
+								const offset = i + 2 + eventIdx * 5
 
 								// Check if this event is configured
 								// Make sure we have valid values at this offset
@@ -2480,11 +2482,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 									continue
 								}
 
-								let hour = parseInt(commands[offset], 16)
-								let minute = parseInt(commands[offset + 1], 16)
-								let tempHigh = parseInt(commands[offset + 2], 16)
-								let tempLow = parseInt(commands[offset + 3], 16)
-								let weekdayByte = parseInt(commands[offset + 4], 16)
+								const hour = parseInt(commands[offset], 16)
+								const minute = parseInt(commands[offset + 1], 16)
+								const tempHigh = parseInt(commands[offset + 2], 16)
+								const tempLow = parseInt(commands[offset + 3], 16)
+								const weekdayByte = parseInt(commands[offset + 4], 16)
 
 								// Skip events that are not configured (zeros or NaN values)
 								if (
@@ -2499,9 +2501,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 								}
 
 								// Calculate actual event index in the full range (0-23)
-								let globalEventIndex = eventsGroup * 8 + eventIdx
+								const globalEventIndex = eventsGroup * 8 + eventIdx
 								// Decode weekday bitmask (bit 0=Mon, bit 1=Tue, bit 2=Wed, bit 3=Thu, bit 4=Fri, bit 5=Sat, bit 6=Sun)
-								let weekdays = {
+								const weekdays = {
 									monday: !!(weekdayByte & 0x01), // bit 0
 									tuesday: !!(weekdayByte & 0x02), // bit 1
 									wednesday: !!(weekdayByte & 0x04), // bit 2
@@ -2512,7 +2514,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 								}
 
 								// Create heating event object
-								let heatingEvent = {
+								const heatingEvent = {
 									index: globalEventIndex,
 									start: (hour < 10 ? '0' + hour : hour) + ':' + (minute < 10 ? '0' + minute : minute),
 									targetTemperature: ((tempHigh << 8) | tempLow) / 10,
@@ -2544,13 +2546,13 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 4
 							// Note: Months are 0-11 (January=0, December=11)
-							let startMonth = parseInt(commands[i + 1], 16)
-							let startDay = parseInt(commands[i + 2], 16)
-							let endMonth = parseInt(commands[i + 3], 16)
-							let endDay = parseInt(commands[i + 4], 16)
+							const startMonth = parseInt(commands[i + 1], 16)
+							const startDay = parseInt(commands[i + 2], 16)
+							const endMonth = parseInt(commands[i + 3], 16)
+							const endDay = parseInt(commands[i + 4], 16)
 
 							// Convert to human-readable month names
-							let monthNames = [
+							const monthNames = [
 								'January',
 								'February',
 								'March',
@@ -2593,17 +2595,17 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						command_len = 4
 						// Parse 32-bit UNIX timestamp (4 bytes)
-						var unixTimestamp =
+						const unixTimestamp =
 							(parseInt(commands[i + 1], 16) << 24) |
 							(parseInt(commands[i + 2], 16) << 16) |
 							(parseInt(commands[i + 3], 16) << 8) |
 							parseInt(commands[i + 4], 16)
 
 						// Convert UNIX timestamp to JavaScript Date
-						let dateObj = new Date(unixTimestamp * 1000) // Convert seconds to milliseconds
-						let date = dateObj.getUTCDate() + '/' + (dateObj.getUTCMonth() + 1) + '/' + dateObj.getUTCFullYear()
-						let time = dateObj.getUTCHours() + ':' + (dateObj.getUTCMinutes() < 10 ? '0' : '') + dateObj.getUTCMinutes()
-						let data = {
+						const dateObj = new Date(unixTimestamp * 1000) // Convert seconds to milliseconds
+						const date = dateObj.getUTCDate() + '/' + (dateObj.getUTCMonth() + 1) + '/' + dateObj.getUTCFullYear()
+						const time = dateObj.getUTCHours() + ':' + (dateObj.getUTCMinutes() < 10 ? '0' : '') + dateObj.getUTCMinutes()
+						const data = {
 							deviceTime: '' + date + ' ' + time,
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -2622,10 +2624,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let ledDurationValue = parseInt(commands[i + 1], 16)
-						let durationInSeconds = ledDurationValue / 2 // As per the docs, value is divided by 2 to get seconds
+						const ledDurationValue = parseInt(commands[i + 1], 16)
+						const durationInSeconds = ledDurationValue / 2 // As per the docs, value is divided by 2 to get seconds
 
-						let data = {
+						const data = {
 							ledIndicationDuration: durationInSeconds,
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -2645,10 +2647,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					try {
 						command_len = 2
 
-						let tempHigh = parseInt(commands[i + 1], 16)
-						let tempLow = parseInt(commands[i + 2], 16)
-						let targetTemp = (tempHigh << 8) | tempLow
-						let data = {
+						const tempHigh = parseInt(commands[i + 1], 16)
+						const tempLow = parseInt(commands[i + 2], 16)
+						const targetTemp = (tempHigh << 8) | tempLow
+						const data = {
 							offlineTargetTemperature: targetTemp === 0 ? 0 : targetTemp / 10,
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -2667,7 +2669,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { internalAlgoTemporaryState: parseInt(commands[i + 1], 16) === 0 ? true : false }
+						const data = { internalAlgoTemporaryState: parseInt(commands[i + 1], 16) === 0 ? true : false }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({
@@ -2684,19 +2686,19 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 12
-						let temperatureLevels: { [key: string]: number } = {}
+						const temperatureLevels: { [key: string]: number } = {}
 
 						// Process 6 scale levels (0-5), each with a 2-byte temperature value
 						for (let level = 0; level < 6; level++) {
-							let tempHighByte = parseInt(commands[i + 1 + level * 2], 16)
-							let tempLowByte = parseInt(commands[i + 2 + level * 2], 16)
-							let tempValue = (tempHighByte << 8) | tempLowByte
+							const tempHighByte = parseInt(commands[i + 1 + level * 2], 16)
+							const tempLowByte = parseInt(commands[i + 2 + level * 2], 16)
+							const tempValue = (tempHighByte << 8) | tempLowByte
 
 							// The temperature values are pre-multiplied by 10
 							temperatureLevels['level' + level] = tempValue / 10
 						}
 
-						let data = {
+						const data = {
 							temperatureLevels: temperatureLevels,
 						}
 
@@ -2715,12 +2717,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '6c': {
 				try {
 					command_len = 4
-					let eventsHighByte = parseInt(commands[i + 2], 16) // Events 19-16
-					let eventsMidByte = parseInt(commands[i + 3], 16) // Events 15-8
-					let eventsLowByte = parseInt(commands[i + 4], 16) // Events 7-0
+					const eventsHighByte = parseInt(commands[i + 2], 16) // Events 19-16
+					const eventsMidByte = parseInt(commands[i + 3], 16) // Events 15-8
+					const eventsLowByte = parseInt(commands[i + 4], 16) // Events 7-0
 
 					// Create a more structured and readable format for heating events
-					let heatingEventStates: { [key: string]: boolean } = {}
+					const heatingEventStates: { [key: string]: boolean } = {}
 
 					// Process all 20 events (0-19) in a single loop
 					for (let eventIdx = 0; eventIdx < 20; eventIdx++) {
@@ -2741,7 +2743,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						}
 					}
 
-					let data = {
+					const data = {
 						heatingEventStates: heatingEventStates,
 					}
 
@@ -2761,7 +2763,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 1
-						let data = { userInterfaceLanguage: parseInt(commands[i + 1], 16) }
+						const data = { userInterfaceLanguage: parseInt(commands[i + 1], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({

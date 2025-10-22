@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { z } from 'zod'
 
 /* ---------------------------------------TYPE HELPERS--------------------------------------- */

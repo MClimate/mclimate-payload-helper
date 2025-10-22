@@ -26,7 +26,7 @@ import {
 import { CustomError, toCamelCase } from '@/utils'
 export class CommandBuilder {
 	device_type: string
-	commandRegistry: Record<string, any>
+	commandRegistry: Record<string, unknown>
 
 	constructor(device_type: string) {
 		this.device_type = device_type
@@ -66,8 +66,10 @@ export class CommandBuilder {
 
 		const methodName = toCamelCase(command)
 
-		if (typeof (deviceCommands as Record<string, any>)[methodName] === 'function') {
-			return (deviceCommands as Record<string, any>)[methodName](params)
+		const commandGroup = deviceCommands as Record<string, unknown>
+		const commandHandler = commandGroup[methodName]
+		if (typeof commandHandler === 'function') {
+			return (commandHandler as (params?: unknown) => BaseCommand)(params)
 		} else {
 			throw new CustomError({
 				message: `Command ${methodName} not supported for device type ${this.device_type}`,

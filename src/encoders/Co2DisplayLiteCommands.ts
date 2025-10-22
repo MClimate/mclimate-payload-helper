@@ -10,7 +10,7 @@ export class CO2DisplayLiteCommands extends GeneralCommands {
 			const { digital_value, emoji } = params
 			const digitalValue = digital_value ? 1 : 0
 			const emojiValue = emoji ? 1 : 0
-			let bin = '00000000'.split('')
+			const bin = '00000000'.split('')
 			bin[7] = emojiValue.toString()
 			bin[6] = digitalValue.toString()
 			const binValue = parseInt(bin.join(''), 2)
@@ -61,7 +61,7 @@ export class CO2DisplayLiteCommands extends GeneralCommands {
 	static getUplinkSendingOnButtonPress() {
 		return new BaseCommand('GetUplinkSendingOnButtonPress', 0x2f)
 	}
-	
+
 	static restartDevice() {
 		return new BaseCommand('RestartDevice', 0xa5)
 	}

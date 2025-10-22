@@ -4,31 +4,31 @@ import { decbin, toBool, byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const CO2DisplayPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const calculateTemperature = (rawData: number) => (rawData - 400) / 10
 		const calculateHumidity = (rawData: number) => (rawData * 100) / 256
 
 		const handleKeepAliveData = (data: number[]) => {
-			let tempHex = ('0' + data[1].toString(16)).substr(-2) + ('0' + data[2].toString(16)).substr(-2)
-			let tempDec = parseInt(tempHex, 16)
-			let temperature = calculateTemperature(tempDec)
-			let humidity = calculateHumidity(data[3])
-			let batteryVoltageCalculated = parseInt(`${decbin(data[4])}${decbin(data[5])}`, 2) / 1000
-			let sensorTemperature = Number(temperature.toFixed(2))
-			let relativeHumidity = Number(humidity.toFixed(2))
-			let batteryVoltage = Number(batteryVoltageCalculated.toFixed(2))
+			const tempHex = ('0' + data[1].toString(16)).substr(-2) + ('0' + data[2].toString(16)).substr(-2)
+			const tempDec = parseInt(tempHex, 16)
+			const temperature = calculateTemperature(tempDec)
+			const humidity = calculateHumidity(data[3])
+			const batteryVoltageCalculated = parseInt(`${decbin(data[4])}${decbin(data[5])}`, 2) / 1000
+			const sensorTemperature = Number(temperature.toFixed(2))
+			const relativeHumidity = Number(humidity.toFixed(2))
+			const batteryVoltage = Number(batteryVoltageCalculated.toFixed(2))
 
 			let ppmBin = decbin(data[6])
-			let ppmBin2 = decbin(data[7])
+			const ppmBin2 = decbin(data[7])
 			ppmBin = `${ppmBin2.slice(0, 5)}${ppmBin}`
-			let ppm = parseInt(ppmBin, 2)
-			let powerSourceStatus = ppmBin2.slice(5, 8)
-			let lux = (data[8] << 8) | data[9]
-			let pir = toBool(data[10])
+			const ppm = parseInt(ppmBin, 2)
+			const powerSourceStatus = ppmBin2.slice(5, 8)
+			const lux = (data[8] << 8) | data[9]
+			const pir = toBool(data[10])
 
-			let keepaliveData = {
+			const keepaliveData = {
 				CO2: ppm,
 				sensorTemperature,
 				relativeHumidity,
@@ -50,10 +50,10 @@ export const CO2DisplayPayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				let data = commandsReadingHelper(hexData, 22, DeviceType.CO2Display)
+				const data = commandsReadingHelper(hexData, 22, DeviceType.CO2Display) as Record<string, unknown> | undefined
 				// Q: error handling
 				if (!data) return
-				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
+				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 
 				if ('decodeKeepalive' in data) {
 					delete data.decodeKeepalive
@@ -63,8 +63,8 @@ export const CO2DisplayPayloadParser = (hexData: string) => {
 
 				// get only keepalive from device response
 				if (shouldKeepAlive) {
-					let keepaliveData = hexData.slice(-22)
-					let dataToPass = byteArrayParser(keepaliveData)
+					const keepaliveData = hexData.slice(-22)
+					const dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 					handleKeepAliveData(dataToPass)
 				}

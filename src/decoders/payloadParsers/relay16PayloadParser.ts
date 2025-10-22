@@ -4,16 +4,16 @@ import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const relay16PayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const handleKeepAliveData = (bytes: number[]) => {
-			let keepaliveData: RelayKeepAliveData = {}
+			const keepaliveData: RelayKeepAliveData = {}
 
 			// Internal temperature sensor
-			const isNegative = (bytes[1] & 0x80) !== 0; // Check the 7th bit for the sign
-			let temperature = bytes[1] & 0x7F; // Mask out the 7th bit to get the temperature value
-			keepaliveData.internalTemperature = isNegative ? -temperature : temperature;
+			const isNegative = (bytes[1] & 0x80) !== 0 // Check the 7th bit for the sign
+			const temperature = bytes[1] & 0x7f // Mask out the 7th bit to get the temperature value
+			keepaliveData.internalTemperature = isNegative ? -temperature : temperature
 
 			// Energy data
 			keepaliveData.energy = ((bytes[2] << 24) | (bytes[3] << 16) | (bytes[4] << 8) | bytes[5]) / 1000
@@ -34,16 +34,16 @@ export const relay16PayloadParser = (hexData: string) => {
 		}
 
 		if (hexData) {
-			let byteArray = byteArrayParser(hexData)
+			const byteArray = byteArrayParser(hexData)
 			if (!byteArray) return
 			if (byteArray[0] == 1) {
 				// its a keeapalive
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				let data = commandsReadingHelper(hexData, 24, DeviceType.Relay16)
+				const data = commandsReadingHelper(hexData, 24, DeviceType.Relay16) as Record<string, unknown> | undefined
 				if (!data) return
-				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
+				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 				if ('decodeKeepalive' in data) {
 					delete data.decodeKeepalive
 				}
@@ -52,8 +52,8 @@ export const relay16PayloadParser = (hexData: string) => {
 
 				// get only keepalive from device response
 				if (shouldKeepAlive) {
-					let keepaliveData = hexData.slice(-24)
-					let dataToPass = byteArrayParser(keepaliveData)
+					const keepaliveData = hexData.slice(-24)
+					const dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 					handleKeepAliveData(dataToPass)
 				}

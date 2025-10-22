@@ -2,64 +2,54 @@ import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const ThermostatPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const handleKeepAliveData = (byteArray: number[]) => {
-			let reason = byteArray[0]
-			let current_temperature
+			const reason = byteArray[0]
+			const currentTemp1 = byteArray[1]
+			const currentTemp2 = byteArray[2]
+			const currentTemperature = (currentTemp2 * 256 + currentTemp1) / 10
 
-			let current_temp_1 = byteArray[1]
-			let current_temp_2 = byteArray[2]
+			const relayStatus = byteArray[2] === 1
+			const desiredTemp1 = byteArray[4]
+			const desiredTemp2 = byteArray[5]
+			const targetTemperature = (desiredTemp2 * 256 + desiredTemp1) / 10
 
-			current_temperature = (current_temp_2 * 256 + current_temp_1) / 10
+			const batteryStatus = byteArray[6] // in %
 
-			let relay_status = byteArray[2] == 1 ? true : false
-			let desired_temp_1 = byteArray[4]
-			let desired_temp_2 = byteArray[5]
-			let target_temperature
-
-			target_temperature = (desired_temp_2 * 256 + desired_temp_1) / 10
-
-			let battery_status = byteArray[6] // in %
-
-			let keepaliveData = {
-				reason: reason,
-				target_temperature: target_temperature,
-				temperature: current_temperature,
-				relay_status: relay_status,
-				battery_status: battery_status,
+			const keepaliveData = {
+				reason,
+				target_temperature: targetTemperature,
+				temperature: currentTemperature,
+				relay_status: relayStatus,
+				battery_status: batteryStatus,
 			}
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
 
 		const handleFirstData = (byteArray: number[]) => {
-			let reason = byteArray[0]
-			let lora_period = byteArray[1] // in minutes
-			let temp_span = byteArray[2] // if you want to get the final data for temp span (0,5; 1; etc) just divide by 10 (/10)
-			let temp_sampling = byteArray[3] // in minutes
-			let desired_temp_1 = byteArray[4]
-			let desired_temp_2 = byteArray[5]
-			let target_temperature
-			if (desired_temp_2 > 0) {
-				target_temperature = (desired_temp_1 + 256) / 10 //using the 2 bytes to get the target temperature
-			} else {
-				target_temperature = desired_temp_1 / 10
-			}
-			let battery_status = byteArray[6] // in %
+			const reason = byteArray[0]
+			const loraPeriod = byteArray[1] // in minutes
+			const tempSpan = byteArray[2] // divide by 10 (/10) for final value
+			const tempSampling = byteArray[3] // in minutes
+			const desiredTemp1 = byteArray[4]
+			const desiredTemp2 = byteArray[5]
+			const targetTemperature = desiredTemp2 > 0 ? (desiredTemp1 + 256) / 10 : desiredTemp1 / 10
+			const batteryStatus = byteArray[6] // in %
 
-			let keepaliveData = {
-				reason: reason,
-				temp_span: temp_span,
-				temp_sampling: temp_sampling,
-				target_temperature: target_temperature,
-				battery_status: battery_status,
-				keepAliveTime: lora_period,
+			const keepaliveData = {
+				reason,
+				temp_span: tempSpan,
+				temp_sampling: tempSampling,
+				target_temperature: targetTemperature,
+				battery_status: batteryStatus,
+				keepAliveTime: loraPeriod,
 			}
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
 		if (hexData) {
-			let byteArray = byteArrayParser(hexData)
+			const byteArray = byteArrayParser(hexData)
 			if (!byteArray) return
 
 			if (byteArray[0] == 0 || byteArray[0] == 1) {

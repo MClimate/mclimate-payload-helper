@@ -50,4 +50,3 @@ delMethods(Co2PirLiteCommands, [
 	'setCo2Led',
 	'getCo2Led',
 ])
-

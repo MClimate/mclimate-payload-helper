@@ -4,7 +4,7 @@ import { decbin, byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const FanCoilThermostatPayloadParser = (hexData: string) => {
-	const deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const calculateTemperature = (rawData: number) => (rawData - 400) / 10
@@ -43,10 +43,10 @@ export const FanCoilThermostatPayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				const data = commandsReadingHelper(hexData, 22, DeviceType.FanCoilThermostat)
+				const data = commandsReadingHelper(hexData, 22, DeviceType.FanCoilThermostat) as Record<string, unknown> | undefined
 				if (!data) return
 
-				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
+				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 				if ('decodeKeepalive' in data) {
 					delete data.decodeKeepalive
 				}

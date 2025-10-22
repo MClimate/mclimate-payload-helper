@@ -4,7 +4,7 @@ import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const ButtonPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const calculateBatteryVoltage = (byte: number) => {
@@ -27,7 +27,7 @@ export const ButtonPayloadParser = (hexData: string) => {
 			const temperatureCelsius = calculateTemperature(temperatureRaw)
 
 			// Byte 4: Button event data
-			const buttonEventData = ("0" + bytes[4]);
+			const buttonEventData = '0' + bytes[4]
 
 			// check if it is a keepalive
 			const keepaliveData = {
@@ -48,10 +48,10 @@ export const ButtonPayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				let data = commandsReadingHelper(hexData, 10, DeviceType.MCButton)
+				const data = commandsReadingHelper(hexData, 10, DeviceType.MCButton) as Record<string, unknown> | undefined
 				if (!data) return
 
-				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
+				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 				if ('decodeKeepalive' in data) {
 					delete data.decodeKeepalive
 				}
@@ -60,8 +60,8 @@ export const ButtonPayloadParser = (hexData: string) => {
 
 				// get only keepalive from device response
 				if (shouldKeepAlive) {
-					let keepaliveData = hexData.slice(-10)
-					let dataToPass = byteArrayParser(keepaliveData)
+					const keepaliveData = hexData.slice(-10)
+					const dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 					handleKeepAliveData(dataToPass)
 				}

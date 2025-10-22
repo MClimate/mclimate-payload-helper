@@ -1,29 +1,29 @@
 import { commandsReadingHelper } from '@/decoders/commandsReadingHelper'
 import { DeviceType } from '@/decoders/payloadParsers/types'
-import { byteArrayParser, decbin } from '@/helpers'
+import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
 export const htSensorPayloadParser = (hexData: string) => {
-	let deviceData = {}
+	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const calculateTemperature = (rawData: number) => (rawData - 400) / 10
 		const calculateHumidity = (rawData: number) => (rawData * 100) / 256
 
 		const handleKeepAliveData = (data: number[]) => {
-			let temperatureRaw = (data[1] << 8) | data[2]
-			let sensorTemperature = Number(calculateTemperature(temperatureRaw).toFixed(2))
+			const temperatureRaw = (data[1] << 8) | data[2]
+			const sensorTemperature = Number(calculateTemperature(temperatureRaw).toFixed(2))
 
-			let relativeHumidity = Number(calculateHumidity(data[3]).toFixed(2))
+			const relativeHumidity = Number(calculateHumidity(data[3]).toFixed(2))
 
-			let batteryVoltage = Number(((data[4] * 8 + 1600) / 1000).toFixed(2))
-			let thermistorProperlyConnected = (data[5] & 0x04) === 0
-			let extThermHigh = data[5] & 0x03 // mask out bits 1:0
-			let extThermLow = data[6]
-			let extThermRaw = (extThermHigh << 8) | extThermLow
-			let extThermistorTemperature = thermistorProperlyConnected ? Number((extThermRaw * 0.1).toFixed(2)) : 0
+			const batteryVoltage = Number(((data[4] * 8 + 1600) / 1000).toFixed(2))
+			const thermistorProperlyConnected = (data[5] & 0x04) === 0
+			const extThermHigh = data[5] & 0x03 // mask out bits 1:0
+			const extThermLow = data[6]
+			const extThermRaw = (extThermHigh << 8) | extThermLow
+			const extThermistorTemperature = thermistorProperlyConnected ? Number((extThermRaw * 0.1).toFixed(2)) : 0
 
-			let keepaliveData = {
+			const keepaliveData = {
 				sensorTemperature,
 				relativeHumidity,
 				batteryVoltage,
@@ -35,7 +35,7 @@ export const htSensorPayloadParser = (hexData: string) => {
 		}
 
 		if (hexData) {
-			let byteArray = byteArrayParser(hexData)
+			const byteArray = byteArrayParser(hexData)
 			if (!byteArray) return
 
 			if (byteArray[0] == 1) {
@@ -43,10 +43,10 @@ export const htSensorPayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				let data = commandsReadingHelper(hexData, 14, DeviceType.HTSensor)
+				const data = commandsReadingHelper(hexData, 14, DeviceType.HTSensor) as Record<string, unknown> | undefined
 				if (!data) return
 
-				const shouldKeepAlive = data.hasOwnProperty('decodeKeepalive') ? true : false
+				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 				if ('decodeKeepalive' in data) {
 					delete data.decodeKeepalive
 				}
@@ -55,8 +55,8 @@ export const htSensorPayloadParser = (hexData: string) => {
 
 				// get only keepalive from device response
 				if (shouldKeepAlive) {
-					let keepaliveData = hexData.slice(-14)
-					let dataToPass = byteArrayParser(keepaliveData)
+					const keepaliveData = hexData.slice(-14)
+					const dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 
 					handleKeepAliveData(dataToPass)
