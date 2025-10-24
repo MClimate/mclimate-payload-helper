@@ -805,19 +805,14 @@ describe('CO2 PIR Lite Commands payload encoder', () => {
 			commandBuilder.build('SetCo2MeasurementPeriod', { good_zone: 10, medium_zone: 20, bad_zone: 30 }),
 		).toStrictEqual(new BaseCommand('SetCo2MeasurementPeriod', 0x24, '0A', '14', '1E'))
 	})
-	test('Set PIR Sensor Status (CO2 PIR Lite)', () => {
-		expect(commandBuilder.build('SetPIRSensorStatus', { state: 1 })).toStrictEqual(
-			new BaseCommand('SetPIRSensorStatus', 0x3c, '01'),
+	test('Set PIR Sensor State (CO2 PIR Lite)', () => {
+		expect(commandBuilder.build('SetPIRSensorState', { state: 1 })).toStrictEqual(
+			new BaseCommand('SetPIRSensorState', 0x36, '01'),
 		)
 	})
-	test('Set Uplink Sending On Button Press', () => {
-		expect(commandBuilder.build('SetUplinkSendingOnButtonPress', { value: 1 })).toStrictEqual(
-			new BaseCommand('SetUplinkSendingOnButtonPress', 0x2e, '01'),
-		)
-	})
-	test('Set PIR Check Period', () => {
-		expect(commandBuilder.build('SetPIRCheckPeriod', { time: 20 })).toStrictEqual(
-			new BaseCommand('SetPIRCheckPeriod', 0x4a, '0014'),
+	test('Set Occupancy Timeout', () => {
+		expect(commandBuilder.build('SetOccupancyTimeout', { timeout: 60 })).toStrictEqual(
+			new BaseCommand('SetOccupancyTimeout', 0x38, '003C'),
 		)
 	})
 	test('Restart Device', () => {
@@ -826,19 +821,14 @@ describe('CO2 PIR Lite Commands payload encoder', () => {
 })
 describe('HT PIR Lite Commands payload encoder', () => {
 	const commandBuilder = new CommandBuilder('ht_pir_lite')
-	test('Set PIR Sensor Status (HT PIR Lite)', () => {
-		expect(commandBuilder.build('SetPIRSensorStatus', { state: 1 })).toStrictEqual(
-			new BaseCommand('SetPIRSensorStatus', 0x3c, '01'),
+	test('Set PIR Sensor state (HT PIR Lite)', () => {
+		expect(commandBuilder.build('SetPIRSensorState', { state: 1 })).toStrictEqual(
+			new BaseCommand('SetPIRSensorState', 0x36, '01'),
 		)
 	})
-	test('Set Uplink Sending On Button Press', () => {
-		expect(commandBuilder.build('SetUplinkSendingOnButtonPress', { value: 1 })).toStrictEqual(
-			new BaseCommand('SetUplinkSendingOnButtonPress', 0x2e, '01'),
-		)
-	})
-	test('Set PIR Check Period', () => {
-		expect(commandBuilder.build('SetPIRCheckPeriod', { time: 20 })).toStrictEqual(
-			new BaseCommand('SetPIRCheckPeriod', 0x4a, '0014'),
+	test('Set Occupancy Timeout', () => {
+		expect(commandBuilder.build('SetOccupancyTimeout', { timeout: 60 })).toStrictEqual(
+			new BaseCommand('SetOccupancyTimeout', 0x38, '003C'),
 		)
 	})
 	test('Restart Device', () => {

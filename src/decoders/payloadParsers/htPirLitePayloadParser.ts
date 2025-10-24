@@ -7,6 +7,7 @@ interface HTPirLiteData {
 	sensorTemperature?: number
 	relativeHumidity?: number
 	batteryVoltage?: number
+	pirTriggerCount?: number
 	pir?: boolean
 }
 
@@ -17,28 +18,29 @@ export const htPirLitePayloadParser = (hexData: string) => {
 		const handleKeepAliveData = (bytes: number[]) => {
 			const keepaliveData: HTPirLiteData = {}
 
-			// Bytes 1-2: Internal temperature sensor data
-			// Formula: t[°C] = (T[15:0]-400)/10
-			const tempMsb = bytes[1] // bits 15:8
-			const tempLsb = bytes[2] // bits 7:0
-			const rawTemperature = (tempMsb << 8) | tempLsb
-			keepaliveData.sensorTemperature = Number(((rawTemperature - 400) / 10).toFixed(2))
+			// Byte 1 bit 2: Occupied flag
+			keepaliveData.pir = ((bytes[1] & 0x04) >> 2) === 1
+
+			// Byte 1 (bits 1:0) and Byte 2: Internal temperature sensor data
+			// Formula: t[°C] = (T[9:0] - 400) / 10
+			// Extract bits 1:0 from byte 1 for the higher bits (bits 9:8)
+			const tempHighBits = (bytes[1] & 0x03) << 8
+			// Use all bits from byte 2 for the lower bits (bits 7:0)
+			const tempLowBits = bytes[2]
+			// Combine to get the full 10-bit temperature value
+			const tempValue = tempHighBits | tempLowBits
+			keepaliveData.sensorTemperature = Number(((tempValue - 400) / 10).toFixed(2))
 
 			// Byte 3: Relative Humidity data
-			// Formula: RH[%] = (XX*100)/256
+			// Formula: RH[%] = (XX * 100) / 256
 			keepaliveData.relativeHumidity = Number(((bytes[3] * 100) / 256).toFixed(2))
 
-			// Bytes 4-5: Device battery voltage data
-			// Battery voltage [mV]
-			const batteryMsb = bytes[4] // bits 15:8
-			const batteryLsb = bytes[5] // bits 7:0
-			keepaliveData.batteryVoltage = Number((((batteryMsb << 8) | batteryLsb) / 1000).toFixed(2))
+			// Byte 4: Device battery voltage data
+			// Battery voltage [mV] = ((XX * 2200) / 255) + 1600
+			keepaliveData.batteryVoltage = Number(((((bytes[4] * 2200) / 255) + 1600) / 1000).toFixed(2))
 
-			// Byte 6: PIR sensor status (only bit 0 is used, other bits are reserved)
-			// 0 - No motion detected
-			// 1 - Motion detected
-			const pirValue = bytes[6] & 0x01 // Extract only the last bit
-			keepaliveData.pir = pirValue === 1
+			// Byte 5: PIR trigger count
+			keepaliveData.pirTriggerCount = bytes[5]
 
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
@@ -48,7 +50,7 @@ export const htPirLitePayloadParser = (hexData: string) => {
 			if (!byteArray) return
 
 			// Route the message based on the command byte
-			if (byteArray[0] == 1) {
+			if (byteArray[0] == 81) {
 				// This is a keepalive message
 				handleKeepAliveData(byteArray)
 			} else {
@@ -64,8 +66,8 @@ export const htPirLitePayloadParser = (hexData: string) => {
 
 				// Handle the remaining keepalive data if present
 				if (shouldKeepAlive) {
-					// Extract the last 7 bytes which contain keepalive data for HT-PIR-Lite
-					const keepaliveData = hexData.slice(-14) // 7 bytes = 14 hex chars
+					// Extract the last 6 bytes which contain keepalive data for HT-PIR-Lite
+					const keepaliveData = hexData.slice(-12) // 6 bytes = 12 hex chars
 					const dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 					handleKeepAliveData(dataToPass)

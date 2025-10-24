@@ -776,12 +776,6 @@ describe('ASPM payload decoder', () => {
 		})
 	})
 	test('all settings (relay)', () => {
-		console.log(
-			uplinkPayloadParser(
-				'041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201',
-				DeviceType.Relay16,
-			),
-		)
 		expect(
 			uplinkPayloadParser(
 				'041312120A19781B001D02181F5F46210113FA2310250E605F00011C034A241805D9E7195201',
@@ -884,41 +878,47 @@ describe('Melissa payload decoder', () => {
 })
 describe('CO2PirLite payload decoder', () => {
 	test('simple keepalive', () => {
-		expect(uplinkPayloadParser('0102A67F0D70D31000', DeviceType.CO2PirLite)).toStrictEqual({
-			CO2: 723,
-			pir: false,
-			sensorTemperature: 27.8,
-			relativeHumidity: 49.61,
-			batteryVoltage: 3.44,
+		expect(uplinkPayloadParser('8106797EDA4718F1', DeviceType.CO2PirLite)).toStrictEqual({
+			pir: true,
+			sensorTemperature: 23.3,
+			relativeHumidity: 49.22,
+			batteryVoltage: 3.48,
+			CO2: 839,
+			pirTriggerCount: 241
 		})
 	})
 	test('keepalive with response of preloaded code', () => {
-		expect(uplinkPayloadParser('120A0102A67F0D70D31000', DeviceType.CO2PirLite)).toStrictEqual({
-			CO2: 723,
-			pir: false,
-			sensorTemperature: 27.8,
-			relativeHumidity: 49.61,
-			batteryVoltage: 3.44,
+		expect(uplinkPayloadParser('39003C120A8102797BD95A1800', DeviceType.CO2PirLite)).toStrictEqual({
+			occupancyTimeout: 60,
 			keepAliveTime: 10,
+			pir: false,
+			sensorTemperature: 23.3,
+			relativeHumidity: 48.05,
+			batteryVoltage: 3.47,
+			CO2: 858,
+			pirTriggerCount: 0
 		})
 	})
 })
 describe('HTPirLite payload decoder', () => {
 	test('simple keepalive', () => {
-		expect(uplinkPayloadParser('010288800A4500', DeviceType.HTPirLite)).toStrictEqual({
+		expect(uplinkPayloadParser('8102797DE201', DeviceType.HTPirLite)).toStrictEqual({
 			pir: false,
-			sensorTemperature: 24.8,
-			relativeHumidity: 50,
-			batteryVoltage: 2.63,
+			sensorTemperature: 23.3,
+			relativeHumidity: 48.83,
+			batteryVoltage: 3.55,
+			pirTriggerCount: 1,
 		})
 	})
 	test('keepalive with response of preloaded code', () => {
-		expect(uplinkPayloadParser('120A010288800A4500', DeviceType.HTPirLite)).toStrictEqual({
+		expect(uplinkPayloadParser('39003C120A8102797DE201', DeviceType.HTPirLite)).toStrictEqual({
 			pir: false,
-			sensorTemperature: 24.8,
-			relativeHumidity: 50,
-			batteryVoltage: 2.63,
+			sensorTemperature: 23.3,
+			relativeHumidity: 48.83,
+			batteryVoltage: 3.55,
+			pirTriggerCount: 1,
 			keepAliveTime: 10,
+			occupancyTimeout: 60,
 		})
 	})
 })

@@ -193,6 +193,20 @@ export const ButtonEnums = {
 	} satisfies NumberEnum<1 | 2 | 3>,
 } as const
 
+export const HTPirLiteEnums = {
+	setPIRSensorState: {
+		0: 'Disabled',
+		1: 'Enabled',
+	} satisfies NumberEnum<0 | 1>,
+} as const
+
+export const Co2PirLiteEnums = {
+	setPIRSensorState: {
+		0: 'Disabled',
+		1: 'Enabled',
+	} satisfies NumberEnum<0 | 1>,
+} as const
+
 /* ---------------------------------------GENERAL COMMANDS--------------------------------------- */
 
 const GeneralCommandSchemas = {
@@ -457,7 +471,7 @@ const VickiCommandSchemas = {
 		eventIndex: z.number().int().min(0).max(19),
 		startHour: z.number().int().min(0).max(23),
 		startMinute: z.number().int().min(0).max(59),
-		targetTemperature: z.number().min(0.1).max(30.0).multipleOf(0.1),
+		targetTemperature: z.number().min(5.0).max(30.0).multipleOf(0.1),
 		daysActive: z.object({
 			monday: z.boolean(),
 			tuesday: z.boolean(),
@@ -1325,28 +1339,52 @@ export namespace ButtonCommandTypes {
 /* --------------------------------------- HT PIR LITE COMMANDS --------------------------------------- */
 const HTPirLiteCommandSchemas = {
 	...GeneralCommandSchemas,
-	...PIRCommandSchemas,
 	setUplinkSendingOnButtonPress: z.object({
 		value: z.number().min(0).max(1),
 	}),
 	getUplinkSendingOnButtonPress: z.object({}),
 	restartDevice: z.object({}),
+	setPIRSensorState: z.object({
+		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
+	}),
+	getPIRSensorState: z.object({}),
+	setPIRSensorSensitivity: z.object({
+		sensitivity: z.number().min(12).max(255),
+	}),
+	getPIRSensorSensitivity: z.object({}),
+	setOccupancyTimeout: z.object({
+		timeout: z.number().min(15).max(65535), // in seconds, between 15 and 65535
+	}),
+	getOccupancyTimeout: z.object({}),
 }
 
 export namespace HTPirLiteCommandTypes {
 	export type SetUplinkSendingOnButtonPressParams = z.infer<typeof HTPirLiteCommandSchemas.setUplinkSendingOnButtonPress>
 	export type GetUplinkSendingOnButtonPressParams = z.infer<typeof HTPirLiteCommandSchemas.getUplinkSendingOnButtonPress>
 	export type RestartDeviceParams = z.infer<typeof HTPirLiteCommandSchemas.restartDevice>
+	export type SetPIRSensorStateParams = z.infer<typeof HTPirLiteCommandSchemas.setPIRSensorState>
+	export type GetPIRSensorStateParams = z.infer<typeof HTPirLiteCommandSchemas.getPIRSensorState>
+	export type SetPIRSensorSensitivityParams = z.infer<typeof HTPirLiteCommandSchemas.setPIRSensorSensitivity>
+	export type GetPIRSensorSensitivityParams = z.infer<typeof HTPirLiteCommandSchemas.getPIRSensorSensitivity>
+	export type SetOccupancyTimeoutParams = z.infer<typeof HTPirLiteCommandSchemas.setOccupancyTimeout>
+	export type GetOccupancyTimeoutParams = z.infer<typeof HTPirLiteCommandSchemas.getOccupancyTimeout>
 }
 
 /* --------------------------------------- CO2 PIR LITE COMMANDS --------------------------------------- */
 const Co2PirLiteCommandSchemas = {
 	...GeneralCommandSchemas,
-	...PIRCommandSchemas,
-	setUplinkSendingOnButtonPress: z.object({
-		value: z.number().min(0).max(1),
+	setPIRSensorState: z.object({
+		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
 	}),
-	getUplinkSendingOnButtonPress: z.object({}),
+	getPIRSensorState: z.object({}),
+	setPIRSensorSensitivity: z.object({
+		sensitivity: z.number().min(12).max(255),
+	}),
+	getPIRSensorSensitivity: z.object({}),
+	setOccupancyTimeout: z.object({
+		timeout: z.number().min(15).max(65535), // in seconds, between 15 and 65535
+	}),
+	getOccupancyTimeout: z.object({}),
 	restartDevice: z.object({}),
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number().min(0).max(1500),
@@ -1370,12 +1408,12 @@ const Co2PirLiteCommandSchemas = {
 }
 
 export namespace Co2PirLiteCommandTypes {
-	export type SetUplinkSendingOnButtonPressParams = z.infer<
-		typeof Co2PirLiteCommandSchemas.setUplinkSendingOnButtonPress
-	>
-	export type GetUplinkSendingOnButtonPressParams = z.infer<
-		typeof Co2PirLiteCommandSchemas.getUplinkSendingOnButtonPress
-	>
+	export type SetPIRSensorStateParams = z.infer<typeof Co2PirLiteCommandSchemas.setPIRSensorState>
+	export type GetPIRSensorStateParams = z.infer<typeof Co2PirLiteCommandSchemas.getPIRSensorState>
+	export type SetPIRSensorSensitivityParams = z.infer<typeof Co2PirLiteCommandSchemas.setPIRSensorSensitivity>
+	export type GetPIRSensorSensitivityParams = z.infer<typeof Co2PirLiteCommandSchemas.getPIRSensorSensitivity>
+	export type SetOccupancyTimeoutParams = z.infer<typeof Co2PirLiteCommandSchemas.setOccupancyTimeout>
+	export type GetOccupancyTimeoutParams = z.infer<typeof Co2PirLiteCommandSchemas.getOccupancyTimeout>
 	export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
 }
 

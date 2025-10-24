@@ -8,6 +8,7 @@ interface CO2PirLiteData {
 	relativeHumidity?: number
 	batteryVoltage?: number
 	CO2?: number
+	pirTriggerCount?: number
 	pir?: boolean
 }
 
@@ -17,33 +18,37 @@ export const co2PirLitePayloadParser = (hexData: string) => {
 	try {
 		const handleKeepAliveData = (bytes: number[]) => {
 			const keepaliveData: CO2PirLiteData = {}
-			// Bytes 1-2: Internal temperature sensor data
-			// Formula: t[°C] = (T[15:0]-400)/10
-			const tempMsb = bytes[1] // bits 15:8
-			const tempLsb = bytes[2] // bits 7:0
-			const rawTemperature = (tempMsb << 8) | tempLsb
-			keepaliveData.sensorTemperature = Number(((rawTemperature - 400) / 10).toFixed(2))
+
+			// Byte 1 bit 2: PIR flag
+			keepaliveData.pir = ((bytes[1] & 0x04) >> 2) === 1
+
+			// Byte 1 (bits 1:0) and Byte 2: Internal temperature sensor data
+			// Formula: t[°C] = (T[9:0] - 400) / 10
+			// Extract bits 1:0 from byte 1 for the higher bits (bits 9:8)
+			const tempHighBits = (bytes[1] & 0x03) << 8
+			// Use all bits from byte 2 for the lower bits (bits 7:0)
+			const tempLowBits = bytes[2]
+			// Combine to get the full 10-bit temperature value
+			const tempValue = tempHighBits | tempLowBits
+			keepaliveData.sensorTemperature = Number(((tempValue - 400) / 10).toFixed(2))
 
 			// Byte 3: Relative Humidity data
-			// Formula: RH[%] = (XX*100)/256
+			// Formula: RH[%] = (XX * 100) / 256
 			keepaliveData.relativeHumidity = Number(((bytes[3] * 100) / 256).toFixed(2))
 
-			// Bytes 4-5: Device battery voltage data
-			// Battery voltage [mV]
-			const batteryMsb = bytes[4] // bits 15:8
-			const batteryLsb = bytes[5] // bits 7:0
-			keepaliveData.batteryVoltage = Number((((batteryMsb << 8) | batteryLsb) / 1000).toFixed(2))
+			// Byte 4: Device battery voltage data
+			// Battery voltage [mV] = ((XX * 2200) / 255) + 1600
+			keepaliveData.batteryVoltage = Number(((((bytes[4] * 2200) / 255) + 1600) / 1000).toFixed(2))
 
-			// CO2 calculation from data 6 and 7
-			const co2Low = bytes[6] // Lower byte of CO2
-			const co2High = (bytes[7] & 0xf8) >> 3 // Mask the upper 5 bits and shift them right
-			keepaliveData.CO2 = (co2High << 8) | co2Low // Shift co2High left by 8 bits and combine with co2Low
+			// Bytes 5-6: CO2 value in ppm
+			// Byte 5: CO2 value lower bits [7:0]
+			// Byte 6 bits 7:3: CO2 value higher bits [12:8]
+			const co2LowBits = bytes[5]
+			const co2HighBits = ((bytes[6] & 0xF8) >> 3) << 8 // Mask upper 5 bits, shift right by 3 to get bits in position, then shift left by 8
+			keepaliveData.CO2 = co2HighBits | co2LowBits
 
-			// Byte 8: PIR sensor status (only bit 0 is used)
-			// 0 - No motion detected
-			// 1 - Motion detected
-			const pirValue = bytes[8] & 0x01 // Extract only the last bit
-			keepaliveData.pir = pirValue === 1
+			// Byte 7: PIR trigger count
+			keepaliveData.pirTriggerCount = bytes[7]
 			Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 		}
 
@@ -52,7 +57,7 @@ export const co2PirLitePayloadParser = (hexData: string) => {
 			if (!byteArray) return
 
 			// Route the message based on the command byte
-			if (byteArray[0] == 1) {
+			if (byteArray[0] == 81) {
 				// This is a keepalive message
 				handleKeepAliveData(byteArray)
 			} else {
@@ -69,7 +74,7 @@ export const co2PirLitePayloadParser = (hexData: string) => {
 				// Handle the remaining keepalive data if present
 				if (shouldKeepAlive) {
 					// Extract the last 9 bytes which contain keepalive data for CO2-PIR-Lite
-					const keepaliveData = hexData.slice(-18) // 9 bytes = 18 hex chars
+					const keepaliveData = hexData.slice(-16) // 8 bytes = 16 hex chars
 					const dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
 					handleKeepAliveData(dataToPass)
