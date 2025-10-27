@@ -884,7 +884,7 @@ describe('CO2PirLite payload decoder', () => {
 			relativeHumidity: 49.22,
 			batteryVoltage: 3.48,
 			CO2: 839,
-			pirTriggerCount: 241
+			pirTriggerCount: 241,
 		})
 	})
 	test('keepalive with response of preloaded code', () => {
@@ -896,7 +896,7 @@ describe('CO2PirLite payload decoder', () => {
 			relativeHumidity: 48.05,
 			batteryVoltage: 3.47,
 			CO2: 858,
-			pirTriggerCount: 0
+			pirTriggerCount: 0,
 		})
 	})
 })

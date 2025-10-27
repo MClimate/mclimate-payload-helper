@@ -19,7 +19,7 @@ export const htPirLitePayloadParser = (hexData: string) => {
 			const keepaliveData: HTPirLiteData = {}
 
 			// Byte 1 bit 2: Occupied flag
-			keepaliveData.pir = ((bytes[1] & 0x04) >> 2) === 1
+			keepaliveData.pir = (bytes[1] & 0x04) >> 2 === 1
 
 			// Byte 1 (bits 1:0) and Byte 2: Internal temperature sensor data
 			// Formula: t[°C] = (T[9:0] - 400) / 10
@@ -37,7 +37,7 @@ export const htPirLitePayloadParser = (hexData: string) => {
 
 			// Byte 4: Device battery voltage data
 			// Battery voltage [mV] = ((XX * 2200) / 255) + 1600
-			keepaliveData.batteryVoltage = Number(((((bytes[4] * 2200) / 255) + 1600) / 1000).toFixed(2))
+			keepaliveData.batteryVoltage = Number((((bytes[4] * 2200) / 255 + 1600) / 1000).toFixed(2))
 
 			// Byte 5: PIR trigger count
 			keepaliveData.pirTriggerCount = bytes[5]

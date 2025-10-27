@@ -1422,6 +1422,7 @@ const MelissaCommandSchemas = {
 	...GeneralCommandSchemas,
 	setIrCodeRecording: z.object({
 		time: z.number().min(0).max(255),
+		position: z.number().min(0).max(10),
 	}),
 }
 

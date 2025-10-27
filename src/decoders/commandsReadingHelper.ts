@@ -1200,7 +1200,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 				{
 					try {
 						command_len = 2
-						const data = {  occupancyTimeout: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)}
+						const data = { occupancyTimeout: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
 						throw new CustomError({

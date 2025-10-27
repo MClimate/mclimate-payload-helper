@@ -20,7 +20,7 @@ export const co2PirLitePayloadParser = (hexData: string) => {
 			const keepaliveData: CO2PirLiteData = {}
 
 			// Byte 1 bit 2: PIR flag
-			keepaliveData.pir = ((bytes[1] & 0x04) >> 2) === 1
+			keepaliveData.pir = (bytes[1] & 0x04) >> 2 === 1
 
 			// Byte 1 (bits 1:0) and Byte 2: Internal temperature sensor data
 			// Formula: t[°C] = (T[9:0] - 400) / 10
@@ -38,13 +38,13 @@ export const co2PirLitePayloadParser = (hexData: string) => {
 
 			// Byte 4: Device battery voltage data
 			// Battery voltage [mV] = ((XX * 2200) / 255) + 1600
-			keepaliveData.batteryVoltage = Number(((((bytes[4] * 2200) / 255) + 1600) / 1000).toFixed(2))
+			keepaliveData.batteryVoltage = Number((((bytes[4] * 2200) / 255 + 1600) / 1000).toFixed(2))
 
 			// Bytes 5-6: CO2 value in ppm
 			// Byte 5: CO2 value lower bits [7:0]
 			// Byte 6 bits 7:3: CO2 value higher bits [12:8]
 			const co2LowBits = bytes[5]
-			const co2HighBits = ((bytes[6] & 0xF8) >> 3) << 8 // Mask upper 5 bits, shift right by 3 to get bits in position, then shift left by 8
+			const co2HighBits = ((bytes[6] & 0xf8) >> 3) << 8 // Mask upper 5 bits, shift right by 3 to get bits in position, then shift left by 8
 			keepaliveData.CO2 = co2HighBits | co2LowBits
 
 			// Byte 7: PIR trigger count

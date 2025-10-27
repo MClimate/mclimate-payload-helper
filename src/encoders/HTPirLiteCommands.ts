@@ -1,13 +1,13 @@
-import { GeneralCommands, PIRCommands } from '@/encoders'
+import { GeneralCommands } from '@/encoders'
 import { applyMixins, delMethods } from '@/utils'
-import { HTPirLiteCommandTypes, DeviceCommandSchemas, PIRCommandTypes } from '@/encoders/types'
+import { HTPirLiteCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 import { BaseCommand } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError } from '@/utils'
 import { decToHex } from '@/utils'
 
 export class HTPirLiteCommands extends GeneralCommands {
-		static setPIRSensorState(params: HTPirLiteCommandTypes.SetPIRSensorStateParams) {
+	static setPIRSensorState(params: HTPirLiteCommandTypes.SetPIRSensorStateParams) {
 		try {
 			DeviceCommandSchemas.HTPirLiteCommandSchemas.setPIRSensorState.parse(params)
 			const { state } = params
@@ -62,9 +62,9 @@ export class HTPirLiteCommands extends GeneralCommands {
 			DeviceCommandSchemas.HTPirLiteCommandSchemas.setOccupancyTimeout.parse(params)
 			const { timeout } = params
 			// Convert timeout to two bytes (high byte and low byte)
-			const highByte = (timeout >> 8) & 0xFF
-			const lowByte = timeout & 0xFF
-			
+			const highByte = (timeout >> 8) & 0xff
+			const lowByte = timeout & 0xff
+
 			return new BaseCommand('SetOccupancyTimeout', 0x38, decToHex(highByte) + decToHex(lowByte))
 		} catch (e) {
 			if (e instanceof ZodError) {

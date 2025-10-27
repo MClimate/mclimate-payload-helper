@@ -7,8 +7,8 @@ export class MelissaCommands extends GeneralCommands {
 	static setIrCodeRecording(params: MelissaCommandTypes.SetIrCodeRecordingParams) {
 		try {
 			DeviceCommandSchemas.MelissaCommandSchemas.setIrCodeRecording.parse(params)
-			const { time } = params
-			return new BaseCommand('SetIrCodeRecording', 0x09, decToHex(time))
+			const { time, position } = params
+			return new BaseCommand('SetIrCodeRecording', 0x09, decToHex(time), decToHex(position))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({

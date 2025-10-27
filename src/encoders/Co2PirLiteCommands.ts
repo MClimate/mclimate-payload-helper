@@ -7,7 +7,7 @@ import { CustomError } from '@/utils'
 import { decToHex } from '@/utils'
 
 export class Co2PirLiteCommands extends GeneralCommands {
-		static setPIRSensorState(params: Co2PirLiteCommandTypes.SetPIRSensorStateParams) {
+	static setPIRSensorState(params: Co2PirLiteCommandTypes.SetPIRSensorStateParams) {
 		try {
 			DeviceCommandSchemas.Co2PirLiteCommandSchemas.setPIRSensorState.parse(params)
 			const { state } = params
@@ -62,9 +62,9 @@ export class Co2PirLiteCommands extends GeneralCommands {
 			DeviceCommandSchemas.Co2PirLiteCommandSchemas.setOccupancyTimeout.parse(params)
 			const { timeout } = params
 			// Convert timeout to two bytes (high byte and low byte)
-			const highByte = (timeout >> 8) & 0xFF
-			const lowByte = timeout & 0xFF
-			
+			const highByte = (timeout >> 8) & 0xff
+			const lowByte = timeout & 0xff
+
 			return new BaseCommand('SetOccupancyTimeout', 0x38, decToHex(highByte) + decToHex(lowByte))
 		} catch (e) {
 			if (e instanceof ZodError) {
