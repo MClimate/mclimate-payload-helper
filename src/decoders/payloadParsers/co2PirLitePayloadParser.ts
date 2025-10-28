@@ -9,7 +9,7 @@ interface CO2PirLiteData {
 	batteryVoltage?: number
 	CO2?: number
 	pirTriggerCount?: number
-	pir?: boolean
+	occupied?: boolean
 }
 
 export const co2PirLitePayloadParser = (hexData: string) => {
@@ -20,7 +20,7 @@ export const co2PirLitePayloadParser = (hexData: string) => {
 			const keepaliveData: CO2PirLiteData = {}
 
 			// Byte 1 bit 2: PIR flag
-			keepaliveData.pir = (bytes[1] & 0x04) >> 2 === 1
+			keepaliveData.occupied = (bytes[1] & 0x04) >> 2 === 1
 
 			// Byte 1 (bits 1:0) and Byte 2: Internal temperature sensor data
 			// Formula: t[°C] = (T[9:0] - 400) / 10

@@ -855,7 +855,7 @@ describe('Melissa payload decoder', () => {
 			sensorTemperature: 23.8,
 			relativeHumidity: 27.34,
 			isIrCodeRecordingRequested: false,
-			recordedIrInfo: { recordedIrCodeSize: 32, bytesSent: '0020' },
+			recordedIrInfo: { recordedIrCodeSize: 32, bytesAlreadySent: '0020' },
 		})
 	})
 	test('keepalive with response of transfered code', () => {
@@ -869,9 +869,9 @@ describe('Melissa payload decoder', () => {
 			relativeHumidity: 27.34,
 			isIrCodeRecordingRequested: false,
 			irCodeData: {
-				bytesCount: 32,
+				chunkSize: 32,
 				address: 0,
-				data: '0063320612062e062e000606000508120004040008080005180008081100050c',
+				chunkData: '0063320612062e062e000606000508120004040008080005180008081100050c',
 			},
 		})
 	})
@@ -879,7 +879,7 @@ describe('Melissa payload decoder', () => {
 describe('CO2PirLite payload decoder', () => {
 	test('simple keepalive', () => {
 		expect(uplinkPayloadParser('8106797EDA4718F1', DeviceType.CO2PirLite)).toStrictEqual({
-			pir: true,
+			occupied: true,
 			sensorTemperature: 23.3,
 			relativeHumidity: 49.22,
 			batteryVoltage: 3.48,
@@ -891,7 +891,7 @@ describe('CO2PirLite payload decoder', () => {
 		expect(uplinkPayloadParser('39003C120A8102797BD95A1800', DeviceType.CO2PirLite)).toStrictEqual({
 			occupancyTimeout: 60,
 			keepAliveTime: 10,
-			pir: false,
+			occupied: false,
 			sensorTemperature: 23.3,
 			relativeHumidity: 48.05,
 			batteryVoltage: 3.47,
@@ -903,7 +903,7 @@ describe('CO2PirLite payload decoder', () => {
 describe('HTPirLite payload decoder', () => {
 	test('simple keepalive', () => {
 		expect(uplinkPayloadParser('8102797DE201', DeviceType.HTPirLite)).toStrictEqual({
-			pir: false,
+			occupied: false,
 			sensorTemperature: 23.3,
 			relativeHumidity: 48.83,
 			batteryVoltage: 3.55,
@@ -912,11 +912,11 @@ describe('HTPirLite payload decoder', () => {
 	})
 	test('keepalive with response of preloaded code', () => {
 		expect(uplinkPayloadParser('39003C120A8102797DE201', DeviceType.HTPirLite)).toStrictEqual({
-			pir: false,
+			pirTriggerCount: 1,
 			sensorTemperature: 23.3,
 			relativeHumidity: 48.83,
 			batteryVoltage: 3.55,
-			pirTriggerCount: 1,
+			occupied: false,
 			keepAliveTime: 10,
 			occupancyTimeout: 60,
 		})

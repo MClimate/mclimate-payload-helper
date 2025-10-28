@@ -8,7 +8,7 @@ interface HTPirLiteData {
 	relativeHumidity?: number
 	batteryVoltage?: number
 	pirTriggerCount?: number
-	pir?: boolean
+	occupied?: boolean
 }
 
 export const htPirLitePayloadParser = (hexData: string) => {
@@ -19,7 +19,7 @@ export const htPirLitePayloadParser = (hexData: string) => {
 			const keepaliveData: HTPirLiteData = {}
 
 			// Byte 1 bit 2: Occupied flag
-			keepaliveData.pir = (bytes[1] & 0x04) >> 2 === 1
+			keepaliveData.occupied = (bytes[1] & 0x04) >> 2 === 1
 
 			// Byte 1 (bits 1:0) and Byte 2: Internal temperature sensor data
 			// Formula: t[°C] = (T[9:0] - 400) / 10

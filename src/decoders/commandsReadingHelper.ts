@@ -209,8 +209,8 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.MelissaLorawan) {
 							command_len = 4
 							const recordedIrCodeSize = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
-							const bytesSent = `${commands[i + 3]}${commands[i + 4]}`
-							data = { recordedIrInfo: { recordedIrCodeSize, bytesSent } }
+							const bytesAlreadySent = `${commands[i + 3]}${commands[i + 4]}`
+							data = { recordedIrInfo: { recordedIrCodeSize, bytesAlreadySent } }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
@@ -247,9 +247,9 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 
 							data = {
 								irCodeData: {
-									bytesCount: bytesCount - 2,
+									chunkSize: bytesCount - 2,
 									address,
-									data: irCodeDataString,
+									chunkData: irCodeDataString,
 								},
 							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
