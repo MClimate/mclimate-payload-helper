@@ -787,7 +787,7 @@ export class VickiCommands extends GeneralCommands {
 	}
 
 	static getHeatingEvent() {
-		return new BaseCommand('GetHeatingEvent', 0x50)
+		return new BaseCommand('GetHeatingEvent', 0x5a)
 	}
 
 	static setHeatingEventState(params: VickiCommandTypes.SetHeatingEventStateParams) {
