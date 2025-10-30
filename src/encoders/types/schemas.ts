@@ -505,14 +505,10 @@ const VickiCommandSchemas = {
 		time: z.number().int().min(0).max(255), // Time in 10-minute increments (0-2550 minutes), 0 disables the functionality
 	}),
 	setOfflineTargetTemperature: z.object({
-		targetTemperature: z
-			.number()
-			.min(5)
-			.max(30)
-			.multipleOf(0.1)
-			.refine((val) => val === 0 || val >= 5, {
-				message: 'Temperature must be 0 (to disable) or between 5.0-30.0°C',
-			}), // Special case: 0 is allowed to disable the feature
+		targetTemperature: z.union([
+			z.literal(0), // To disable the feature
+			z.number().min(5).max(30).multipleOf(0.1), // Temperature range 5.0-30.0°C with 0.1°C increments
+		]),
 	}),
 	setInternalAlgoTemporaryState: z.object({
 		enabled: z.boolean(), // true = enable algorithm (00), false = disable algorithm temporarily (01)
