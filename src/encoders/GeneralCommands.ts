@@ -133,4 +133,8 @@ export class GeneralCommands {
 	static getWatchDogParams() {
 		return new BaseCommand('GetWatchDogParams', 0x1d)
 	}
+
+	static getRegion() {
+		return new BaseCommand('GetRegion', 0xa4)
+	}
 }

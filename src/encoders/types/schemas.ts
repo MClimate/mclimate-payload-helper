@@ -230,6 +230,7 @@ const GeneralCommandSchemas = {
 		unconfirmedUplinks: z.number().int().min(0).max(255),
 	}),
 	getWatchDogParams: z.object({}),
+	getRegion: z.object({}),
 }
 
 export namespace GeneralCommandTypes {
@@ -1469,7 +1470,6 @@ const MultiSensorCommandSchemas = {
 		time: z.number().min(0).max(65535),
 	}),
 	getPirActiveReportingPeriod: z.object({}),
-	getRegion: z.object({}),
 	restart: z.object({}),
 }
 

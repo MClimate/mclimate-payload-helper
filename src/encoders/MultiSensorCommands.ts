@@ -243,10 +243,6 @@ export class MultiSensorCommands extends GeneralCommands {
 		return new BaseCommand('GetPirActiveReportingPeriod', 0x2f)
 	}
 
-	static getRegion() {
-		return new BaseCommand('GetRegion', 0xa4)
-	}
-
 	static restart() {
 		return new BaseCommand('Restart', 0xa5)
 	}
