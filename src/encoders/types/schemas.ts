@@ -212,25 +212,40 @@ export const Co2PirLiteEnums = {
 const GeneralCommandSchemas = {
 	customHexCommand: z.object({
 		command: z.string().regex(/^[0-9A-Fa-f]+$/, 'Must be a valid hex string'),
+		commandNumber: z.string().optional(),
 	}),
 	setKeepAlive: z.object({
 		time: z.number().int().min(1).max(255),
+		commandNumber: z.string().optional().default('02'),
 	}),
-	getKeepAlive: z.object({}),
+	getKeepAlive: z.object({
+		commandNumber: z.string().optional().default('12'),
+	}),
 	setJoinRetryPeriod: z.object({
 		period: z.number().int().min(1).max(21),
+		commandNumber: z.string().optional().default('10'),
 	}),
-	getJoinRetryPeriod: z.object({}),
+	getJoinRetryPeriod: z.object({
+		commandNumber: z.string().optional().default('19'),
+	}),
 	setUplinkType: z.object({
 		type: z.enum(['01', '00']),
+		commandNumber: z.string().optional().default('11'),
 	}),
-	getUplinkType: z.object({}),
+	getUplinkType: z.object({
+		commandNumber: z.string().optional().default('1b'),
+	}),
 	setWatchDogParams: z.object({
 		confirmedUplinks: z.number().int().min(0).max(255),
 		unconfirmedUplinks: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('1c'),
 	}),
-	getWatchDogParams: z.object({}),
-	getRegion: z.object({}),
+	getWatchDogParams: z.object({
+		commandNumber: z.string().optional().default('1d'),
+	}),
+	getRegion: z.object({
+		commandNumber: z.string().optional().default('a4'),
+	}),
 }
 
 export namespace GeneralCommandTypes {
@@ -246,8 +261,11 @@ export namespace GeneralCommandTypes {
 const ChildLockCommandSchemas = {
 	setChildLock: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('07'),
 	}),
-	getChildLock: z.object({}),
+	getChildLock: z.object({
+		commandNumber: z.string().optional().default('14'),
+	}),
 }
 
 export namespace ChildLockCommandTypes {
@@ -260,8 +278,11 @@ const TemperatureCommandSchemas = {
 	setTemperatureRange: z.object({
 		min: z.number().min(5).max(30),
 		max: z.number().min(5).max(30),
+		commandNumber: z.string().optional().default('08'),
 	}),
-	getTargetTemperature: z.object({}),
+	getTargetTemperature: z.object({
+		commandNumber: z.string().optional().default('2f'),
+	}),
 }
 
 export namespace TemperatureCommandTypes {
@@ -273,28 +294,46 @@ export namespace TemperatureCommandTypes {
 const PIRCommandSchemas = {
 	setPIRSensorStatus: z.object({
 		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
+		commandNumber: z.string().optional().default('3c'),
 	}),
-	getPIRSensorStatus: z.object({}),
+	getPIRSensorStatus: z.object({
+		commandNumber: z.string().optional().default('3d'),
+	}),
 	setPIRSensorSensitivity: z.object({
 		sensitivity: z.number().min(12).max(255),
+		commandNumber: z.string().optional().default('3e'),
 	}),
-	getPIRSensorSensitivity: z.object({}),
+	getPIRSensorSensitivity: z.object({
+		commandNumber: z.string().optional().default('3f'),
+	}),
 	setPIRInitPeriod: z.object({
 		time: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('46'),
 	}),
 	setPIRMeasurementPeriod: z.object({
 		time: z.number().min(3).max(255),
+		commandNumber: z.string().optional().default('48'),
 	}),
 	setPIRCheckPeriod: z.object({
 		time: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('4a'),
 	}),
 	setPIRBlindPeriod: z.object({
 		time: z.number().min(15).max(65535),
+		commandNumber: z.string().optional().default('4c'),
 	}),
-	getPIRInitPeriod: z.object({}),
-	getPIRMeasurementPeriod: z.object({}),
-	getPIRCheckPeriod: z.object({}),
-	getPIRBlindPeriod: z.object({}),
+	getPIRInitPeriod: z.object({
+		commandNumber: z.string().optional().default('47'),
+	}),
+	getPIRMeasurementPeriod: z.object({
+		commandNumber: z.string().optional().default('49'),
+	}),
+	getPIRCheckPeriod: z.object({
+		commandNumber: z.string().optional().default('4b'),
+	}),
+	getPIRBlindPeriod: z.object({
+		commandNumber: z.string().optional().default('4d'),
+	}),
 }
 
 export namespace PIRCommandTypes {
@@ -311,23 +350,36 @@ export namespace PIRCommandTypes {
 const DisplayCommandSchemas = {
 	setDisplayRefreshPeriod: z.object({
 		period: z.number().min(1).max(24),
+		commandNumber: z.string().optional().default('33'),
 	}),
-	getDisplayRefreshPeriod: z.object({}),
+	getDisplayRefreshPeriod: z.object({
+		commandNumber: z.string().optional().default('34'),
+	}),
 	setDeepSleepMode: z.object({
 		state: z.number().min(1).max(1),
+		commandNumber: z.string().optional().default('3b'),
 	}),
 	setHumidityVisibility: z.object({
 		state: z.number().min(0).max(1), // 0: hide, 1: show
+		commandNumber: z.string().optional().default('42'),
 	}),
-	getHumidityVisibility: z.object({}),
+	getHumidityVisibility: z.object({
+		commandNumber: z.string().optional().default('43'),
+	}),
 	setLightIntensityVisibility: z.object({
 		state: z.number().min(0).max(1), // 0: hide, 1: show
+		commandNumber: z.string().optional().default('44'),
 	}),
-	getLightIntensityVisibility: z.object({}),
+	getLightIntensityVisibility: z.object({
+		commandNumber: z.string().optional().default('45'),
+	}),
 	setCurrentTemperatureVisibility: z.object({
 		state: z.number().min(0).max(1), // 0: hide, 1: show
+		commandNumber: z.string().optional().default('40'),
 	}),
-	getCurrentTemperatureVisibility: z.object({}),
+	getCurrentTemperatureVisibility: z.object({
+		commandNumber: z.string().optional().default('41'),
+	}),
 }
 
 export namespace DisplayCommandTypes {
@@ -351,123 +403,198 @@ const VickiCommandSchemas = {
 		delta: z.number().min(0).max(15),
 		closeTime: z.number().min(0).max(51),
 		motorPosition: z.number().int().min(0).max(800),
+		commandNumber: z.string().optional().default('06'),
 	}),
-	getOpenWindowParams: z.object({}),
-	recalibrateMotor: z.object({}),
-	forceClose: z.object({}),
+	getOpenWindowParams: z.object({
+		commandNumber: z.string().optional().default('13'),
+	}),
+	recalibrateMotor: z.object({
+		commandNumber: z.string().optional().default('03'),
+	}),
+	forceClose: z.object({
+		commandNumber: z.string().optional().default('0b'),
+	}),
 	setInternalAlgoParams: z.object({
 		period: z.number().int().min(0).max(255),
 		pFirstLast: z.number().int().min(0).max(255),
 		pNext: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('0c'),
 	}),
-	getInternalAlgoParams: z.object({}),
+	getInternalAlgoParams: z.object({
+		commandNumber: z.string().optional().default('16'),
+	}),
 	setOperationalMode: z.object({
 		mode: z.enum(['00', '01', '02']),
+		commandNumber: z.string().optional().default('0d'),
 	}),
-	getOperationalMode: z.object({}),
+	getOperationalMode: z.object({
+		commandNumber: z.string().optional().default('18'),
+	}),
 	setTargetTemperature: z.object({
 		targetTemperature: z.number().min(5).max(30),
+		commandNumber: z.string().optional().default('0e'),
 	}),
 	setExternalTemperature: z.object({
 		temp: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('0f'),
 	}),
-	getExternalTemperature: z.object({}),
+	getExternalTemperature: z.object({
+		commandNumber: z.string().optional().default('44'),
+	}),
 	setInternalAlgoTdiffParams: z.object({
 		cold: z.number().int().min(0).max(255),
 		warm: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('1a'),
 	}),
-	getInternalAlgoTdiffParams: z.object({}),
+	getInternalAlgoTdiffParams: z.object({
+		commandNumber: z.string().optional().default('17'),
+	}),
 	setPrimaryOperationalMode: z.object({
 		mode: z.enum(['00', '01']),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getPrimaryOperationalMode: z.object({}),
+	getPrimaryOperationalMode: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	setBatteryRangesBoundaries: z.object({
 		Boundary1: z.number().int().min(0).max(65535),
 		Boundary2: z.number().int().min(0).max(65535),
 		Boundary3: z.number().int().min(0).max(65535),
+		commandNumber: z.string().optional().default('20'),
 	}),
 	setBatteryRangesOverVoltage: z.object({
 		Range1: z.number().int().min(0).max(255),
 		Range2: z.number().int().min(0).max(255),
 		Range3: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('22'),
 	}),
 	setOvac: z.object({
 		ovac: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('26'),
 	}),
-	getOvac: z.object({}),
+	getOvac: z.object({
+		commandNumber: z.string().optional().default('27'),
+	}),
 	setProportionalAlgorithmParameters: z.object({
 		coefficient: z.number().min(0).max(20),
 		period: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('2a'),
 	}),
-	getProportionalAlgorithmParameters: z.object({}),
+	getProportionalAlgorithmParameters: z.object({
+		commandNumber: z.string().optional().default('29'),
+	}),
 	setTemperatureControlAlgorithm: z.object({
 		algorithm: z.enum(['00', '01', '02']),
+		commandNumber: z.string().optional().default('2c'),
 	}),
-	getTemperatureControlAlgorithm: z.object({}),
+	getTemperatureControlAlgorithm: z.object({
+		commandNumber: z.string().optional().default('2b'),
+	}),
 	setMotorPositionOnly: z.object({
 		position: z.number().int().min(0).max(800),
+		commandNumber: z.string().optional().default('2d'),
 	}),
-	deviceReset: z.object({}),
+	deviceReset: z.object({
+		commandNumber: z.string().optional().default('30'),
+	}),
 	setTargetTemperatureAndMotorPosition: z.object({
 		motorPosition: z.number().int().min(0).max(800),
 		targetTemperature: z.number().min(5).max(30),
+		commandNumber: z.string().optional().default('31'),
 	}),
 	setChildLockBehavior: z.object({
 		behavior: z.number().min(0).max(1),
+		commandNumber: z.string().optional().default('35'),
 	}),
-	getChildLockBehavior: z.object({}),
+	getChildLockBehavior: z.object({
+		commandNumber: z.string().optional().default('34'),
+	}),
 	setProportionalGain: z.object({
 		proportionalGain: z.number().int().min(0).max(127),
+		commandNumber: z.string().optional().default('37'),
 	}),
-	getProportionalGain: z.object({}),
+	getProportionalGain: z.object({
+		commandNumber: z.string().optional().default('36'),
+	}),
 	setExternalTemperatureFloat: z.object({
 		temp: z.number().min(0.1).max(255.0).multipleOf(0.1),
+		commandNumber: z.string().optional().default('3c'),
 	}),
 	setIntegralGain: z.object({
 		integralGain: z.number().int().min(0).max(127),
+		commandNumber: z.string().optional().default('3e'),
 	}),
-	getIntegralGain: z.object({}),
-	getIntegralValue: z.object({}),
+	getIntegralGain: z.object({
+		commandNumber: z.string().optional().default('3d'),
+	}),
+	getIntegralValue: z.object({
+		commandNumber: z.string().optional().default('3f'),
+	}),
 	setPiRunPeriod: z.object({
 		period: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('41'),
 	}),
-	getPiRunPeriod: z.object({}),
+	getPiRunPeriod: z.object({
+		commandNumber: z.string().optional().default('40'),
+	}),
 	setTemperatureHysteresis: z.object({
 		hysteresis: z.number().min(0.1).max(10.0).multipleOf(0.1),
+		commandNumber: z.string().optional().default('43'),
 	}),
-	getTemperatureHysteresis: z.object({}),
+	getTemperatureHysteresis: z.object({
+		commandNumber: z.string().optional().default('42'),
+	}),
 	setOpenWindowPrecisely: z.object({
 		enabled: z.boolean(),
 		duration: z.number().min(0).max(51),
 		delta: z.number().min(0.1).max(15.0).multipleOf(0.1),
+		commandNumber: z.string().optional().default('45'),
 	}),
-	getOpenWindowPrecisely: z.object({}),
+	getOpenWindowPrecisely: z.object({
+		commandNumber: z.string().optional().default('46'),
+	}),
 	setForceAttach: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('47'),
 	}),
-	getForceAttach: z.object({}),
+	getForceAttach: z.object({
+		commandNumber: z.string().optional().default('48'),
+	}),
 	setAntiFreezeParams: z.object({
 		activatedTemperature: z.number().min(0).max(25),
 		deactivatedTemperature: z.number().min(0).max(25),
 		targetTemperature: z.number().min(0).max(30),
+		commandNumber: z.string().optional().default('49'),
 	}),
-	getAntiFreezeParams: z.object({}),
+	getAntiFreezeParams: z.object({
+		commandNumber: z.string().optional().default('4a'),
+	}),
 	setMaxAllowedIntegralValue: z.object({
 		value: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('4c'),
 	}),
-	getMaxAllowedIntegralValue: z.object({}),
+	getMaxAllowedIntegralValue: z.object({
+		commandNumber: z.string().optional().default('4d'),
+	}),
 	setValveOpennessInPercentage: z.object({
 		value: z.number().min(0).max(100),
+		commandNumber: z.string().optional().default('4e'),
 	}),
 	setValveOpennessRangeInPercentage: z.object({
 		min: z.number().min(0).max(100),
 		max: z.number().min(0).max(100),
+		commandNumber: z.string().optional().default('4f'),
 	}),
-	getValveOpennessRangeInPercentage: z.object({}),
+	getValveOpennessRangeInPercentage: z.object({
+		commandNumber: z.string().optional().default('50'),
+	}),
 	setTemperatureOffset: z.object({
 		value: z.number().min(-5).max(5),
+		commandNumber: z.string().optional().default('53'),
 	}),
-	getTemperatureOffset: z.object({}),
+	getTemperatureOffset: z.object({
+		commandNumber: z.string().optional().default('54'),
+	}),
 	setHeatingEvent: z.object({
 		eventIndex: z.number().int().min(0).max(19),
 		startHour: z.number().int().min(0).max(23),
@@ -482,37 +609,46 @@ const VickiCommandSchemas = {
 			saturday: z.boolean(),
 			sunday: z.boolean(),
 		}),
+		commandNumber: z.string().optional().default('59'),
 	}),
 	setHeatingEventState: z.object({
 		eventIndex: z.number().int().min(0).max(19),
 		active: z.boolean(),
+		commandNumber: z.string().optional().default('6b'),
 	}),
 	setTimeRequestByMACcommand: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('6d'),
 	}),
 	setHeatingSchedule: z.object({
 		startMonth: z.number().int().min(0).max(11),
 		startDay: z.number().int().min(0).max(31), // 0 disables schedule handling
 		endMonth: z.number().int().min(0).max(11),
 		endDay: z.number().int().min(0).max(31), // 0 disables schedule handling
+		commandNumber: z.string().optional().default('5b'),
 	}),
 	setDeviceTime: z.object({
 		timestamp: z.number().int().min(0).max(4294967295), // Unsigned 32-bit integer max value
+		commandNumber: z.string().optional().default('5d'),
 	}),
 	setDeviceTimeZone: z.object({
 		offsetHours: z.number().int().min(-12).max(12), // Time zone offset in hours, range [-12:12]
+		commandNumber: z.string().optional().default('5f'),
 	}),
 	setAutomaticSetpointRestore: z.object({
 		time: z.number().int().min(0).max(255), // Time in 10-minute increments (0-2550 minutes), 0 disables the functionality
+		commandNumber: z.string().optional().default('61'),
 	}),
 	setOfflineTargetTemperature: z.object({
 		targetTemperature: z.union([
 			z.literal(0), // To disable the feature
 			z.number().min(5).max(30).multipleOf(0.1), // Temperature range 5.0-30.0°C with 0.1°C increments
 		]),
+		commandNumber: z.string().optional().default('65'),
 	}),
 	setInternalAlgoTemporaryState: z.object({
 		enabled: z.boolean(), // true = enable algorithm (00), false = disable algorithm temporarily (01)
+		commandNumber: z.string().optional().default('67'),
 	}),
 	setTemperatureLevels: z.object({
 		scaleLevel0: z.number().min(5).max(30).multipleOf(0.1),
@@ -521,9 +657,11 @@ const VickiCommandSchemas = {
 		scaleLevel3: z.number().min(5).max(30).multipleOf(0.1),
 		scaleLevel4: z.number().min(5).max(30).multipleOf(0.1),
 		scaleLevel5: z.number().min(5).max(30).multipleOf(0.1),
+		commandNumber: z.string().optional().default('69'),
 	}),
 	setLedIndicationDuration: z.object({
 		duration: z.number().min(0.5).max(20).multipleOf(0.5), // Duration in range [0.5:20] with 0.5s resolution
+		commandNumber: z.string().optional().default('63'),
 	}),
 }
 
@@ -581,53 +719,95 @@ const Relay16CommandSchemas = {
 	setOverheatingThresholds: z.object({
 		trigger: z.number().min(30).max(100),
 		recovery: z.number().min(30).max(100),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getOverheatingThresholds: z.object({}),
+	getOverheatingThresholds: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	setOvervoltageThresholds: z.object({
 		trigger: z.number().min(1).max(255),
 		recovery: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('20'),
 	}),
-	getOvervoltageThresholds: z.object({}),
+	getOvervoltageThresholds: z.object({
+		commandNumber: z.string().optional().default('21'),
+	}),
 	setOvercurrentThreshold: z.object({
 		current: z.number().min(1).max(16),
+		commandNumber: z.string().optional().default('22'),
 	}),
-	getOvercurrentThreshold: z.object({}),
+	getOvercurrentThreshold: z.object({
+		commandNumber: z.string().optional().default('23'),
+	}),
 	setOverpowerThreshold: z.object({
 		power: z.number().min(100).max(3680),
+		commandNumber: z.string().optional().default('24'),
 	}),
-	getOverpowerThreshold: z.object({}),
-	clearAcumulatedEnergy: z.object({}),
+	getOverpowerThreshold: z.object({
+		commandNumber: z.string().optional().default('25'),
+	}),
+	clearAcumulatedEnergy: z.object({
+		commandNumber: z.string().optional(),
+	}),
 	setAfterOverheatingProtectionRecovery: z.object({
 		state: z.number().min(0).max(1), // 0: lastState, 1: OFF
+		commandNumber: z.string().optional().default('59'),
 	}),
-	getAfterOverheatingProtectionRecovery: z.object({}),
+	getAfterOverheatingProtectionRecovery: z.object({
+		commandNumber: z.string().optional().default('5a'),
+	}),
 	setLedIndicationMode: z.object({
 		mode: z.number().min(0).max(1), // 0: OFF, 1: ON
+		commandNumber: z.string().optional().default('5b'),
 	}),
-	getLedIndicationMode: z.object({}),
+	getLedIndicationMode: z.object({
+		commandNumber: z.string().optional().default('5c'),
+	}),
 	setRelayRecoveryState: z.object({
 		state: z.number().min(0).max(2), // 0: lastState, 1: ON, 2: OFF
+		commandNumber: z.string().optional().default('5e'),
 	}),
-	getRelayRecoveryState: z.object({}),
+	getRelayRecoveryState: z.object({
+		commandNumber: z.string().optional().default('5f'),
+	}),
 	setRelayState: z.object({
 		state: z.boolean(), // 0: OFF, 1: ON
+		commandNumber: z.string().optional().default('c1'),
 	}),
-	getRelayState: z.object({}),
+	getRelayState: z.object({
+		commandNumber: z.string().optional().default('b1'),
+	}),
 	setRelayTimerInMilliseconds: z.object({
 		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('55'),
 	}),
-	getRelayTimerInMilliseconds: z.object({}),
+	getRelayTimerInMilliseconds: z.object({
+		commandNumber: z.string().optional().default('56'),
+	}),
 	setRelayTimerInSeconds: z.object({
 		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('57'),
 	}),
-	getRelayTimerInSeconds: z.object({}),
-	getRelayStateChangeReason: z.object({}),
-	getOverheatingEvents: z.object({}),
-	getOvervoltageEvents: z.object({}),
-	getOvercurrentEvents: z.object({}),
-	getOverpowerEvents: z.object({}),
+	getRelayTimerInSeconds: z.object({
+		commandNumber: z.string().optional().default('58'),
+	}),
+	getRelayStateChangeReason: z.object({
+		commandNumber: z.string().optional().default('54'),
+	}),
+	getOverheatingEvents: z.object({
+		commandNumber: z.string().optional().default('60'),
+	}),
+	getOvervoltageEvents: z.object({
+		commandNumber: z.string().optional().default('61'),
+	}),
+	getOvercurrentEvents: z.object({
+		commandNumber: z.string().optional().default('62'),
+	}),
+	getOverpowerEvents: z.object({
+		commandNumber: z.string().optional().default('63'),
+	}),
 }
 
 export namespace Relay16CommandTypes {
@@ -652,36 +832,61 @@ const Relay16DryCommandSchemas = {
 	setOverheatingThresholds: z.object({
 		trigger: z.number().min(30).max(100),
 		recovery: z.number().min(30).max(100),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getOverheatingThresholds: z.object({}),
+	getOverheatingThresholds: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	setAfterOverheatingProtectionRecovery: z.object({
 		state: z.number().min(0).max(1), // 0: lastState, 1: OFF
+		commandNumber: z.string().optional().default('59'),
 	}),
 	setRelayTimerInMilliseconds: z.object({
 		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('55'),
 	}),
-	getRelayTimerInMilliseconds: z.object({}),
+	getRelayTimerInMilliseconds: z.object({
+		commandNumber: z.string().optional().default('56'),
+	}),
 	setRelayTimerInSeconds: z.object({
 		state: z.number().min(0).max(1), // 0: OFF, 1: ON
 		time: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('57'),
 	}),
-	getRelayTimerInSeconds: z.object({}),
-	getRelayStateChangeReason: z.object({}),
-	getAfterOverheatingProtectionRecovery: z.object({}),
+	getRelayTimerInSeconds: z.object({
+		commandNumber: z.string().optional().default('58'),
+	}),
+	getRelayStateChangeReason: z.object({
+		commandNumber: z.string().optional().default('54'),
+	}),
+	getAfterOverheatingProtectionRecovery: z.object({
+		commandNumber: z.string().optional().default('5a'),
+	}),
 	setLedIndicationMode: z.object({
 		mode: z.number().min(0).max(1), // 0: OFF, 1: ON
+		commandNumber: z.string().optional().default('5b'),
 	}),
-	getLedIndicationMode: z.object({}),
+	getLedIndicationMode: z.object({
+		commandNumber: z.string().optional().default('5c'),
+	}),
 	setRelayRecoveryState: z.object({
 		state: z.number().min(0).max(2), // 0: lastState, 1: ON, 2: OFF
+		commandNumber: z.string().optional().default('5e'),
 	}),
-	getRelayRecoveryState: z.object({}),
+	getRelayRecoveryState: z.object({
+		commandNumber: z.string().optional().default('5f'),
+	}),
 	setRelayState: z.object({
 		state: z.boolean(), // 0: OFF, 1: ON
+		commandNumber: z.string().optional().default('c1'),
 	}),
-	getRelayState: z.object({}),
-	getOverheatingEvents: z.object({}),
+	getRelayState: z.object({
+		commandNumber: z.string().optional().default('b1'),
+	}),
+	getOverheatingEvents: z.object({
+		commandNumber: z.string().optional().default('60'),
+	}),
 }
 
 // ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
@@ -691,12 +896,16 @@ const TValveCommandSchemas = {
 	setOpenCloseTime: z.object({
 		openingTime: z.number().min(1).max(255),
 		closingTime: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('01'),
 	}),
-	getOpenCloseTime: z.object({}),
+	getOpenCloseTime: z.object({
+		commandNumber: z.string().optional(),
+	}),
 	setLED: z.object({
 		ledId: z.number().min(1).max(4),
 		behavior: z.number().min(0).max(4),
 		seconds: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('02'),
 	}),
 	setBuzzer: z.object({
 		volume: z.number().min(1).max(255),
@@ -704,54 +913,81 @@ const TValveCommandSchemas = {
 		activeTime: z.number().min(1).max(255),
 		onTime: z.number().min(1).max(255),
 		offTime: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('03'),
 	}),
 	setEmergencyOpenings: z.object({
 		maxOpenings: z.number().min(1).max(15),
+		commandNumber: z.string().optional().default('04'),
 	}),
-	getEmergencyOpenings: z.object({}),
+	getEmergencyOpenings: z.object({
+		commandNumber: z.string().optional().default('0f'),
+	}),
 	setManualControl: z.object({
 		enableOpen: z.boolean(),
 		enableClose: z.boolean(),
+		commandNumber: z.string().optional().default('05'),
 	}),
 	setFloodAlarmTime: z.object({
 		time: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('06'),
 	}),
-	getFloodAlarmTime: z.object({}),
+	getFloodAlarmTime: z.object({
+		commandNumber: z.string().optional().default('10'),
+	}),
 	setKeepAliveTValve: z.object({
 		time: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('02'),
 	}),
 	setWorkingVoltage: z.object({
 		voltage: z.number().min(1840).max(2500),
+		commandNumber: z.string().optional().default('09'),
 	}),
-	getWorkingVoltage: z.object({}),
+	getWorkingVoltage: z.object({
+		commandNumber: z.string().optional().default('11'),
+	}),
 	setValveState: z.object({
 		state: z.number().min(0).max(1), // 0: open, 1: close
+		commandNumber: z.string().optional().default('0c'),
 	}),
 	setOpenCloseTimeExtended: z.object({
 		openingTime: z.number().min(1).max(65535),
 		closingTime: z.number().min(1).max(65535),
+		commandNumber: z.string().optional().default('0d'),
 	}),
-	getOpenCloseTimeExtended: z.object({}),
+	getOpenCloseTimeExtended: z.object({
+		commandNumber: z.string().optional().default('0e'),
+	}),
 	setSingleTimeValveState: z.object({
 		state: z.number().min(0).max(1), // 0: open, 1: close
 		time: z.number().min(1).max(65535),
+		commandNumber: z.string().optional().default('14'),
 	}),
 	setDeviceFloodSensor: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('0a'),
 	}),
-	getDeviceFloodSensor: z.object({}),
+	getDeviceFloodSensor: z.object({
+		commandNumber: z.string().optional().default('13'),
+	}),
 	setJoinRetryPeriodTValve: z.object({
 		period: z.number().min(1).max(21),
+		commandNumber: z.string().optional().default('10'),
 	}),
 	setUplinkTypeTValve: z.object({
 		type: z.enum(['01', '00']), // 01: confirmedUplinks, 00: unconfirmedUplinks
+		commandNumber: z.string().optional().default('11'),
 	}),
 	setWatchDogTValveParams: z.object({
 		confirmedUplinks: z.number().min(0).max(255),
 		unconfirmedUplinks: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('1c'),
 	}),
-	getWatchDogTValveParams: z.object({}),
-	requestFullData: z.object({}),
+	getWatchDogTValveParams: z.object({
+		commandNumber: z.string().optional(),
+	}),
+	requestFullData: z.object({
+		commandNumber: z.string().optional().default('08'),
+	}),
 }
 
 export namespace TValveCommandTypes {
@@ -779,157 +1015,271 @@ const FanCoilThermostatCommandSchemas = {
 	...TemperatureCommandSchemas,
 	setDisplayRefreshPeriod: z.object({
 		period: z.number().min(1).max(24),
+		commandNumber: z.string().optional().default('33'),
 	}),
-	getDisplayRefreshPeriod: z.object({}),
+	getDisplayRefreshPeriod: z.object({
+		commandNumber: z.string().optional().default('34'),
+	}),
 	setHumidityVisibility: z.object({
 		state: z.number().min(0).max(1), // 0: hide, 1: show
+		commandNumber: z.string().optional().default('42'),
 	}),
-	getHumidityVisibility: z.object({}),
+	getHumidityVisibility: z.object({
+		commandNumber: z.string().optional().default('43'),
+	}),
 	setCurrentTemperatureVisibility: z.object({
 		state: z.number().min(0).max(1), // 0: hide, 1: show
+		commandNumber: z.string().optional().default('40'),
 	}),
-	getCurrentTemperatureVisibility: z.object({}),
+	getCurrentTemperatureVisibility: z.object({
+		commandNumber: z.string().optional().default('41'),
+	}),
 	setTargetTemperatureStep: z.object({
 		value: z.number().min(0.1).max(10).multipleOf(0.1),
+		commandNumber: z.string().optional().default('03'),
 	}),
-	getTargetTemperatureStep: z.object({}),
+	getTargetTemperatureStep: z.object({
+		commandNumber: z.string().optional().default('05'),
+	}),
 	setKeysLock: z.object({
 		value: z.number().min(0).max(5),
+		commandNumber: z.string().optional().default('07'),
 	}),
-	getKeysLock: z.object({}),
+	getKeysLock: z.object({
+		commandNumber: z.string().optional().default('14'),
+	}),
 	setTargetTemperature: z.object({
 		targetTemperature: z.number().min(5).max(99),
+		commandNumber: z.string().optional().default('0e'),
 	}),
 	setValveOpenCloseTime: z.object({
 		value: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('31'),
 	}),
-	getValveOpenCloseTime: z.object({}),
+	getValveOpenCloseTime: z.object({
+		commandNumber: z.string().optional().default('32'),
+	}),
 	setExtAutomaticTemperatureControl: z.object({
 		value: z.number().min(0).max(1), // 0: deactivated, 1: activated
+		commandNumber: z.string().optional().default('35'),
 	}),
-	getExtAutomaticTemperatureControl: z.object({}),
+	getExtAutomaticTemperatureControl: z.object({
+		commandNumber: z.string().optional().default('36'),
+	}),
 	setFanSpeed: z.object({
 		value: z.number().min(0).max(6),
+		commandNumber: z.string().optional().default('44'),
 	}),
-	getFanSpeed: z.object({}),
+	getFanSpeed: z.object({
+		commandNumber: z.string().optional().default('45'),
+	}),
 	setFanSpeedLimit: z.object({
 		value: z.number().min(0).max(3),
+		commandNumber: z.string().optional().default('46'),
 	}),
-	getFanSpeedLimit: z.object({}),
+	getFanSpeedLimit: z.object({
+		commandNumber: z.string().optional().default('47'),
+	}),
 	setEcmVoltageRange: z.object({
 		min: z.number().min(0).max(10),
 		max: z.number().min(0).max(10),
+		commandNumber: z.string().optional().default('48'),
 	}),
-	getEcmVoltageRange: z.object({}),
+	getEcmVoltageRange: z.object({
+		commandNumber: z.string().optional().default('49'),
+	}),
 	setEcmStartUpTime: z.object({
 		value: z.number().min(0).max(20),
+		commandNumber: z.string().optional().default('4a'),
 	}),
-	getEcmStartUpTime: z.object({}),
+	getEcmStartUpTime: z.object({
+		commandNumber: z.string().optional().default('4b'),
+	}),
 	setEcmRelay: z.object({
 		value: z.number().min(0).max(1), // 0: deactivated, 1: activated
+		commandNumber: z.string().optional().default('4c'),
 	}),
-	getEcmRelay: z.object({}),
+	getEcmRelay: z.object({
+		commandNumber: z.string().optional().default('4d'),
+	}),
 	setFrostProtection: z.object({
 		value: z.number().min(0).max(1), // 0: OFF, 1: ON
+		commandNumber: z.string().optional().default('4e'),
 	}),
-	getFrostProtection: z.object({}),
+	getFrostProtection: z.object({
+		commandNumber: z.string().optional().default('4f'),
+	}),
 	setFrostProtectionSettings: z.object({
 		threshold: z.number().min(4).max(20),
 		setpoint: z.number().min(4).max(20),
+		commandNumber: z.string().optional().default('50'),
 	}),
-	getFrostProtectionSettings: z.object({}),
+	getFrostProtectionSettings: z.object({
+		commandNumber: z.string().optional().default('51'),
+	}),
 	setFctOperationalMode: z.object({
 		value: z.number().min(0).max(2), // 0: ventilation, 1: heating, 2: cooling
+		commandNumber: z.string().optional().default('52'),
 	}),
 	setAllowedOperationalModes: z.object({
 		value: z.number().min(0).max(2),
+		commandNumber: z.string().optional().default('54'),
 	}),
-	getAllowedOperationalModes: z.object({}),
+	getAllowedOperationalModes: z.object({
+		commandNumber: z.string().optional().default('55'),
+	}),
 	setCoolingSetpointNotOccupied: z.object({
 		value: z.number().min(5).max(30),
+		commandNumber: z.string().optional().default('56'),
 	}),
-	getCoolingSetpointNotOccupied: z.object({}),
+	getCoolingSetpointNotOccupied: z.object({
+		commandNumber: z.string().optional().default('57'),
+	}),
 	setHeatingSetpointNotOccupied: z.object({
 		value: z.number().min(5).max(30),
+		commandNumber: z.string().optional().default('58'),
 	}),
-	getHeatingSetpointNotOccupied: z.object({}),
+	getHeatingSetpointNotOccupied: z.object({
+		commandNumber: z.string().optional().default('59'),
+	}),
 	setTempSensorCompensation: z.object({
 		compensation: z.number().min(0).max(1),
 		temperature: z.number().min(-5).max(5).multipleOf(0.1),
+		commandNumber: z.string().optional().default('5a'),
 	}),
-	getTempSensorCompensation: z.object({}),
+	getTempSensorCompensation: z.object({
+		commandNumber: z.string().optional().default('5b'),
+	}),
 	setFanSpeedNotOccupied: z.object({
 		value: z.number().min(0).max(2), // 0: low, 1: automatic, 2: dontChange
+		commandNumber: z.string().optional().default('5c'),
 	}),
-	getFanSpeedNotOccupied: z.object({}),
+	getFanSpeedNotOccupied: z.object({
+		commandNumber: z.string().optional().default('5d'),
+	}),
 	setAutomaticChangeover: z.object({
 		value: z.number().min(0).max(1), // 0: deactivated, 1: activated
+		commandNumber: z.string().optional().default('5e'),
 	}),
-	getAutomaticChangeover: z.object({}),
+	getAutomaticChangeover: z.object({
+		commandNumber: z.string().optional().default('5f'),
+	}),
 	setWiringDiagram: z.object({
 		value: z.number().min(0).max(6),
+		commandNumber: z.string().optional().default('60'),
 	}),
-	getWiringDiagram: z.object({}),
+	getWiringDiagram: z.object({
+		commandNumber: z.string().optional().default('61'),
+	}),
 	setOccFunction: z.object({
 		value: z.number().min(0).max(7),
+		commandNumber: z.string().optional().default('62'),
 	}),
-	getOccFunction: z.object({}),
+	getOccFunction: z.object({
+		commandNumber: z.string().optional().default('63'),
+	}),
 	setAutomaticChangeoverThreshold: z.object({
 		coolingThreshold: z.number().min(5).max(20),
 		heatingThreshold: z.number().min(30).max(60),
+		commandNumber: z.string().optional().default('64'),
 	}),
-	getAutomaticChangeoverThreshold: z.object({}),
+	getAutomaticChangeoverThreshold: z.object({
+		commandNumber: z.string().optional().default('65'),
+	}),
 	setDeviceStatus: z.object({
 		value: z.number().min(0).max(1), // 0: off, 1: on
+		commandNumber: z.string().optional().default('66'),
 	}),
-	getDeviceStatus: z.object({}),
+	getDeviceStatus: z.object({
+		commandNumber: z.string().optional().default('67'),
+	}),
 	setReturnOfPowerOperation: z.object({
 		value: z.number().min(0).max(2), // 0: lastStatus, 1: on, 2: off
+		commandNumber: z.string().optional().default('68'),
 	}),
-	getReturnOfPowerOperation: z.object({}),
+	getReturnOfPowerOperation: z.object({
+		commandNumber: z.string().optional().default('69'),
+	}),
 	setDeltaTemperature1: z.object({
 		value: z.number().min(0.5).max(10).multipleOf(0.5),
+		commandNumber: z.string().optional().default('6a'),
 	}),
-	getDeltaTemperature1: z.object({}),
+	getDeltaTemperature1: z.object({
+		commandNumber: z.string().optional().default('6b'),
+	}),
 	setDeltaTemperature2and3: z.object({
 		deltaTemperature2: z.number().min(0.5).max(10).multipleOf(0.5),
 		deltaTemperature3: z.number().min(0.5).max(10).multipleOf(0.5),
+		commandNumber: z.string().optional().default('6c'),
 	}),
-	getDeltaTemperature2and3: z.object({}),
-	getFrostProtectionStatus: z.object({}),
-	getOccupancySensorStatusSetPoint: z.object({}),
-	getOccupancySensorStatus: z.object({}),
-	getDewPointSensorStatus: z.object({}),
-	getFilterAlarm: z.object({}),
+	getDeltaTemperature2and3: z.object({
+		commandNumber: z.string().optional().default('6d'),
+	}),
+	getFrostProtectionStatus: z.object({
+		commandNumber: z.string().optional().default('6e'),
+	}),
+	getOccupancySensorStatusSetPoint: z.object({
+		commandNumber: z.string().optional().default('70'),
+	}),
+	getOccupancySensorStatus: z.object({
+		commandNumber: z.string().optional().default('71'),
+	}),
+	getDewPointSensorStatus: z.object({
+		commandNumber: z.string().optional().default('72'),
+	}),
+	getFilterAlarm: z.object({
+		commandNumber: z.string().optional().default('73'),
+	}),
 	setHeatingCoolingTargetTempRanges: z.object({
 		heatingTempMin: z.number().min(5).max(30),
 		heatingTempMax: z.number().min(5).max(30),
 		coolingTempMin: z.number().min(5).max(30),
 		coolingTempMax: z.number().min(5).max(30),
+		commandNumber: z.string().optional().default('16'),
 	}),
-	getHeatingCoolingTargetTempRanges: z.object({}),
+	getHeatingCoolingTargetTempRanges: z.object({
+		commandNumber: z.string().optional().default('17'),
+	}),
 	setHeatingCoolingTargetTempRangesUnoccupied: z.object({
 		heatingTempMin: z.number().min(5).max(30),
 		heatingTempMax: z.number().min(5).max(30),
 		coolingTempMin: z.number().min(5).max(30),
 		coolingTempMax: z.number().min(5).max(30),
+		commandNumber: z.string().optional().default('76'),
 	}),
-	getHeatingCoolingTargetTempRangesUnoccupied: z.object({}),
+	getHeatingCoolingTargetTempRangesUnoccupied: z.object({
+		commandNumber: z.string().optional().default('77'),
+	}),
 	setFanOffDelayTime: z.object({
 		time: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('78'),
 	}),
-	getFanOffDelayTime: z.object({}),
+	getFanOffDelayTime: z.object({
+		commandNumber: z.string().optional().default('79'),
+	}),
 	setAdditionalFanMode: z.object({
 		mode: z.number().min(0).max(2), // 0: TurnOffOnTargetReach, 1: KeepOnTargetReach, 2: FanAlwaysOn
+		commandNumber: z.string().optional().default('7a'),
 	}),
-	getAdditionalFanMode: z.object({}),
-	getInternalTemperatureSensorError: z.object({}),
-	getExternalTemperatureSensorError: z.object({}),
+	getAdditionalFanMode: z.object({
+		commandNumber: z.string().optional().default('7b'),
+	}),
+	getInternalTemperatureSensorError: z.object({
+		commandNumber: z.string().optional().default('7c'),
+	}),
+	getExternalTemperatureSensorError: z.object({
+		commandNumber: z.string().optional().default('7d'),
+	}),
 	setUserInterfaceLanguage: z.object({
 		value: z.number().min(0).max(3), // 0: English, 1: French, 2: German, 3: Spanish
+		commandNumber: z.string().optional().default('9a'),
 	}),
-	getUserInterfaceLanguage: z.object({}),
-	restartDevice: z.object({}),
+	getUserInterfaceLanguage: z.object({
+		commandNumber: z.string().optional().default('9b'),
+	}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
 }
 
 export namespace FanCoilThermostatCommandTypes {
@@ -987,8 +1337,11 @@ const OpenCloseSensorCommandSchemas = {
 	...GeneralCommandSchemas,
 	setNotificationBlindTime: z.object({
 		time: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getNotificationBlindTime: z.object({}),
+	getNotificationBlindTime: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 }
 
 export namespace OpenCloseSensorCommandTypes {
@@ -999,46 +1352,75 @@ export namespace OpenCloseSensorCommandTypes {
 const WirelessThermostatCommandSchemas = {
 	...GeneralCommandSchemas,
 	...TemperatureCommandSchemas,
-	getTemperatureRange: z.object({}),
+	getTemperatureRange: z.object({
+		commandNumber: z.string().optional().default('15'),
+	}),
 	...DisplayCommandSchemas,
 	...PIRCommandSchemas,
 	...ChildLockCommandSchemas,
 	setTargetTemperature: z.object({
 		targetTemperature: z.number().min(5).max(99),
+		commandNumber: z.string().optional().default('0e'),
 	}),
-	getTargetTemperature: z.object({}),
+	getTargetTemperature: z.object({
+		commandNumber: z.string().optional().default('2f'),
+	}),
 	setHeatingStatus: z.object({
 		status: z.number().min(0).max(1), // 0: disabled, 1: enabled
+		commandNumber: z.string().optional().default('31'),
 	}),
-	getHeatingStatus: z.object({}),
+	getHeatingStatus: z.object({
+		commandNumber: z.string().optional().default('32'),
+	}),
 	setDisplayRefreshPeriod: z.object({
 		period: z.number().min(1).max(24),
+		commandNumber: z.string().optional().default('33'),
 	}),
-	getDisplayRefreshPeriod: z.object({}),
+	getDisplayRefreshPeriod: z.object({
+		commandNumber: z.string().optional().default('34'),
+	}),
 	setTargetSendDelay: z.object({
 		time: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('35'),
 	}),
-	getTargetSendDelay: z.object({}),
+	getTargetSendDelay: z.object({
+		commandNumber: z.string().optional().default('36'),
+	}),
 	setAutomaticHeatingStatus: z.object({
 		state: z.number().min(0).max(1), // 0: turnOffAutomaticMode, 1: turnOnAutomaticMode
+		commandNumber: z.string().optional().default('37'),
 	}),
-	getAutomaticHeatingStatus: z.object({}),
+	getAutomaticHeatingStatus: z.object({
+		commandNumber: z.string().optional().default('38'),
+	}),
 	setSensorMode: z.object({
 		state: z.number().min(0).max(1), // 0: turnOffSensorMode, 1: turnOnSensorMode
+		commandNumber: z.string().optional().default('39'),
 	}),
-	getSensorMode: z.object({}),
+	getSensorMode: z.object({
+		commandNumber: z.string().optional().default('3a'),
+	}),
 	setTemperatureHysteresis: z.object({
 		hysteresis: z.number().min(0.1).max(25.5).multipleOf(0.1),
+		commandNumber: z.string().optional().default('43'),
 	}),
-	getTemperatureHysteresis: z.object({}),
+	getTemperatureHysteresis: z.object({
+		commandNumber: z.string().optional().default('42'),
+	}),
 	setTargetTemperaturePrecisely: z.object({
 		targetTemperature: z.number().min(5).max(99).multipleOf(0.1),
+		commandNumber: z.string().optional().default('50'),
 	}),
-	getTargetTemperaturePrecisely: z.object({}),
+	getTargetTemperaturePrecisely: z.object({
+		commandNumber: z.string().optional().default('51'),
+	}),
 	setTargetTemperatureStep: z.object({
 		value: z.number().min(0.1).max(10).multipleOf(0.1),
+		commandNumber: z.string().optional().default('03'),
 	}),
-	getTargetTemperatureStep: z.object({}),
+	getTargetTemperatureStep: z.object({
+		commandNumber: z.string().optional().default('05'),
+	}),
 }
 
 export namespace WirelessThermostatCommandTypes {
@@ -1063,24 +1445,36 @@ const CO2SensorCommandSchemas = {
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number().min(0).max(1500),
 		medium_bad: z.number().min(0).max(1500),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getCo2BoundaryLevels: z.object({}),
+	getCo2BoundaryLevels: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	setCo2AutoZeroValue: z.object({
 		ppm: z.number().min(0).max(1500),
+		commandNumber: z.string().optional().default('20'),
 	}),
-	getCo2AutoZeroValue: z.object({}),
+	getCo2AutoZeroValue: z.object({
+		commandNumber: z.string().optional().default('21'),
+	}),
 	setNotifyPeriod: z.object({
 		good_zone: z.number().min(0).max(255),
 		medium_zone: z.number().min(0).max(255),
 		bad_zone: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('22'),
 	}),
-	getNotifyPeriod: z.object({}),
+	getNotifyPeriod: z.object({
+		commandNumber: z.string().optional().default('23'),
+	}),
 	setCo2MeasurementPeriod: z.object({
 		good_zone: z.number().min(0).max(255),
 		medium_zone: z.number().min(0).max(255),
 		bad_zone: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('24'),
 	}),
-	getCo2MeasurementPeriod: z.object({}),
+	getCo2MeasurementPeriod: z.object({
+		commandNumber: z.string().optional().default('25'),
+	}),
 	setBuzzerNotification: z.object({
 		duration_good_beeping: z.number().min(0).max(255),
 		duration_good_loud: z.number().min(0).max(255),
@@ -1091,8 +1485,11 @@ const CO2SensorCommandSchemas = {
 		duration_bad_beeping: z.number().min(0).max(255),
 		duration_bad_loud: z.number().min(0).max(255),
 		duration_bad_silent: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('26'),
 	}),
-	getBuzzerNotification: z.object({}),
+	getBuzzerNotification: z.object({
+		commandNumber: z.string().optional().default('27'),
+	}),
 	setCo2Led: z.object({
 		red_good: z.number().min(0).max(255),
 		green_good: z.number().min(0).max(255),
@@ -1106,12 +1503,18 @@ const CO2SensorCommandSchemas = {
 		green_bad: z.number().min(0).max(255),
 		blue_bad: z.number().min(0).max(255),
 		duration_bad: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('28'),
 	}),
-	getCo2Led: z.object({}),
+	getCo2Led: z.object({
+		commandNumber: z.string().optional().default('29'),
+	}),
 	setCo2AutoZeroPeriod: z.object({
 		hours: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('2a'),
 	}),
-	getCo2AutoZeroPeriod: z.object({}),
+	getCo2AutoZeroPeriod: z.object({
+		commandNumber: z.string().optional().default('2b'),
+	}),
 }
 
 export namespace CO2SensorCommandTypes {
@@ -1132,34 +1535,52 @@ const CO2DisplayCommandSchemas = {
 	...ChildLockCommandSchemas,
 	setCo2MeasurementBlindTime: z.object({
 		time: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('81'),
 	}),
-	getCo2MeasurementBlindTime: z.object({}),
+	getCo2MeasurementBlindTime: z.object({
+		commandNumber: z.string().optional().default('80'),
+	}),
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number().min(0).max(1500),
 		medium_bad: z.number().min(0).max(1500),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getCo2BoundaryLevels: z.object({}),
+	getCo2BoundaryLevels: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	setCo2AutoZeroValue: z.object({
 		ppm: z.number().min(0).max(1500),
+		commandNumber: z.string().optional().default('20'),
 	}),
-	getCo2AutoZeroValue: z.object({}),
+	getCo2AutoZeroValue: z.object({
+		commandNumber: z.string().optional().default('21'),
+	}),
 	setCo2MeasurementPeriod: z.object({
 		good_zone: z.number().min(0).max(255),
 		medium_zone: z.number().min(0).max(255),
 		bad_zone: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('24'),
 	}),
-	getCo2MeasurementPeriod: z.object({}),
+	getCo2MeasurementPeriod: z.object({
+		commandNumber: z.string().optional().default('25'),
+	}),
 	setCo2AutoZeroPeriod: z.object({
 		hours: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('2a'),
 	}),
-	getCo2AutoZeroPeriod: z.object({}),
+	getCo2AutoZeroPeriod: z.object({
+		commandNumber: z.string().optional().default('2b'),
+	}),
 
 	setCo2ImagesVisibility: z.object({
 		chart: z.boolean(),
 		digital_value: z.boolean(),
 		emoji: z.boolean(),
+		commandNumber: z.string().optional().default('82'),
 	}),
-	getCo2ImagesVisibility: z.object({}),
+	getCo2ImagesVisibility: z.object({
+		commandNumber: z.string().optional().default('83'),
+	}),
 }
 
 export namespace CO2DisplayCommandTypes {
@@ -1175,33 +1596,53 @@ const CO2DisplayLiteCommandSchemas = {
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number().min(0).max(1500),
 		medium_bad: z.number().min(0).max(1500),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getCo2BoundaryLevels: z.object({}),
+	getCo2BoundaryLevels: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	setCo2AutoZeroValue: z.object({
 		ppm: z.number().min(0).max(1500),
+		commandNumber: z.string().optional().default('20'),
 	}),
-	getCo2AutoZeroValue: z.object({}),
+	getCo2AutoZeroValue: z.object({
+		commandNumber: z.string().optional().default('21'),
+	}),
 	setCo2MeasurementPeriod: z.object({
 		good_zone: z.number().min(0).max(255),
 		medium_zone: z.number().min(0).max(255),
 		bad_zone: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('24'),
 	}),
-	getCo2MeasurementPeriod: z.object({}),
+	getCo2MeasurementPeriod: z.object({
+		commandNumber: z.string().optional().default('25'),
+	}),
 	setCo2AutoZeroPeriod: z.object({
 		hours: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('2a'),
 	}),
-	getCo2AutoZeroPeriod: z.object({}),
+	getCo2AutoZeroPeriod: z.object({
+		commandNumber: z.string().optional().default('2b'),
+	}),
 	setCo2ImagesVisibility: z.object({
 		chart: z.boolean(),
 		digital_value: z.boolean(),
 		emoji: z.boolean(),
+		commandNumber: z.string().optional().default('82'),
 	}),
-	getCo2ImagesVisibility: z.object({}),
+	getCo2ImagesVisibility: z.object({
+		commandNumber: z.string().optional().default('83'),
+	}),
 	setUplinkSendingOnButtonPress: z.object({
 		value: z.number().min(0).max(1),
+		commandNumber: z.string().optional().default('2e'),
 	}),
-	getUplinkSendingOnButtonPress: z.object({}),
-	restartDevice: z.object({}),
+	getUplinkSendingOnButtonPress: z.object({
+		commandNumber: z.string().optional().default('2f'),
+	}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
 }
 
 export namespace CO2DisplayLiteCommandTypes {
@@ -1215,13 +1656,19 @@ const HTSensorCommandSchemas = {
 	setTemperatureCompensation: z.object({
 		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
 		compensation: z.number().min(0).max(25.5).multipleOf(0.1),
+		commandNumber: z.string().optional().default('31'),
 	}),
-	getTemperatureCompensation: z.object({}),
+	getTemperatureCompensation: z.object({
+		commandNumber: z.string().optional().default('32'),
+	}),
 	setHumidityCompensation: z.object({
 		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
 		compensation: z.number().min(0).max(255).multipleOf(0.1),
+		commandNumber: z.string().optional().default('33'),
 	}),
-	getHumidityCompensation: z.object({}),
+	getHumidityCompensation: z.object({
+		commandNumber: z.string().optional().default('34'),
+	}),
 }
 
 export namespace HTSensorCommandTypes {
@@ -1239,6 +1686,7 @@ const AQICommandSchemas = {
 		greenDuration: z.number(),
 		blueBehavior: z.number(),
 		blueDuration: z.number(),
+		commandNumber: z.string().optional().default('05'),
 	}),
 }
 
@@ -1249,23 +1697,37 @@ export namespace AQICommandTypes {
 /* --------------------------------------- T-FLOOD COMMANDS --------------------------------------- */
 const TFloodCommandSchemas = {
 	...GeneralCommandSchemas,
-	getTemperature: z.object({}),
+	getTemperature: z.object({
+		commandNumber: z.string().optional().default('01'),
+	}),
 	setFloodAlarmTime: z.object({
 		time: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('06'),
 	}),
-	getFloodAlarmTime: z.object({}),
+	getFloodAlarmTime: z.object({
+		commandNumber: z.string().optional().default('10'),
+	}),
 	setKeepAlive: z.object({
 		time: z.number().min(1).max(14400),
+		commandNumber: z.string().optional().default('02'),
 	}),
-	getDeviceVersion: z.object({}),
+	getDeviceVersion: z.object({
+		commandNumber: z.string().optional().default('04'),
+	}),
 	setFloodEventSendTime: z.object({
 		time: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('08'),
 	}),
-	getFloodEventSendTime: z.object({}),
+	getFloodEventSendTime: z.object({
+		commandNumber: z.string().optional().default('09'),
+	}),
 	setFloodEventUplinkType: z.object({
 		type: z.enum(['01', '00']), // 01: confirmedUplinks, 00: unconfirmedUplinks
+		commandNumber: z.string().optional().default('13'),
 	}),
-	getFloodEventUplinkType: z.object({}),
+	getFloodEventUplinkType: z.object({
+		commandNumber: z.string().optional().default('14'),
+	}),
 }
 
 export namespace TFloodCommandTypes {
@@ -1279,15 +1741,18 @@ export namespace TFloodCommandTypes {
 const TringThermostatCommandSchemas = {
 	setThermostatTarget: z.object({
 		target: z.number(),
+		commandNumber: z.string().optional().default('01'),
 	}),
 	setThermostatConfig: z.object({
 		time: z.number(),
 		temp_span: z.number(),
 		temp_sampling: z.number(),
 		target: z.number(),
+		commandNumber: z.string().optional().default('02'),
 	}),
 	setKeepAlive: z.object({
 		time: z.number(),
+		commandNumber: z.string().optional().default('02'),
 	}),
 }
 
@@ -1301,12 +1766,15 @@ export namespace TringThermostatCommandTypes {
 const DSKDeviceCommandSchemas = {
 	setVrvStatus: z.object({
 		status: z.number(),
+		commandNumber: z.string().optional().default('1e'),
 	}),
 	setVrvOnTime: z.object({
 		time: z.number(),
+		commandNumber: z.string().optional().default('20'),
 	}),
 	setVrvOffTime: z.object({
 		time: z.number(),
+		commandNumber: z.string().optional().default('21'),
 	}),
 }
 
@@ -1321,15 +1789,27 @@ const ButtonCommandSchemas = {
 	...GeneralCommandSchemas,
 	setSendEventLater: z.object({
 		value: z.number().min(0).max(1), // 1: send later when allowed, 0: Don't send later when allowed
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getSendEventLater: z.object({}),
+	getSendEventLater: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	clearPressEventCounter: z.object({
 		value: z.number().min(1).max(3),
+		commandNumber: z.string().optional().default('20'),
 	}),
-	restartDevice: z.object({}),
-	getSinglePressEventCounter: z.object({}),
-	getDoublePressEventCounter: z.object({}),
-	getTriplePressEventCounter: z.object({}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
+	getSinglePressEventCounter: z.object({
+		commandNumber: z.string().optional().default('b1'),
+	}),
+	getDoublePressEventCounter: z.object({
+		commandNumber: z.string().optional().default('b2'),
+	}),
+	getTriplePressEventCounter: z.object({
+		commandNumber: z.string().optional().default('b3'),
+	}),
 }
 
 export namespace ButtonCommandTypes {
@@ -1342,21 +1822,35 @@ const HTPirLiteCommandSchemas = {
 	...GeneralCommandSchemas,
 	setUplinkSendingOnButtonPress: z.object({
 		value: z.number().min(0).max(1),
+		commandNumber: z.string().optional().default('2e'),
 	}),
-	getUplinkSendingOnButtonPress: z.object({}),
-	restartDevice: z.object({}),
+	getUplinkSendingOnButtonPress: z.object({
+		commandNumber: z.string().optional().default('2f'),
+	}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
 	setPIRSensorState: z.object({
 		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
+		commandNumber: z.string().optional().default('36'),
 	}),
-	getPIRSensorState: z.object({}),
+	getPIRSensorState: z.object({
+		commandNumber: z.string().optional().default('37'),
+	}),
 	setPIRSensorSensitivity: z.object({
 		sensitivity: z.number().min(12).max(255),
+		commandNumber: z.string().optional().default('3e'),
 	}),
-	getPIRSensorSensitivity: z.object({}),
+	getPIRSensorSensitivity: z.object({
+		commandNumber: z.string().optional().default('3f'),
+	}),
 	setOccupancyTimeout: z.object({
 		timeout: z.number().min(15).max(65535), // in seconds, between 15 and 65535
+		commandNumber: z.string().optional().default('38'),
 	}),
-	getOccupancyTimeout: z.object({}),
+	getOccupancyTimeout: z.object({
+		commandNumber: z.string().optional().default('39'),
+	}),
 }
 
 export namespace HTPirLiteCommandTypes {
@@ -1376,36 +1870,59 @@ const Co2PirLiteCommandSchemas = {
 	...GeneralCommandSchemas,
 	setPIRSensorState: z.object({
 		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
+		commandNumber: z.string().optional().default('36'),
 	}),
-	getPIRSensorState: z.object({}),
+	getPIRSensorState: z.object({
+		commandNumber: z.string().optional().default('37'),
+	}),
 	setPIRSensorSensitivity: z.object({
 		sensitivity: z.number().min(12).max(255),
+		commandNumber: z.string().optional().default('3e'),
 	}),
-	getPIRSensorSensitivity: z.object({}),
+	getPIRSensorSensitivity: z.object({
+		commandNumber: z.string().optional().default('3f'),
+	}),
 	setOccupancyTimeout: z.object({
 		timeout: z.number().min(15).max(65535), // in seconds, between 15 and 65535
+		commandNumber: z.string().optional().default('38'),
 	}),
-	getOccupancyTimeout: z.object({}),
-	restartDevice: z.object({}),
+	getOccupancyTimeout: z.object({
+		commandNumber: z.string().optional().default('39'),
+	}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
 	setCo2BoundaryLevels: z.object({
 		good_medium: z.number().min(0).max(1500),
 		medium_bad: z.number().min(0).max(1500),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getCo2BoundaryLevels: z.object({}),
+	getCo2BoundaryLevels: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	setCo2AutoZeroValue: z.object({
 		ppm: z.number().min(0).max(1500),
+		commandNumber: z.string().optional().default('20'),
 	}),
-	getCo2AutoZeroValue: z.object({}),
+	getCo2AutoZeroValue: z.object({
+		commandNumber: z.string().optional().default('21'),
+	}),
 	setCo2MeasurementPeriod: z.object({
 		good_zone: z.number().min(0).max(255),
 		medium_zone: z.number().min(0).max(255),
 		bad_zone: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('24'),
 	}),
-	getCo2MeasurementPeriod: z.object({}),
+	getCo2MeasurementPeriod: z.object({
+		commandNumber: z.string().optional().default('25'),
+	}),
 	setCo2AutoZeroPeriod: z.object({
 		hours: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('2a'),
 	}),
-	getCo2AutoZeroPeriod: z.object({}),
+	getCo2AutoZeroPeriod: z.object({
+		commandNumber: z.string().optional().default('2b'),
+	}),
 }
 
 export namespace Co2PirLiteCommandTypes {
@@ -1424,6 +1941,7 @@ const MelissaCommandSchemas = {
 	setIrCodeRecording: z.object({
 		time: z.number().min(0).max(255),
 		position: z.number().min(0).max(10),
+		commandNumber: z.string().optional().default('09'),
 	}),
 }
 
@@ -1436,41 +1954,70 @@ const MultiSensorCommandSchemas = {
 	...GeneralCommandSchemas,
 	setLightState: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('1e'),
 	}),
-	getLightState: z.object({}),
+	getLightState: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
 	setHallState: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('20'),
 	}),
-	getHallState: z.object({}),
+	getHallState: z.object({
+		commandNumber: z.string().optional().default('21'),
+	}),
 	setHallBlindPeriod: z.object({
 		period: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('22'),
 	}),
-	getHallBlindPeriod: z.object({}),
+	getHallBlindPeriod: z.object({
+		commandNumber: z.string().optional().default('23'),
+	}),
 	setMicrophoneState: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('24'),
 	}),
-	getMicrophoneState: z.object({}),
+	getMicrophoneState: z.object({
+		commandNumber: z.string().optional().default('25'),
+	}),
 	setMicrophoneSamplingPeriod: z.object({
 		period: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('26'),
 	}),
-	getMicrophoneSamplingPeriod: z.object({}),
+	getMicrophoneSamplingPeriod: z.object({
+		commandNumber: z.string().optional().default('27'),
+	}),
 	setGasState: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('28'),
 	}),
-	getGasState: z.object({}),
+	getGasState: z.object({
+		commandNumber: z.string().optional().default('29'),
+	}),
 	setGasMeasurementPeriod: z.object({
 		minutes: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('2a'),
 	}),
-	getGasMeasurementPeriod: z.object({}),
+	getGasMeasurementPeriod: z.object({
+		commandNumber: z.string().optional().default('2b'),
+	}),
 	setPirState: z.object({
 		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('2c'),
 	}),
-	getPirState: z.object({}),
+	getPirState: z.object({
+		commandNumber: z.string().optional().default('2d'),
+	}),
 	setPirActiveReportingPeriod: z.object({
 		time: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('2e'),
 	}),
-	getPirActiveReportingPeriod: z.object({}),
-	restart: z.object({}),
+	getPirActiveReportingPeriod: z.object({
+		commandNumber: z.string().optional().default('2f'),
+	}),
+	restart: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
 }
 
 export namespace MultiSensorCommandTypes {
