@@ -221,6 +221,9 @@ const GeneralCommandSchemas = {
 	getKeepAlive: z.object({
 		commandNumber: z.string().optional().default('12'),
 	}),
+	getDeviceVersion: z.object({
+		commandNumber: z.string().optional().default('04'),
+	}),
 	setJoinRetryPeriod: z.object({
 		period: z.number().int().min(1).max(21),
 		commandNumber: z.string().optional().default('10'),
@@ -279,6 +282,9 @@ const TemperatureCommandSchemas = {
 		min: z.number().min(5).max(30),
 		max: z.number().min(5).max(30),
 		commandNumber: z.string().optional().default('08'),
+	}),
+	getTemperatureRange: z.object({
+		commandNumber: z.string().optional().default('15'),
 	}),
 	getTargetTemperature: z.object({
 		commandNumber: z.string().optional().default('2f'),
@@ -611,14 +617,23 @@ const VickiCommandSchemas = {
 		}),
 		commandNumber: z.string().optional().default('59'),
 	}),
+	getHeatingEvent: z.object({
+		commandNumber: z.string().optional().default('5a'),
+	}),
 	setHeatingEventState: z.object({
 		eventIndex: z.number().int().min(0).max(19),
 		active: z.boolean(),
 		commandNumber: z.string().optional().default('6b'),
 	}),
+	getHeatingEventState: z.object({
+		commandNumber: z.string().optional().default('6c'),
+	}),
 	setTimeRequestByMACcommand: z.object({
 		enabled: z.boolean(),
 		commandNumber: z.string().optional().default('6d'),
+	}),
+	getTimeRequestByMACcommand: z.object({
+		commandNumber: z.string().optional().default('6e'),
 	}),
 	setHeatingSchedule: z.object({
 		startMonth: z.number().int().min(0).max(11),
@@ -627,17 +642,29 @@ const VickiCommandSchemas = {
 		endDay: z.number().int().min(0).max(31), // 0 disables schedule handling
 		commandNumber: z.string().optional().default('5b'),
 	}),
+	getHeatingSchedule: z.object({
+		commandNumber: z.string().optional().default('5c'),
+	}),
 	setDeviceTime: z.object({
 		timestamp: z.number().int().min(0).max(4294967295), // Unsigned 32-bit integer max value
 		commandNumber: z.string().optional().default('5d'),
+	}),
+	getDeviceTime: z.object({
+		commandNumber: z.string().optional().default('5e'),
 	}),
 	setDeviceTimeZone: z.object({
 		offsetHours: z.number().int().min(-12).max(12), // Time zone offset in hours, range [-12:12]
 		commandNumber: z.string().optional().default('5f'),
 	}),
+	getDeviceTimeZone: z.object({
+		commandNumber: z.string().optional().default('60'),
+	}),
 	setAutomaticSetpointRestore: z.object({
 		time: z.number().int().min(0).max(255), // Time in 10-minute increments (0-2550 minutes), 0 disables the functionality
 		commandNumber: z.string().optional().default('61'),
+	}),
+	getAutomaticSetpointRestore: z.object({
+		commandNumber: z.string().optional().default('62'),
 	}),
 	setOfflineTargetTemperature: z.object({
 		targetTemperature: z.union([
@@ -646,9 +673,15 @@ const VickiCommandSchemas = {
 		]),
 		commandNumber: z.string().optional().default('65'),
 	}),
+	getOfflineTargetTemperature: z.object({
+		commandNumber: z.string().optional().default('66'),
+	}),
 	setInternalAlgoTemporaryState: z.object({
 		enabled: z.boolean(), // true = enable algorithm (00), false = disable algorithm temporarily (01)
 		commandNumber: z.string().optional().default('67'),
+	}),
+	getInternalAlgoTemporaryState: z.object({
+		commandNumber: z.string().optional().default('68'),
 	}),
 	setTemperatureLevels: z.object({
 		scaleLevel0: z.number().min(5).max(30).multipleOf(0.1),
@@ -659,9 +692,15 @@ const VickiCommandSchemas = {
 		scaleLevel5: z.number().min(5).max(30).multipleOf(0.1),
 		commandNumber: z.string().optional().default('69'),
 	}),
+	getTemperatureLevels: z.object({
+		commandNumber: z.string().optional().default('6a'),
+	}),
 	setLedIndicationDuration: z.object({
 		duration: z.number().min(0.5).max(20).multipleOf(0.5), // Duration in range [0.5:20] with 0.5s resolution
 		commandNumber: z.string().optional().default('63'),
+	}),
+	getLedIndicationDuration: z.object({
+		commandNumber: z.string().optional().default('64'),
 	}),
 }
 
@@ -807,6 +846,18 @@ const Relay16CommandSchemas = {
 	}),
 	getOverpowerEvents: z.object({
 		commandNumber: z.string().optional().default('63'),
+	}),
+	getOverheatingRecoveryTime: z.object({
+		commandNumber: z.string().optional().default('70'),
+	}),
+	getOvervoltageRecoveryTime: z.object({
+		commandNumber: z.string().optional().default('71'),
+	}),
+	getOvercurrentRecoveryTemp: z.object({
+		commandNumber: z.string().optional().default('72'),
+	}),
+	getOverpowerRecoveryTemp: z.object({
+		commandNumber: z.string().optional().default('73'),
 	}),
 }
 
