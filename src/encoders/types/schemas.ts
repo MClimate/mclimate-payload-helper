@@ -468,11 +468,17 @@ const VickiCommandSchemas = {
 		Boundary3: z.number().int().min(0).max(65535),
 		commandNumber: z.string().optional().default('20'),
 	}),
+	getBatteryRangesBoundaries: z.object({
+		commandNumber: z.string().optional().default('21'),
+	}),
 	setBatteryRangesOverVoltage: z.object({
 		Range1: z.number().int().min(0).max(255),
 		Range2: z.number().int().min(0).max(255),
 		Range3: z.number().int().min(0).max(255),
 		commandNumber: z.string().optional().default('22'),
+	}),
+	getBatteryRangesOverVoltage: z.object({
+		commandNumber: z.string().optional().default('23'),
 	}),
 	setOvac: z.object({
 		ovac: z.number().int().min(0).max(255),
