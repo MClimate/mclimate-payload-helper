@@ -7,7 +7,7 @@ import {
 	TemperatureCommonCommands,
 } from '@/encoders'
 import { ZodError } from 'zod'
-import { applyMixins, CustomError, dec2hex, decToHex } from '@/utils'
+import { applyMixins, CustomError, dec2hex, decToHex, isFloat } from '@/utils'
 import { WirelessThermostatCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
 export class WirelessThermostatCommands extends GeneralCommands {
@@ -15,7 +15,11 @@ export class WirelessThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.WirelessThermostatCommandSchemas.setTargetTemperature.parse(params)
 			const { targetTemperature } = params
-			return new BaseCommand('SetTargetTemperature', 0x2e, decToHex(targetTemperature))
+			if (isFloat(targetTemperature)) {
+				return new BaseCommand('SetTargetTemperature', 0x50, dec2hex(targetTemperature * 10))
+			} else {
+				return new BaseCommand('SetTargetTemperature', 0x2e, decToHex(targetTemperature))
+			}
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
