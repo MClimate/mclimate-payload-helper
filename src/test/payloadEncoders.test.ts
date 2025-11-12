@@ -691,6 +691,11 @@ describe('WirelessThermostat Commands payload encoder', () => {
 			new BaseCommand('SetTargetTemperature', 0x2e, '16'),
 		)
 	})
+	test('Set Target Temperature Float', () => {
+		expect(commandBuilder.build('SetTargetTemperature', { targetTemperature: 22.5 })).toStrictEqual(
+			new BaseCommand('SetTargetTemperature', 0x50, '00E1'),
+		)
+	})
 
 	test('Set Heating Status', () => {
 		expect(commandBuilder.build('SetHeatingStatus', { status: 1 })).toStrictEqual(
