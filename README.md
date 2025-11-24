@@ -53,3 +53,24 @@ If a hook fails, fix the issue locally before committing again.
 3. Publish the package with `npm publish`. The `prepublishOnly` script will rebuild the dist folder automatically.
 
 Skipping the version bump will cause `npm publish` to fail, so always increment the version before publishing.
+
+## Testing approach
+
+Unit tests live next to their encoders in `src/encoders` (e.g., `Relay16Commands.ts` and `Relay16Commands.test.ts`). For each command class with set commands:
+
+- All set commands are exercised with exact `BaseCommand` payload expectations (command id + hex params).
+- `CommandBuilder` is used when the device is available there, so registry routing and camel-casing are covered.
+- Each suite includes at least one validation error case to ensure zod schema failures surface as `CustomError`.
+
+Mixin-only classes are covered via the concrete implementations they extend; only classes with distinct command surfaces get their own suite. GeneralCommands is also tested to validate shared helpers like custom hex, keepalive, uplink type, and watchdog parameters.
+
+- Decoder tests remain consolidated in `src/test/payloadDecoders.test.ts`.
+
+## Adding encoder commands with AI helpers
+
+Two interactive guides exist to speed up encoder additions:
+
+- `add-encoder-command-existing.md`: walks through adding commands to an existing device class (prompts for command names, params, BaseCommand payloads, schema updates, mixins, and exclusions).
+- `add-encoder-command-new.md`: guides creating a brand-new device class, wiring it into `CommandBuilder`, and adding schemas/types and mixins.
+
+Both scripts explain the expected file locations (`src/encoders`, `src/encoders/types/schemas.ts`), import style (`@/...`), and validation patterns (Zod + `CustomError`). Use them as a step-by-step checklist.
