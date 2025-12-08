@@ -744,6 +744,31 @@ export class VickiCommands extends GeneralCommands {
 		return new BaseCommand('GetTemperatureOffset', 0x54)
 	}
 
+	static setLedDisplayTempUnits(params: VickiCommandTypes.SetLedDisplayTempUnitsParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setLedDisplayTempUnits.parse(params)
+			return new BaseCommand('SetLedDisplayTempUnits', 0x55, decToHex(params.value))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetLedDisplayTempUnits execution',
+					command: 'SetLedDisplayTempUnits',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetLedDisplayTempUnits execution',
+					command: 'SetLedDisplayTempUnits',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getLedDisplayTempUnits() {
+		return new BaseCommand('GetLedDisplayTempUnits', 0x56)
+	}
+
 	static setHeatingEvent(params: VickiCommandTypes.SetHeatingEventParams) {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setHeatingEvent.parse(params)

@@ -41,6 +41,11 @@ export const VickiEnums = {
 		0: 'Automatically disabled',
 		1: 'Remains unchanged',
 	} satisfies NumberEnum<0 | 1>,
+	setLedDisplayTempUnits: {
+		0: 'Celsius',
+		1: 'Fahrenheit',
+		2: 'Conventional (0-5)',
+	} satisfies NumberEnum<0 | 1 | 2>,
 } as const
 
 export const Relay16Enums = {
@@ -708,6 +713,10 @@ const VickiCommandSchemas = {
 	getLedIndicationDuration: z.object({
 		commandNumber: z.string().optional().default('64'),
 	}),
+	setLedDisplayTempUnits: z.object({
+		value: z.number().min(0).max(2),
+		commandNumber: z.string().optional().default('55'),
+	}),
 }
 
 export namespace VickiCommandTypes {
@@ -755,6 +764,7 @@ export namespace VickiCommandTypes {
 	export type SetInternalAlgoTemporaryStateParams = z.infer<typeof VickiCommandSchemas.setInternalAlgoTemporaryState>
 	export type SetTemperatureLevelsParams = z.infer<typeof VickiCommandSchemas.setTemperatureLevels>
 	export type SetLedIndicationDurationParams = z.infer<typeof VickiCommandSchemas.setLedIndicationDuration>
+	export type SetLedDisplayTempUnitsParams = z.infer<typeof VickiCommandSchemas.setLedDisplayTempUnits>
 }
 
 /* --------------------------------------- RELAY 16 COMMANDS --------------------------------------- */

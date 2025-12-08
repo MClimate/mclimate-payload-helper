@@ -173,6 +173,11 @@ describe('VickiCommands payload encoder', () => {
 			new BaseCommand('SetTemperatureOffset', 0x53, '1C'),
 		)
 	})
+	test('SetLedDisplayTempUnits encodes units', () => {
+		expect(commandBuilder.build('SetLedDisplayTempUnits', { value: 1 })).toStrictEqual(
+			new BaseCommand('SetLedDisplayTempUnits', 0x55, '01'),
+		)
+	})
 
 	test('SetHeatingEvent encodes schedule payload', () => {
 		expect(

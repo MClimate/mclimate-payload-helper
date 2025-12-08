@@ -15,6 +15,11 @@ describe('Co2PirLiteCommands payload encoder', () => {
 			new BaseCommand('SetPIRSensorSensitivity', 0x3e, '40'),
 		)
 	})
+	test('SetCo2MeasurementPeriod encodes zone periods', () => {
+		expect(
+			commandBuilder.build('SetCo2MeasurementPeriod', { good_zone: 5, medium_zone: 15, bad_zone: 25 }),
+		).toStrictEqual(new BaseCommand('SetCo2MeasurementPeriod', 0x24, '05', '0F', '19'))
+	})
 
 	test('SetOccupancyTimeout encodes timeout into two bytes', () => {
 		expect(commandBuilder.build('SetOccupancyTimeout', { timeout: 60 })).toStrictEqual(
