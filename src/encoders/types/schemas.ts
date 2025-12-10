@@ -695,12 +695,12 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('68'),
 	}),
 	setTemperatureLevels: z.object({
-		scaleLevel0: z.number().min(5).max(30).multipleOf(0.1),
-		scaleLevel1: z.number().min(5).max(30).multipleOf(0.1),
-		scaleLevel2: z.number().min(5).max(30).multipleOf(0.1),
-		scaleLevel3: z.number().min(5).max(30).multipleOf(0.1),
-		scaleLevel4: z.number().min(5).max(30).multipleOf(0.1),
-		scaleLevel5: z.number().min(5).max(30).multipleOf(0.1),
+		level0: z.number().min(5).max(30).multipleOf(0.1),
+		level1: z.number().min(5).max(30).multipleOf(0.1),
+		level2: z.number().min(5).max(30).multipleOf(0.1),
+		level3: z.number().min(5).max(30).multipleOf(0.1),
+		level4: z.number().min(5).max(30).multipleOf(0.1),
+		level5: z.number().min(5).max(30).multipleOf(0.1),
 		commandNumber: z.string().optional().default('69'),
 	}),
 	getTemperatureLevels: z.object({

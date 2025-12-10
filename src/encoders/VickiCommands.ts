@@ -1064,12 +1064,12 @@ export class VickiCommands extends GeneralCommands {
 
 			// Convert each temperature to a value multiplied by 10
 			// and use dec2hex to convert to MSB/LSB hex values
-			const level0 = dec2hex(params.scaleLevel0 * 10)
-			const level1 = dec2hex(params.scaleLevel1 * 10)
-			const level2 = dec2hex(params.scaleLevel2 * 10)
-			const level3 = dec2hex(params.scaleLevel3 * 10)
-			const level4 = dec2hex(params.scaleLevel4 * 10)
-			const level5 = dec2hex(params.scaleLevel5 * 10)
+			const level0 = dec2hex(params.level0 * 10)
+			const level1 = dec2hex(params.level1 * 10)
+			const level2 = dec2hex(params.level2 * 10)
+			const level3 = dec2hex(params.level3 * 10)
+			const level4 = dec2hex(params.level4 * 10)
+			const level5 = dec2hex(params.level5 * 10)
 
 			return new BaseCommand(
 				'SetTemperatureLevels',

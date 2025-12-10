@@ -256,12 +256,12 @@ describe('VickiCommands payload encoder', () => {
 	test('SetTemperatureLevels encodes six level temperatures', () => {
 		expect(
 			commandBuilder.build('SetTemperatureLevels', {
-				scaleLevel0: 5.0,
-				scaleLevel1: 10.0,
-				scaleLevel2: 15.0,
-				scaleLevel3: 20.0,
-				scaleLevel4: 22.5,
-				scaleLevel5: 25.0,
+				level0: 5.0,
+				level1: 10.0,
+				level2: 15.0,
+				level3: 20.0,
+				level4: 22.5,
+				level5: 25.0,
 			}),
 		).toStrictEqual(new BaseCommand('SetTemperatureLevels', 0x69, '0032', '0064', '0096', '00C8', '00E1', '00FA'))
 	})
