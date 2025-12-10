@@ -1717,7 +1717,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						let data
 						if (deviceType === DeviceType.Vicki) {
 							command_len = 1
-							data = { displayTemperatureUnits: parseInt(commands[i + 1], 16) }
+							data = { ledDisplayTempUnits: parseInt(commands[i + 1], 16) }
 						} else if (deviceType === DeviceType.Relay16 || deviceType === DeviceType.Relay16Dry) {
 							command_len = 3
 							const state = parseInt(commands[i + 1], 16)
