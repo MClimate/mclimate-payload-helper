@@ -50,7 +50,7 @@ describe('Vicki payload decoder', () => {
 				hardware: 26,
 				software: 43,
 			},
-			displayTemperatureUnits: 1,
+			ledDisplayTempUnits: 1,
 		})
 	})
 	test('keepalive with response of commands heating events', () => {
