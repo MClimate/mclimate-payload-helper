@@ -212,6 +212,21 @@ export const Co2PirLiteEnums = {
 	} satisfies NumberEnum<0 | 1>,
 } as const
 
+export const PirOnlyEnums = {
+	setPIRSensorState: {
+		0: 'Disabled',
+		1: 'Enabled',
+	} satisfies NumberEnum<0 | 1>,
+	setLightSensorState: {
+		0: 'Disabled',
+		1: 'Enabled',
+	} satisfies NumberEnum<0 | 1>,
+	setPIRDemoMode: {
+		0: 'Disabled',
+		1: 'Enabled',
+	} satisfies NumberEnum<0 | 1>,
+} as const
+
 /* ---------------------------------------GENERAL COMMANDS--------------------------------------- */
 
 const GeneralCommandSchemas = {
@@ -2099,6 +2114,65 @@ export namespace MultiSensorCommandTypes {
 	export type SetPirActiveReportingPeriodParams = z.infer<typeof MultiSensorCommandSchemas.setPirActiveReportingPeriod>
 }
 
+/* --------------------------------------- PIR ONLY COMMANDS --------------------------------------- */
+const PirOnlyCommandSchemas = {
+	...GeneralCommandSchemas,
+	setLightSensorState: z.object({
+		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
+		commandNumber: z.string().optional().default('1e'),
+	}),
+	getLightSensorState: z.object({
+		commandNumber: z.string().optional().default('1f'),
+	}),
+	setLedBrightness: z.object({
+		red: z.number().int().min(0).max(100),
+		green: z.number().int().min(0).max(100),
+		blue: z.number().int().min(0).max(100),
+		commandNumber: z.string().optional().default('21'),
+	}),
+	getLedBrightness: z.object({
+		commandNumber: z.string().optional().default('22'),
+	}),
+	setPIRSensorState: z.object({
+		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
+		commandNumber: z.string().optional().default('36'),
+	}),
+	getPIRSensorState: z.object({
+		commandNumber: z.string().optional().default('37'),
+	}),
+	setOccupancyTimeout: z.object({
+		timeout: z.number().min(0).max(65535),
+		commandNumber: z.string().optional().default('38'),
+	}),
+	getOccupancyTimeout: z.object({
+		commandNumber: z.string().optional().default('39'),
+	}),
+	setPIRDemoMode: z.object({
+		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
+		commandNumber: z.string().optional().default('3a'),
+	}),
+	getPIRDemoMode: z.object({
+		commandNumber: z.string().optional().default('3b'),
+	}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
+}
+
+export namespace PirOnlyCommandTypes {
+	export type SetLightSensorStateParams = z.infer<typeof PirOnlyCommandSchemas.setLightSensorState>
+	export type GetLightSensorStateParams = z.infer<typeof PirOnlyCommandSchemas.getLightSensorState>
+	export type SetLedBrightnessParams = z.infer<typeof PirOnlyCommandSchemas.setLedBrightness>
+	export type GetLedBrightnessParams = z.infer<typeof PirOnlyCommandSchemas.getLedBrightness>
+	export type SetPIRSensorStateParams = z.infer<typeof PirOnlyCommandSchemas.setPIRSensorState>
+	export type GetPIRSensorStateParams = z.infer<typeof PirOnlyCommandSchemas.getPIRSensorState>
+	export type SetOccupancyTimeoutParams = z.infer<typeof PirOnlyCommandSchemas.setOccupancyTimeout>
+	export type GetOccupancyTimeoutParams = z.infer<typeof PirOnlyCommandSchemas.getOccupancyTimeout>
+	export type SetPIRDemoModeParams = z.infer<typeof PirOnlyCommandSchemas.setPIRDemoMode>
+	export type GetPIRDemoModeParams = z.infer<typeof PirOnlyCommandSchemas.getPIRDemoMode>
+	export type RestartDeviceParams = z.infer<typeof PirOnlyCommandSchemas.restartDevice>
+}
+
 /* --------------------------------------- EXPORT ALL SCHEMA GROUPS --------------------------------------- */
 export const DeviceCommandSchemas = {
 	GeneralCommandSchemas,
@@ -2126,4 +2200,5 @@ export const DeviceCommandSchemas = {
 	Co2PirLiteCommandSchemas,
 	MelissaCommandSchemas,
 	MultiSensorCommandSchemas,
+	PirOnlyCommandSchemas,
 }

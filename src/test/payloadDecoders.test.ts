@@ -922,6 +922,39 @@ describe('HTPirLite payload decoder', () => {
 		})
 	})
 })
+describe('PirOnly payload decoder', () => {
+	test('simple keepalive(doc)', () => {
+		expect(uplinkPayloadParser('0102888002F1C80101AF', DeviceType.PirOnly)).toStrictEqual({
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			light: 753,
+			batteryVoltage: 3.33,
+			occupied: true,
+			pirTriggerCount: 431,
+		})
+	})
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('0102809903E1CC010012', DeviceType.PirOnly)).toStrictEqual({
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			light: 993,
+			batteryVoltage: 3.36,
+			occupied: true,
+			pirTriggerCount: 18,
+		})
+	})
+	test('keepalive with response of preloaded code', () => {
+		expect(uplinkPayloadParser('120A0102809903E1CC010012', DeviceType.PirOnly)).toStrictEqual({
+			keepAliveTime: 10,
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			light: 993,
+			batteryVoltage: 3.36,
+			occupied: true,
+			pirTriggerCount: 18,
+		})
+	})
+})
 describe('MultiSensor payload decoder', () => {
 	test('simple keepalive', () => {
 		expect(uplinkPayloadParser('820F17CB2DA80D0600040A3A01DD03', DeviceType.MultiSensor)).toStrictEqual({

@@ -20,4 +20,5 @@ export enum DeviceType {
 	CO2PirLite = 'co2_pir_lite',
 	HTPirLite = 'ht_pir_lite',
 	MultiSensor = 'multisensor',
+	PirOnly = 'pir_only',
 }
