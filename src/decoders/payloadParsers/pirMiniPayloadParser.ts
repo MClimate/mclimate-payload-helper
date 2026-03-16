@@ -3,7 +3,7 @@ import { DeviceType } from '@/decoders/payloadParsers/types'
 import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
-interface PirOnlyData {
+interface PirMiniData {
 	sensorTemperature?: number
 	relativeHumidity?: number
 	light?: number
@@ -12,12 +12,12 @@ interface PirOnlyData {
 	pirTriggerCount?: number
 }
 
-export const pirOnlyPayloadParser = (hexData: string) => {
+export const pirMiniPayloadParser = (hexData: string) => {
 	const deviceData: Record<string, unknown> = {}
 
 	try {
 		const handleKeepAliveData = (bytes: number[]) => {
-			const keepaliveData: PirOnlyData = {}
+			const keepaliveData: PirMiniData = {}
 
 			// Byte 1 (bits 1:0) and Byte 2: Internal temperature sensor data
 			// Formula: t[°C] = (T[9:0] - 400) / 10
@@ -63,7 +63,7 @@ export const pirOnlyPayloadParser = (hexData: string) => {
 				handleKeepAliveData(byteArray)
 			} else {
 				// parse command answers
-				const data = commandsReadingHelper(hexData, 20, DeviceType.PirOnly) as Record<string, unknown> | undefined
+				const data = commandsReadingHelper(hexData, 20, DeviceType.PirMini) as Record<string, unknown> | undefined
 				if (!data) return
 				const shouldKeepAlive = Object.prototype.hasOwnProperty.call(data, 'decodeKeepalive')
 				if ('decodeKeepalive' in data) {
@@ -74,7 +74,7 @@ export const pirOnlyPayloadParser = (hexData: string) => {
 
 				// Handle the remaining keepalive data if present
 				if (shouldKeepAlive) {
-					// Extract the last 10 bytes which contain keepalive data for PIR Only
+					// Extract the last 10 bytes which contain keepalive data for PIR Mini
 					const keepaliveData = hexData.slice(-20) // 10 bytes = 20 hex chars
 					const dataToPass = byteArrayParser(keepaliveData)
 					if (!dataToPass) return
@@ -87,7 +87,7 @@ export const pirOnlyPayloadParser = (hexData: string) => {
 		throw new CustomError({
 			message: `Unhandled data`,
 			hexData: hexData,
-			deviceType: 'pir_only',
+			deviceType: 'pir_mini',
 			originalError: e as Error,
 		})
 	}

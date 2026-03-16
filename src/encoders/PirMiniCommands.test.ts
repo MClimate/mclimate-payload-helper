@@ -1,8 +1,8 @@
 import { BaseCommand, CommandBuilder } from '@/encoders'
 import { CustomError } from '@/utils'
 
-describe('PirOnlyCommands payload encoder', () => {
-	const commandBuilder = new CommandBuilder('pir_only')
+describe('PirMiniCommands payload encoder', () => {
+	const commandBuilder = new CommandBuilder('pir_mini')
 
 	test('SetLightSensorState encodes enabled flag', () => {
 		expect(commandBuilder.build('SetLightSensorState', { state: 1 })).toStrictEqual(

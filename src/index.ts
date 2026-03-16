@@ -21,7 +21,7 @@ export {
 	Relay16DryCommands,
 	Co2PirLiteCommands,
 	HTPirLiteCommands,
-	PirOnlyCommands,
+	PirMiniCommands,
 } from '@/encoders'
 export {
 	DeviceCommandSchemas,
@@ -35,6 +35,6 @@ export {
 	FloodEnums,
 	Co2PirLiteEnums,
 	HTPirLiteEnums,
-	PirOnlyEnums,
+	PirMiniEnums,
 } from '@/encoders/types'
 export { CustomError } from '@/utils'

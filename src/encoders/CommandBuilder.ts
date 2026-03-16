@@ -21,7 +21,7 @@ import {
 	Co2PirLiteCommands,
 	MelissaCommands,
 	MultiSensorCommands,
-	PirOnlyCommands,
+	PirMiniCommands,
 } from '@/encoders'
 
 import { CustomError, toCamelCase } from '@/utils'
@@ -53,7 +53,7 @@ export class CommandBuilder {
 			co2_pir_lite: Co2PirLiteCommands,
 			melissa_lorawan: MelissaCommands,
 			multisensor: MultiSensorCommands,
-			pir_only: PirOnlyCommands,
+			pir_mini: PirMiniCommands,
 		}
 	}
 

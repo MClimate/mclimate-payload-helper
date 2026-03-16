@@ -922,9 +922,9 @@ describe('HTPirLite payload decoder', () => {
 		})
 	})
 })
-describe('PirOnly payload decoder', () => {
+describe('PirMini payload decoder', () => {
 	test('simple keepalive(doc)', () => {
-		expect(uplinkPayloadParser('0102888002F1C80101AF', DeviceType.PirOnly)).toStrictEqual({
+		expect(uplinkPayloadParser('0102888002F1C80101AF', DeviceType.PirMini)).toStrictEqual({
 			sensorTemperature: 24.8,
 			relativeHumidity: 50,
 			light: 753,
@@ -934,7 +934,7 @@ describe('PirOnly payload decoder', () => {
 		})
 	})
 	test('simple keepalive', () => {
-		expect(uplinkPayloadParser('0102809903E1CC010012', DeviceType.PirOnly)).toStrictEqual({
+		expect(uplinkPayloadParser('0102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
 			sensorTemperature: 24,
 			relativeHumidity: 59.77,
 			light: 993,
@@ -944,7 +944,7 @@ describe('PirOnly payload decoder', () => {
 		})
 	})
 	test('keepalive with response of preloaded code', () => {
-		expect(uplinkPayloadParser('120A0102809903E1CC010012', DeviceType.PirOnly)).toStrictEqual({
+		expect(uplinkPayloadParser('120A0102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
 			keepAliveTime: 10,
 			sensorTemperature: 24,
 			relativeHumidity: 59.77,

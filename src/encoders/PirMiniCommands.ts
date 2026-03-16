@@ -1,15 +1,15 @@
 import { GeneralCommands } from '@/encoders'
 import { applyMixins, delMethods } from '@/utils'
-import { PirOnlyCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
+import { PirMiniCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 import { BaseCommand } from '@/encoders'
 import { ZodError } from 'zod'
 import { CustomError } from '@/utils'
 import { decToHex } from '@/utils'
 
-export class PirOnlyCommands extends GeneralCommands {
-	static setLightSensorState(params: PirOnlyCommandTypes.SetLightSensorStateParams) {
+export class PirMiniCommands extends GeneralCommands {
+	static setLightSensorState(params: PirMiniCommandTypes.SetLightSensorStateParams) {
 		try {
-			DeviceCommandSchemas.PirOnlyCommandSchemas.setLightSensorState.parse(params)
+			DeviceCommandSchemas.PirMiniCommandSchemas.setLightSensorState.parse(params)
 			const { state } = params
 			return new BaseCommand('SetLightSensorState', 0x1e, decToHex(state))
 		} catch (e) {
@@ -33,9 +33,9 @@ export class PirOnlyCommands extends GeneralCommands {
 		return new BaseCommand('GetLightSensorState', 0x1f)
 	}
 
-	static setLedBrightness(params: PirOnlyCommandTypes.SetLedBrightnessParams) {
+	static setLedBrightness(params: PirMiniCommandTypes.SetLedBrightnessParams) {
 		try {
-			DeviceCommandSchemas.PirOnlyCommandSchemas.setLedBrightness.parse(params)
+			DeviceCommandSchemas.PirMiniCommandSchemas.setLedBrightness.parse(params)
 			const { red, green, blue } = params
 			return new BaseCommand('SetLedBrightness', 0x21, decToHex(red), decToHex(green), decToHex(blue))
 		} catch (e) {
@@ -59,9 +59,9 @@ export class PirOnlyCommands extends GeneralCommands {
 		return new BaseCommand('GetLedBrightness', 0x22)
 	}
 
-	static setPIRSensorState(params: PirOnlyCommandTypes.SetPIRSensorStateParams) {
+	static setPIRSensorState(params: PirMiniCommandTypes.SetPIRSensorStateParams) {
 		try {
-			DeviceCommandSchemas.PirOnlyCommandSchemas.setPIRSensorState.parse(params)
+			DeviceCommandSchemas.PirMiniCommandSchemas.setPIRSensorState.parse(params)
 			const { state } = params
 			return new BaseCommand('SetPIRSensorState', 0x36, decToHex(state))
 		} catch (e) {
@@ -85,9 +85,9 @@ export class PirOnlyCommands extends GeneralCommands {
 		return new BaseCommand('GetPIRSensorState', 0x37)
 	}
 
-	static setOccupancyTimeout(params: PirOnlyCommandTypes.SetOccupancyTimeoutParams) {
+	static setOccupancyTimeout(params: PirMiniCommandTypes.SetOccupancyTimeoutParams) {
 		try {
-			DeviceCommandSchemas.PirOnlyCommandSchemas.setOccupancyTimeout.parse(params)
+			DeviceCommandSchemas.PirMiniCommandSchemas.setOccupancyTimeout.parse(params)
 			const { timeout } = params
 			// Convert timeout to two bytes (high byte and low byte)
 			const highByte = (timeout >> 8) & 0xff
@@ -115,9 +115,9 @@ export class PirOnlyCommands extends GeneralCommands {
 		return new BaseCommand('GetOccupancyTimeout', 0x39)
 	}
 
-	static setPIRDemoMode(params: PirOnlyCommandTypes.SetPIRDemoModeParams) {
+	static setPIRDemoMode(params: PirMiniCommandTypes.SetPIRDemoModeParams) {
 		try {
-			DeviceCommandSchemas.PirOnlyCommandSchemas.setPIRDemoMode.parse(params)
+			DeviceCommandSchemas.PirMiniCommandSchemas.setPIRDemoMode.parse(params)
 			const { state } = params
 			return new BaseCommand('SetPIRDemoMode', 0x3a, decToHex(state))
 		} catch (e) {
@@ -146,6 +146,6 @@ export class PirOnlyCommands extends GeneralCommands {
 	}
 }
 
-applyMixins(PirOnlyCommands, [GeneralCommands])
+applyMixins(PirMiniCommands, [GeneralCommands])
 
-delMethods(PirOnlyCommands, [])
+delMethods(PirMiniCommands, [])

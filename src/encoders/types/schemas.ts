@@ -212,7 +212,7 @@ export const Co2PirLiteEnums = {
 	} satisfies NumberEnum<0 | 1>,
 } as const
 
-export const PirOnlyEnums = {
+export const PirMiniEnums = {
 	setPIRSensorState: {
 		0: 'Disabled',
 		1: 'Enabled',
@@ -2114,8 +2114,8 @@ export namespace MultiSensorCommandTypes {
 	export type SetPirActiveReportingPeriodParams = z.infer<typeof MultiSensorCommandSchemas.setPirActiveReportingPeriod>
 }
 
-/* --------------------------------------- PIR ONLY COMMANDS --------------------------------------- */
-const PirOnlyCommandSchemas = {
+/* --------------------------------------- PIR MINI COMMANDS --------------------------------------- */
+const PirMiniCommandSchemas = {
 	...GeneralCommandSchemas,
 	setLightSensorState: z.object({
 		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
@@ -2159,18 +2159,18 @@ const PirOnlyCommandSchemas = {
 	}),
 }
 
-export namespace PirOnlyCommandTypes {
-	export type SetLightSensorStateParams = z.infer<typeof PirOnlyCommandSchemas.setLightSensorState>
-	export type GetLightSensorStateParams = z.infer<typeof PirOnlyCommandSchemas.getLightSensorState>
-	export type SetLedBrightnessParams = z.infer<typeof PirOnlyCommandSchemas.setLedBrightness>
-	export type GetLedBrightnessParams = z.infer<typeof PirOnlyCommandSchemas.getLedBrightness>
-	export type SetPIRSensorStateParams = z.infer<typeof PirOnlyCommandSchemas.setPIRSensorState>
-	export type GetPIRSensorStateParams = z.infer<typeof PirOnlyCommandSchemas.getPIRSensorState>
-	export type SetOccupancyTimeoutParams = z.infer<typeof PirOnlyCommandSchemas.setOccupancyTimeout>
-	export type GetOccupancyTimeoutParams = z.infer<typeof PirOnlyCommandSchemas.getOccupancyTimeout>
-	export type SetPIRDemoModeParams = z.infer<typeof PirOnlyCommandSchemas.setPIRDemoMode>
-	export type GetPIRDemoModeParams = z.infer<typeof PirOnlyCommandSchemas.getPIRDemoMode>
-	export type RestartDeviceParams = z.infer<typeof PirOnlyCommandSchemas.restartDevice>
+export namespace PirMiniCommandTypes {
+	export type SetLightSensorStateParams = z.infer<typeof PirMiniCommandSchemas.setLightSensorState>
+	export type GetLightSensorStateParams = z.infer<typeof PirMiniCommandSchemas.getLightSensorState>
+	export type SetLedBrightnessParams = z.infer<typeof PirMiniCommandSchemas.setLedBrightness>
+	export type GetLedBrightnessParams = z.infer<typeof PirMiniCommandSchemas.getLedBrightness>
+	export type SetPIRSensorStateParams = z.infer<typeof PirMiniCommandSchemas.setPIRSensorState>
+	export type GetPIRSensorStateParams = z.infer<typeof PirMiniCommandSchemas.getPIRSensorState>
+	export type SetOccupancyTimeoutParams = z.infer<typeof PirMiniCommandSchemas.setOccupancyTimeout>
+	export type GetOccupancyTimeoutParams = z.infer<typeof PirMiniCommandSchemas.getOccupancyTimeout>
+	export type SetPIRDemoModeParams = z.infer<typeof PirMiniCommandSchemas.setPIRDemoMode>
+	export type GetPIRDemoModeParams = z.infer<typeof PirMiniCommandSchemas.getPIRDemoMode>
+	export type RestartDeviceParams = z.infer<typeof PirMiniCommandSchemas.restartDevice>
 }
 
 /* --------------------------------------- EXPORT ALL SCHEMA GROUPS --------------------------------------- */
@@ -2200,5 +2200,5 @@ export const DeviceCommandSchemas = {
 	Co2PirLiteCommandSchemas,
 	MelissaCommandSchemas,
 	MultiSensorCommandSchemas,
-	PirOnlyCommandSchemas,
+	PirMiniCommandSchemas,
 }
