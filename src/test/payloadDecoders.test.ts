@@ -927,7 +927,7 @@ describe('PirMini payload decoder', () => {
 		expect(uplinkPayloadParser('0102888002F1C80101AF', DeviceType.PirMini)).toStrictEqual({
 			sensorTemperature: 24.8,
 			relativeHumidity: 50,
-			light: 753,
+			lux: 753,
 			batteryVoltage: 3.33,
 			occupied: true,
 			pirTriggerCount: 431,
@@ -937,7 +937,7 @@ describe('PirMini payload decoder', () => {
 		expect(uplinkPayloadParser('0102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
 			sensorTemperature: 24,
 			relativeHumidity: 59.77,
-			light: 993,
+			lux: 993,
 			batteryVoltage: 3.36,
 			occupied: true,
 			pirTriggerCount: 18,
@@ -948,7 +948,7 @@ describe('PirMini payload decoder', () => {
 			keepAliveTime: 10,
 			sensorTemperature: 24,
 			relativeHumidity: 59.77,
-			light: 993,
+			lux: 993,
 			batteryVoltage: 3.36,
 			occupied: true,
 			pirTriggerCount: 18,

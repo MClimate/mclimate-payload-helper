@@ -6,7 +6,7 @@ import { CustomError } from '@/utils'
 interface PirMiniData {
 	sensorTemperature?: number
 	relativeHumidity?: number
-	light?: number
+	lux?: number
 	batteryVoltage?: number
 	occupied?: boolean
 	pirTriggerCount?: number
@@ -33,10 +33,10 @@ export const pirMiniPayloadParser = (hexData: string) => {
 			// Formula: RH[%] = (XX * 100) / 256
 			keepaliveData.relativeHumidity = Number(((bytes[3] * 100) / 256).toFixed(2))
 
-			// Bytes 4-5: Light sensor data
+			// Bytes 4-5: Light sensor data (lux)
 			// Byte 4: Light sensor data bits [15:8]
 			// Byte 5: Light sensor data bits [7:0]
-			keepaliveData.light = (bytes[4] << 8) | bytes[5]
+			keepaliveData.lux = (bytes[4] << 8) | bytes[5]
 
 			// Byte 6: Battery Voltage
 			// Battery voltage [mV] = ((XX * 2200) / 255) + 1600
