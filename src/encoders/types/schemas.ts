@@ -2149,10 +2149,10 @@ const PirMiniCommandSchemas = {
 	}),
 	setPIRDemoMode: z.object({
 		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
-		commandNumber: z.string().optional().default('3a'),
+		commandNumber: z.string().optional().default('3c'),
 	}),
 	getPIRDemoMode: z.object({
-		commandNumber: z.string().optional().default('3b'),
+		commandNumber: z.string().optional().default('3d'),
 	}),
 	restartDevice: z.object({
 		commandNumber: z.string().optional().default('a5'),

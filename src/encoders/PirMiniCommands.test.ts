@@ -36,7 +36,7 @@ describe('PirMiniCommands payload encoder', () => {
 
 	test('SetPIRDemoMode encodes enabled flag', () => {
 		expect(commandBuilder.build('SetPIRDemoMode', { state: 1 })).toStrictEqual(
-			new BaseCommand('SetPIRDemoMode', 0x3a, '01'),
+			new BaseCommand('SetPIRDemoMode', 0x3c, '01'),
 		)
 	})
 

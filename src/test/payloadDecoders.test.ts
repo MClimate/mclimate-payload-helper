@@ -954,6 +954,28 @@ describe('PirMini payload decoder', () => {
 			pirTriggerCount: 18,
 		})
 	})
+	test('PIR event room occupied (0x3A) with keepalive', () => {
+		expect(uplinkPayloadParser('3A0102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
+			event: 'occupied',
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			lux: 993,
+			batteryVoltage: 3.36,
+			occupied: true,
+			pirTriggerCount: 18,
+		})
+	})
+	test('PIR event room unoccupied (0x3B) with keepalive', () => {
+		expect(uplinkPayloadParser('3B0102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
+			event: 'unoccupied',
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			lux: 993,
+			batteryVoltage: 3.36,
+			occupied: true,
+			pirTriggerCount: 18,
+		})
+	})
 })
 describe('MultiSensor payload decoder', () => {
 	test('simple keepalive', () => {

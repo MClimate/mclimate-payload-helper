@@ -119,7 +119,7 @@ export class PirMiniCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.PirMiniCommandSchemas.setPIRDemoMode.parse(params)
 			const { state } = params
-			return new BaseCommand('SetPIRDemoMode', 0x3a, decToHex(state))
+			return new BaseCommand('SetPIRDemoMode', 0x3c, decToHex(state))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -138,7 +138,7 @@ export class PirMiniCommands extends GeneralCommands {
 	}
 
 	static getPIRDemoMode() {
-		return new BaseCommand('GetPIRDemoMode', 0x3b)
+		return new BaseCommand('GetPIRDemoMode', 0x3d)
 	}
 
 	static restartDevice() {

@@ -1216,12 +1216,52 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '3a':
 				{
 					try {
-						command_len = 1
-						const data = { sensorMode: parseInt(commands[i + 1], 16) }
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						if (deviceType === DeviceType.PirMini) {
+							const data = { event: 'occupied' }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+							command_len = 0
+						} else {
+							command_len = 1
+							const data = { sensorMode: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '3a'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '3b':
+				{
+					try {
+						const data = { event: 'unoccupied' }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						command_len = 0
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '3b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '3c':
+				{
+					try {
+						command_len = 1
+						const data = { pirDemoMode: parseInt(commands[i + 1], 16) }
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '3c'`,
 							hexData,
 							command,
 							deviceType,
@@ -1237,6 +1277,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 3
 							const ki = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}`, 16) / 131072
 							const data = { integralGain: Number(ki).toFixed(5) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.PirMini) {
+							command_len = 1
+							const data = { pirDemoMode: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
