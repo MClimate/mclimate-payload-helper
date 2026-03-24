@@ -17,8 +17,8 @@ describe('PirMiniCommands payload encoder', () => {
 	})
 
 	test('SetLedBrightness encodes RGB values', () => {
-		expect(commandBuilder.build('SetLedBrightness', { red: 47, green: 42, blue: 59 })).toStrictEqual(
-			new BaseCommand('SetLedBrightness', 0x21, '2F', '2A', '3B'),
+		expect(commandBuilder.build('SetLedBrightness', { value: 47 })).toStrictEqual(
+			new BaseCommand('SetLedBrightness', 0x21, '2F'),
 		)
 	})
 
@@ -49,7 +49,7 @@ describe('PirMiniCommands payload encoder', () => {
 	})
 
 	test('Invalid SetLedBrightness throws validation error', () => {
-		expect(() => commandBuilder.build('SetLedBrightness', { red: 101, green: 0, blue: 0 })).toThrow(CustomError)
+		expect(() => commandBuilder.build('SetLedBrightness', { value: 101 })).toThrow(CustomError)
 	})
 
 	test('Invalid SetLightSensorState throws validation error', () => {

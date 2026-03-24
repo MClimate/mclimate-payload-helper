@@ -36,8 +36,8 @@ export class PirMiniCommands extends GeneralCommands {
 	static setLedBrightness(params: PirMiniCommandTypes.SetLedBrightnessParams) {
 		try {
 			DeviceCommandSchemas.PirMiniCommandSchemas.setLedBrightness.parse(params)
-			const { red, green, blue } = params
-			return new BaseCommand('SetLedBrightness', 0x21, decToHex(red), decToHex(green), decToHex(blue))
+			const { value } = params
+			return new BaseCommand('SetLedBrightness', 0x21, decToHex(value))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({

@@ -2125,9 +2125,7 @@ const PirMiniCommandSchemas = {
 		commandNumber: z.string().optional().default('1f'),
 	}),
 	setLedBrightness: z.object({
-		red: z.number().int().min(0).max(100),
-		green: z.number().int().min(0).max(100),
-		blue: z.number().int().min(0).max(100),
+		value: z.number().int().min(0).max(100),
 		commandNumber: z.string().optional().default('21'),
 	}),
 	getLedBrightness: z.object({

@@ -596,6 +596,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 1
 							const data = { primaryOperationalMode: commands[i + 1] }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.PirMini) {
+							command_len = 1
+							const data = { lightSensorState: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else if (deviceType === DeviceType.DskDevice) {
 							command_len = 1
 							const data = { status: parseInt(commands[i + 1], 16) }
@@ -684,6 +688,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.DskDevice) {
 							command_len = 2
 							const data = { onTime: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.PirMini) {
+							command_len = 1
+							const data = { ledBrightness: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
 					} catch (e) {
