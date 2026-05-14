@@ -100,6 +100,10 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		}
 	}
 
+	static getFctOperationalMode() {
+		return new BaseCommand('GetFctOperationalMode', 0x53)
+	}
+
 	static setValveOpenCloseTime(params: FanCoilThermostatCommandTypes.SetValveOpenCloseTimeParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setValveOpenCloseTime.parse(params)

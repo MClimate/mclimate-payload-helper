@@ -519,6 +519,12 @@ describe('FCT payload decoder', () => {
 			keepAliveTime: 10,
 		})
 	})
+
+	test('GetFctOperationalMode response decodes fctOperationalMode', () => {
+		expect(uplinkPayloadParser('5302', DeviceType.FanCoilThermostat)).toStrictEqual({
+			fctOperationalMode: 2,
+		})
+	})
 })
 
 describe('CO2 Display payload decoder', () => {

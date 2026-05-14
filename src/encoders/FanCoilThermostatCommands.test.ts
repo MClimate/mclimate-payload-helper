@@ -26,6 +26,10 @@ describe('FanCoilThermostatCommands payload encoder', () => {
 		)
 	})
 
+	test('GetFctOperationalMode emits get command', () => {
+		expect(commandBuilder.build('GetFctOperationalMode')).toStrictEqual(new BaseCommand('GetFctOperationalMode', 0x53))
+	})
+
 	test('SetValveOpenCloseTime encodes time', () => {
 		expect(commandBuilder.build('SetValveOpenCloseTime', { value: 15 })).toStrictEqual(
 			new BaseCommand('SetValveOpenCloseTime', 0x31, '0F'),

@@ -1203,6 +1203,9 @@ const FanCoilThermostatCommandSchemas = {
 		value: z.number().min(0).max(2), // 0: ventilation, 1: heating, 2: cooling
 		commandNumber: z.string().optional().default('52'),
 	}),
+	getFctOperationalMode: z.object({
+		commandNumber: z.string().optional().default('53'),
+	}),
 	setAllowedOperationalModes: z.object({
 		value: z.number().min(0).max(2),
 		commandNumber: z.string().optional().default('54'),
