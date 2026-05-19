@@ -95,4 +95,8 @@ describe('TValveCommands payload encoder', () => {
 	test('Invalid SetOpenCloseTime throws validation error', () => {
 		expect(() => commandBuilder.build('SetOpenCloseTime', { openingTime: -1, closingTime: 1 })).toThrow(CustomError)
 	})
+
+	test('DeactivateDevice emits deactivate command', () => {
+		expect(commandBuilder.build('DeactivateDevice')).toStrictEqual(new BaseCommand('DeactivateDevice', 0x0b))
+	})
 })

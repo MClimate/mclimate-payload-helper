@@ -34,6 +34,65 @@ describe('VickiCommands payload encoder', () => {
 		)
 	})
 
+	test('GetTargetTemperaturePrecisely emits get command', () => {
+		expect(commandBuilder.build('GetTargetTemperaturePrecisely')).toStrictEqual(
+			new BaseCommand('GetTargetTemperaturePrecisely', 0x52),
+		)
+	})
+
+	test('SetAppEuiAndAppKey encodes appEui and appKey hex blobs', () => {
+		expect(
+			commandBuilder.build('SetAppEuiAndAppKey', {
+				appEui: 'AABBCCDD11223344',
+				appKey: 'AABBCCDDEEFF00010203040506070809',
+			}),
+		).toStrictEqual(new BaseCommand('SetAppEuiAndAppKey', 0x33, 'AABBCCDD11223344', 'AABBCCDDEEFF00010203040506070809'))
+	})
+
+	test('Invalid SetAppEuiAndAppKey throws validation error', () => {
+		expect(() =>
+			commandBuilder.build('SetAppEuiAndAppKey', { appEui: 'ZZ', appKey: 'AABBCCDDEEFF00010203040506070809' }),
+		).toThrow(CustomError)
+	})
+
+	test('SetTargetTemperatureFahrenheit encodes Fahrenheit value', () => {
+		expect(commandBuilder.build('SetTargetTemperatureFahrenheit', { targetTemperature: 72 })).toStrictEqual(
+			new BaseCommand('SetTargetTemperatureFahrenheit', 0x57, '48'),
+		)
+	})
+
+	test('Invalid SetTargetTemperatureFahrenheit throws validation error', () => {
+		expect(() => commandBuilder.build('SetTargetTemperatureFahrenheit', { targetTemperature: 100 })).toThrow(CustomError)
+	})
+
+	test('SetD2dNotificationDeviceAppKey encodes appKey hex blob', () => {
+		expect(
+			commandBuilder.build('SetD2dNotificationDeviceAppKey', { appKey: '112233445566778899AABBCCDDEEFF00' }),
+		).toStrictEqual(new BaseCommand('SetD2dNotificationDeviceAppKey', 0x6f, '112233445566778899AABBCCDDEEFF00'))
+	})
+
+	test('Invalid SetD2dNotificationDeviceAppKey throws validation error', () => {
+		expect(() => commandBuilder.build('SetD2dNotificationDeviceAppKey', { appKey: 'ZZ' })).toThrow(CustomError)
+	})
+
+	test('GetD2dNotificationDeviceAppKey emits get command', () => {
+		expect(commandBuilder.build('GetD2dNotificationDeviceAppKey')).toStrictEqual(
+			new BaseCommand('GetD2dNotificationDeviceAppKey', 0x70),
+		)
+	})
+
+	test('RequestListenForD2dNotificationDevice emits request command', () => {
+		expect(commandBuilder.build('RequestListenForD2dNotificationDevice')).toStrictEqual(
+			new BaseCommand('RequestListenForD2dNotificationDevice', 0x71),
+		)
+	})
+
+	test('SetOperationalMode accepts new mode 03 (HT-sensor D2D)', () => {
+		expect(commandBuilder.build('SetOperationalMode', { mode: '03' })).toStrictEqual(
+			new BaseCommand('SetOperationalMode', 0x0d, '03'),
+		)
+	})
+
 	test('SetExternalTemperature encodes temperature', () => {
 		expect(commandBuilder.build('SetExternalTemperature', { temp: 25 })).toStrictEqual(
 			new BaseCommand('SetExternalTemperature', 0x0f, '19'),

@@ -130,6 +130,10 @@ export class VickiCommands extends GeneralCommands {
 		}
 	}
 
+	static getTargetTemperaturePrecisely() {
+		return new BaseCommand('GetTargetTemperaturePrecisely', 0x52)
+	}
+
 	static setExternalTemperature(params: VickiCommandTypes.SetExternalTemperatureParams) {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setExternalTemperature.parse(params)
@@ -393,6 +397,28 @@ export class VickiCommands extends GeneralCommands {
 				throw new CustomError({
 					message: 'Error during SetTargetTemperatureAndMotorPosition execution',
 					command: 'SetTargetTemperatureAndMotorPosition',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static setAppEuiAndAppKey(params: VickiCommandTypes.SetAppEuiAndAppKeyParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setAppEuiAndAppKey.parse(params)
+			const { appEui, appKey } = params
+			return new BaseCommand('SetAppEuiAndAppKey', 0x33, appEui, appKey)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetAppEuiAndAppKey execution',
+					command: 'SetAppEuiAndAppKey',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetAppEuiAndAppKey execution',
+					command: 'SetAppEuiAndAppKey',
 					originalError: e as Error,
 				})
 			}
@@ -767,6 +793,56 @@ export class VickiCommands extends GeneralCommands {
 
 	static getLedDisplayTempUnits() {
 		return new BaseCommand('GetLedDisplayTempUnits', 0x56)
+	}
+
+	static setTargetTemperatureFahrenheit(params: VickiCommandTypes.SetTargetTemperatureFahrenheitParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setTargetTemperatureFahrenheit.parse(params)
+			return new BaseCommand('SetTargetTemperatureFahrenheit', 0x57, decToHex(params.targetTemperature))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetTargetTemperatureFahrenheit execution',
+					command: 'SetTargetTemperatureFahrenheit',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetTargetTemperatureFahrenheit execution',
+					command: 'SetTargetTemperatureFahrenheit',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static setD2dNotificationDeviceAppKey(params: VickiCommandTypes.SetD2dNotificationDeviceAppKeyParams) {
+		try {
+			DeviceCommandSchemas.VickiCommandSchemas.setD2dNotificationDeviceAppKey.parse(params)
+			return new BaseCommand('SetD2dNotificationDeviceAppKey', 0x6f, params.appKey)
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetD2dNotificationDeviceAppKey execution',
+					command: 'SetD2dNotificationDeviceAppKey',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetD2dNotificationDeviceAppKey execution',
+					command: 'SetD2dNotificationDeviceAppKey',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getD2dNotificationDeviceAppKey() {
+		return new BaseCommand('GetD2dNotificationDeviceAppKey', 0x70)
+	}
+
+	static requestListenForD2dNotificationDevice() {
+		return new BaseCommand('RequestListenForD2dNotificationDevice', 0x71)
 	}
 
 	static setHeatingEvent(params: VickiCommandTypes.SetHeatingEventParams) {

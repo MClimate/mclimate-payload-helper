@@ -2175,6 +2175,14 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 2
 							data = { overheatingRecoveryTime: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+						} else if (deviceType === DeviceType.Vicki) {
+							command_len = 16
+							data = {
+								d2dNotificationDeviceAppKey: commands
+									.slice(i + 1, i + 17)
+									.join('')
+									.toUpperCase(),
+							}
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -2221,6 +2229,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 1
 							data = { overcurrentRecoveryTemp: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.Vicki) {
+							command_len = 2
+							data = {
+								htSensorTemperature: ((parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)) / 10,
+							}
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
@@ -2860,6 +2873,44 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '9b'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case 'aa':
+				{
+					try {
+						if (deviceType === DeviceType.HTSensor) {
+							command_len = 1
+							const data = { d2dCommunicationState: parseInt(commands[i + 1], 16) === 1 }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command 'aa'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case 'ac':
+				{
+					try {
+						if (deviceType === DeviceType.HTSensor) {
+							command_len = 1
+							const data = { d2dCommunicationPeriod: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command 'ac'`,
 							hexData,
 							command,
 							deviceType,

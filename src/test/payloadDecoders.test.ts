@@ -20,6 +20,8 @@ describe('Vicki payload decoder', () => {
 			attachedBackplate: true,
 			perceiveAsOnline: true,
 			antiFreezeProtection: false,
+			d2dCommunicationReliable: false,
+			batteryTooLow: false,
 			targetTemperatureFloat: '27.00',
 			valveOpenness: 23,
 		})
@@ -43,6 +45,8 @@ describe('Vicki payload decoder', () => {
 			attachedBackplate: true,
 			perceiveAsOnline: true,
 			antiFreezeProtection: false,
+			d2dCommunicationReliable: false,
+			batteryTooLow: false,
 			targetTemperatureFloat: '27.00',
 			valveOpenness: 23,
 			keepAliveTime: 3,
@@ -162,6 +166,8 @@ describe('Vicki payload decoder', () => {
 			attachedBackplate: true,
 			perceiveAsOnline: true,
 			antiFreezeProtection: false,
+			d2dCommunicationReliable: false,
+			batteryTooLow: false,
 			targetTemperatureFloat: '27.00',
 			valveOpenness: 23,
 		})
@@ -220,6 +226,8 @@ describe('Vicki payload decoder', () => {
 			attachedBackplate: true,
 			perceiveAsOnline: true,
 			antiFreezeProtection: false,
+			d2dCommunicationReliable: false,
+			batteryTooLow: false,
 			targetTemperatureFloat: '27.00',
 			valveOpenness: 23,
 		})
@@ -265,8 +273,74 @@ describe('Vicki payload decoder', () => {
 			attachedBackplate: true,
 			perceiveAsOnline: true,
 			antiFreezeProtection: false,
+			d2dCommunicationReliable: false,
+			batteryTooLow: false,
 			valveOpenness: 0,
 			targetTemperatureFloat: '27.00',
+		})
+	})
+
+	test('GetD2dNotificationDeviceAppKey response decodes the 16-byte AppKey', () => {
+		expect(uplinkPayloadParser('70112233445566778899AABBCCDDEEFF00', DeviceType.Vicki)).toStrictEqual({
+			d2dNotificationDeviceAppKey: '112233445566778899AABBCCDDEEFF00',
+		})
+	})
+
+	test('HT-sensor D2D temperature uplink (0x72) decodes as htSensorTemperature', () => {
+		expect(uplinkPayloadParser('7200F1', DeviceType.Vicki)).toStrictEqual({
+			htSensorTemperature: 24.1,
+		})
+	})
+
+	test('keepalive with d2dCommunicationReliable bit set (byte 8 bit 2)', () => {
+		// byte 8 = 0x34 = 0b00110100 → bit 2 = 1 → d2dCommunicationReliable: true
+		expect(uplinkPayloadParser('811BAF4BAB2A129034', DeviceType.Vicki)).toStrictEqual({
+			reason: 129,
+			targetTemperature: 27,
+			sensorTemperature: 25.88238397927527,
+			relativeHumidity: 29.296875,
+			motorRange: 554,
+			motorPosition: 427,
+			batteryVoltage: 2.9,
+			openWindow: false,
+			highMotorConsumption: false,
+			lowMotorConsumption: false,
+			brokenSensor: false,
+			childLock: false,
+			calibrationFailed: false,
+			attachedBackplate: true,
+			perceiveAsOnline: true,
+			antiFreezeProtection: false,
+			d2dCommunicationReliable: true,
+			batteryTooLow: false,
+			targetTemperatureFloat: '27.00',
+			valveOpenness: 23,
+		})
+	})
+
+	test('keepalive with batteryTooLow bit set (byte 8 bit 1)', () => {
+		// byte 8 = 0x32 = 0b00110010 → bit 1 = 1 → batteryTooLow: true
+		expect(uplinkPayloadParser('811BAF4BAB2A129032', DeviceType.Vicki)).toStrictEqual({
+			reason: 129,
+			targetTemperature: 27,
+			sensorTemperature: 25.88238397927527,
+			relativeHumidity: 29.296875,
+			motorRange: 554,
+			motorPosition: 427,
+			batteryVoltage: 2.9,
+			openWindow: false,
+			highMotorConsumption: false,
+			lowMotorConsumption: false,
+			brokenSensor: false,
+			childLock: false,
+			calibrationFailed: false,
+			attachedBackplate: true,
+			perceiveAsOnline: true,
+			antiFreezeProtection: false,
+			d2dCommunicationReliable: false,
+			batteryTooLow: true,
+			targetTemperatureFloat: '27.00',
+			valveOpenness: 23,
 		})
 	})
 })
@@ -316,6 +390,24 @@ describe('HT payload decoder', () => {
 			batteryVoltage: 3.46,
 			extThermistorTemperature: 0,
 			thermistorProperlyConnected: false,
+		})
+	})
+
+	test('GetD2dCommunicationState response (enabled)', () => {
+		expect(uplinkPayloadParser('AA01', DeviceType.HTSensor)).toStrictEqual({
+			d2dCommunicationState: true,
+		})
+	})
+
+	test('GetD2dCommunicationState response (disabled)', () => {
+		expect(uplinkPayloadParser('AA00', DeviceType.HTSensor)).toStrictEqual({
+			d2dCommunicationState: false,
+		})
+	})
+
+	test('GetD2dCommunicationPeriod response decodes period in minutes', () => {
+		expect(uplinkPayloadParser('AC08', DeviceType.HTSensor)).toStrictEqual({
+			d2dCommunicationPeriod: 8,
 		})
 	})
 })

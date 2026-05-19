@@ -384,4 +384,8 @@ export class TValveCommands extends GeneralCommands {
 	static getWatchDogParams() {
 		return new BaseCommand('GetWatchDogParams', 0x1a)
 	}
+
+	static deactivateDevice() {
+		return new BaseCommand('DeactivateDevice', 0x0b)
+	}
 }

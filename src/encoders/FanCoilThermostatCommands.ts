@@ -56,6 +56,58 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		return new BaseCommand('GetKeysLock', 0x14)
 	}
 
+	static getTargetTemperature() {
+		return new BaseCommand('GetTargetTemperature', 0x2f)
+	}
+
+	static setExtTemperatureSensor1C(params: FanCoilThermostatCommandTypes.SetExtTemperatureSensor1CParams) {
+		try {
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setExtTemperatureSensor1C.parse(params)
+			const { temperature } = params
+			return new BaseCommand('SetExtTemperatureSensor1C', 0x3b, decToHex(temperature))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetExtTemperatureSensor1C execution',
+					command: 'SetExtTemperatureSensor1C',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetExtTemperatureSensor1C execution',
+					command: 'SetExtTemperatureSensor1C',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static setExtTemperatureSensor(params: FanCoilThermostatCommandTypes.SetExtTemperatureSensorParams) {
+		try {
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setExtTemperatureSensor.parse(params)
+			const { temperature } = params
+			return new BaseCommand('SetExtTemperatureSensor', 0x3c, dec2hex(Math.round(temperature * 10)))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetExtTemperatureSensor execution',
+					command: 'SetExtTemperatureSensor',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetExtTemperatureSensor execution',
+					command: 'SetExtTemperatureSensor',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getExtTemperatureSensor() {
+		return new BaseCommand('GetExtTemperatureSensor', 0x3e)
+	}
+
 	static setTargetTemperature(params: FanCoilThermostatCommandTypes.SetTargetTemperatureParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setTargetTemperature.parse(params)
@@ -713,6 +765,14 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		return new BaseCommand('GetFilterAlarm', 0x73)
 	}
 
+	static getModeChangedByAutoChangeover() {
+		return new BaseCommand('GetModeChangedByAutoChangeover', 0x74)
+	}
+
+	static getPowerModuleCommunicationStatus() {
+		return new BaseCommand('GetPowerModuleCommunicationStatus', 0x75)
+	}
+
 	static setHeatingCoolingTargetTempRanges(params: FanCoilThermostatCommandTypes.SetHeatingCoolingTargetTempRanges) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setHeatingCoolingTargetTempRanges.parse(params)
@@ -775,7 +835,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		}
 	}
 	static getHeatingCoolingTargetTempRangesUnoccupied() {
-		return new BaseCommand('SetHeatingCoolingTargetTempRangesUnoccupied', 0x77)
+		return new BaseCommand('GetHeatingCoolingTargetTempRangesUnoccupied', 0x77)
 	}
 
 	static setFanOffDelayTime(params: FanCoilThermostatCommandTypes.SetFanOffDelayTimeParams) {
@@ -801,7 +861,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 	}
 
 	static getFanOffDelayTime() {
-		return new BaseCommand('getFanOffDelayTime', 0x79)
+		return new BaseCommand('GetFanOffDelayTime', 0x79)
 	}
 	static setAdditionalFanMode(params: FanCoilThermostatCommandTypes.SetAdditionalFanModeParams) {
 		try {

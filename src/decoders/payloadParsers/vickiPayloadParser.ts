@@ -31,6 +31,8 @@ export const vickiPayloadParser = (hexData: string) => {
 			const attachedBackplate = byte8Bin[2]
 			const perceiveAsOnline = byte8Bin[3]
 			const antiFreezeProtection = byte8Bin[4]
+			const d2dCommunicationReliable = byte8Bin[5]
+			const batteryTooLow = byte8Bin[6]
 
 			let sensorTemp
 			if (byteArray[0] == 1) {
@@ -57,6 +59,8 @@ export const vickiPayloadParser = (hexData: string) => {
 				attachedBackplate: toBool(attachedBackplate),
 				perceiveAsOnline: toBool(perceiveAsOnline),
 				antiFreezeProtection: toBool(antiFreezeProtection),
+				d2dCommunicationReliable: toBool(d2dCommunicationReliable),
+				batteryTooLow: toBool(batteryTooLow),
 				valveOpenness: motorRange != 0 ? Math.round((1 - motorPosition / motorRange) * 100) : 0,
 			}
 			if (!Object.prototype.hasOwnProperty.call(deviceData, 'targetTemperatureFloat')) {

@@ -27,7 +27,8 @@ export const VickiEnums = {
 		'00': 'Online manual control mode',
 		'01': 'Online automatic control mode',
 		'02': 'Online automatic control mode with external temperature reading',
-	} satisfies StringEnum<'00' | '01' | '02'>,
+		'03': 'Online automatic control mode with external temperature reading from MClimate HT-sensor (D2D)',
+	} satisfies StringEnum<'00' | '01' | '02' | '03'>,
 	setPrimaryOperationalMode: {
 		'00': 'Heating mode',
 		'01': 'Cooling mode',
@@ -450,7 +451,7 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('16'),
 	}),
 	setOperationalMode: z.object({
-		mode: z.enum(['00', '01', '02']),
+		mode: z.enum(['00', '01', '02', '03']),
 		commandNumber: z.string().optional().default('0d'),
 	}),
 	getOperationalMode: z.object({
@@ -459,6 +460,9 @@ const VickiCommandSchemas = {
 	setTargetTemperature: z.object({
 		targetTemperature: z.number().min(5).max(30),
 		commandNumber: z.string().optional().default('0e'),
+	}),
+	getTargetTemperaturePrecisely: z.object({
+		commandNumber: z.string().optional().default('52'),
 	}),
 	setExternalTemperature: z.object({
 		temp: z.number().int().min(0).max(255),
@@ -533,6 +537,17 @@ const VickiCommandSchemas = {
 		motorPosition: z.number().int().min(0).max(800),
 		targetTemperature: z.number().min(5).max(30),
 		commandNumber: z.string().optional().default('31'),
+	}),
+	setAppEuiAndAppKey: z.object({
+		appEui: z
+			.string()
+			.length(16)
+			.regex(/^[0-9a-fA-F]+$/),
+		appKey: z
+			.string()
+			.length(32)
+			.regex(/^[0-9a-fA-F]+$/),
+		commandNumber: z.string().optional().default('33'),
 	}),
 	setChildLockBehavior: z.object({
 		behavior: z.number().min(0).max(1),
@@ -732,6 +747,23 @@ const VickiCommandSchemas = {
 		value: z.number().min(0).max(2),
 		commandNumber: z.string().optional().default('55'),
 	}),
+	setTargetTemperatureFahrenheit: z.object({
+		targetTemperature: z.number().int().min(41).max(86),
+		commandNumber: z.string().optional().default('57'),
+	}),
+	setD2dNotificationDeviceAppKey: z.object({
+		appKey: z
+			.string()
+			.length(32)
+			.regex(/^[0-9a-fA-F]+$/),
+		commandNumber: z.string().optional().default('6f'),
+	}),
+	getD2dNotificationDeviceAppKey: z.object({
+		commandNumber: z.string().optional().default('70'),
+	}),
+	requestListenForD2dNotificationDevice: z.object({
+		commandNumber: z.string().optional().default('71'),
+	}),
 }
 
 export namespace VickiCommandTypes {
@@ -780,6 +812,9 @@ export namespace VickiCommandTypes {
 	export type SetTemperatureLevelsParams = z.infer<typeof VickiCommandSchemas.setTemperatureLevels>
 	export type SetLedIndicationDurationParams = z.infer<typeof VickiCommandSchemas.setLedIndicationDuration>
 	export type SetLedDisplayTempUnitsParams = z.infer<typeof VickiCommandSchemas.setLedDisplayTempUnits>
+	export type SetAppEuiAndAppKeyParams = z.infer<typeof VickiCommandSchemas.setAppEuiAndAppKey>
+	export type SetTargetTemperatureFahrenheitParams = z.infer<typeof VickiCommandSchemas.setTargetTemperatureFahrenheit>
+	export type SetD2dNotificationDeviceAppKeyParams = z.infer<typeof VickiCommandSchemas.setD2dNotificationDeviceAppKey>
 }
 
 /* --------------------------------------- RELAY 16 COMMANDS --------------------------------------- */
@@ -1059,6 +1094,9 @@ const TValveCommandSchemas = {
 		type: z.enum(['01', '00']), // 01: confirmedUplinks, 00: unconfirmedUplinks
 		commandNumber: z.string().optional().default('11'),
 	}),
+	deactivateDevice: z.object({
+		commandNumber: z.string().optional().default('0b'),
+	}),
 	setWatchDogTValveParams: z.object({
 		confirmedUplinks: z.number().min(0).max(255),
 		unconfirmedUplinks: z.number().min(0).max(255),
@@ -1122,6 +1160,26 @@ const FanCoilThermostatCommandSchemas = {
 	}),
 	getTargetTemperatureStep: z.object({
 		commandNumber: z.string().optional().default('05'),
+	}),
+	getTargetTemperature: z.object({
+		commandNumber: z.string().optional().default('2f'),
+	}),
+	setExtTemperatureSensor1C: z.object({
+		temperature: z.number().int().min(1).max(99),
+		commandNumber: z.string().optional().default('3b'),
+	}),
+	setExtTemperatureSensor: z.object({
+		temperature: z.number().min(0.1).max(99.9).multipleOf(0.1),
+		commandNumber: z.string().optional().default('3c'),
+	}),
+	getExtTemperatureSensor: z.object({
+		commandNumber: z.string().optional().default('3e'),
+	}),
+	getModeChangedByAutoChangeover: z.object({
+		commandNumber: z.string().optional().default('74'),
+	}),
+	getPowerModuleCommunicationStatus: z.object({
+		commandNumber: z.string().optional().default('75'),
 	}),
 	setKeysLock: z.object({
 		value: z.number().min(0).max(5),
@@ -1415,6 +1473,8 @@ export namespace FanCoilThermostatCommandTypes {
 	export type SetFanOffDelayTimeParams = z.infer<typeof FanCoilThermostatCommandSchemas.setFanOffDelayTime>
 	export type SetAdditionalFanModeParams = z.infer<typeof FanCoilThermostatCommandSchemas.setAdditionalFanMode>
 	export type SetUserInterfaceLanguageParams = z.infer<typeof FanCoilThermostatCommandSchemas.setUserInterfaceLanguage>
+	export type SetExtTemperatureSensor1CParams = z.infer<typeof FanCoilThermostatCommandSchemas.setExtTemperatureSensor1C>
+	export type SetExtTemperatureSensorParams = z.infer<typeof FanCoilThermostatCommandSchemas.setExtTemperatureSensor>
 }
 
 /* --------------------------------------- OPEN CLOSE SENSOR COMMANDS --------------------------------------- */
@@ -1506,6 +1566,23 @@ const WirelessThermostatCommandSchemas = {
 	getTargetTemperatureStep: z.object({
 		commandNumber: z.string().optional().default('05'),
 	}),
+	setSensorCompensationTemperature: z.object({
+		temperature: z.number().min(-5).max(5).multipleOf(0.1),
+		commandNumber: z.string().optional().default('55'),
+	}),
+	getSensorCompensationTemperature: z.object({
+		commandNumber: z.string().optional().default('56'),
+	}),
+	setTemperatureMeasurementPeriod: z.object({
+		period: z.number().int().min(1).max(255),
+		commandNumber: z.string().optional().default('5d'),
+	}),
+	getTemperatureMeasurementPeriod: z.object({
+		commandNumber: z.string().optional().default('5e'),
+	}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
 }
 
 export namespace WirelessThermostatCommandTypes {
@@ -1522,6 +1599,12 @@ export namespace WirelessThermostatCommandTypes {
 		typeof WirelessThermostatCommandSchemas.setTargetTemperaturePrecisely
 	>
 	export type SetTargetTemperatureStepParams = z.infer<typeof WirelessThermostatCommandSchemas.setTargetTemperatureStep>
+	export type SetSensorCompensationTemperatureParams = z.infer<
+		typeof WirelessThermostatCommandSchemas.setSensorCompensationTemperature
+	>
+	export type SetTemperatureMeasurementPeriodParams = z.infer<
+		typeof WirelessThermostatCommandSchemas.setTemperatureMeasurementPeriod
+	>
 }
 
 /* --------------------------------------- CO2 SENSOR COMMANDS --------------------------------------- */
@@ -1754,11 +1837,27 @@ const HTSensorCommandSchemas = {
 	getHumidityCompensation: z.object({
 		commandNumber: z.string().optional().default('34'),
 	}),
+	setD2dCommunicationState: z.object({
+		enabled: z.boolean(),
+		commandNumber: z.string().optional().default('a9'),
+	}),
+	getD2dCommunicationState: z.object({
+		commandNumber: z.string().optional().default('aa'),
+	}),
+	setD2dCommunicationPeriod: z.object({
+		period: z.number().int().min(1).max(8),
+		commandNumber: z.string().optional().default('ab'),
+	}),
+	getD2dCommunicationPeriod: z.object({
+		commandNumber: z.string().optional().default('ac'),
+	}),
 }
 
 export namespace HTSensorCommandTypes {
 	export type SetTemperatureCompensationParams = z.infer<typeof HTSensorCommandSchemas.setTemperatureCompensation>
 	export type SetHumidityCompensationParams = z.infer<typeof HTSensorCommandSchemas.setHumidityCompensation>
+	export type SetD2dCommunicationStateParams = z.infer<typeof HTSensorCommandSchemas.setD2dCommunicationState>
+	export type SetD2dCommunicationPeriodParams = z.infer<typeof HTSensorCommandSchemas.setD2dCommunicationPeriod>
 }
 
 // ------------------------------------------------ AQI LED COMMANDS ------------------------------------------------

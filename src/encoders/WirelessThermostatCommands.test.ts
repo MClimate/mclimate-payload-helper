@@ -67,4 +67,42 @@ describe('WirelessThermostatCommands payload encoder', () => {
 	test('Invalid SetTargetTemperatureStep throws validation error', () => {
 		expect(() => commandBuilder.build('SetTargetTemperatureStep', { value: 0 })).toThrow(CustomError)
 	})
+
+	test('SetSensorCompensationTemperature encodes positive compensation', () => {
+		expect(commandBuilder.build('SetSensorCompensationTemperature', { temperature: 2.1 })).toStrictEqual(
+			new BaseCommand('SetSensorCompensationTemperature', 0x55, '00', '15'),
+		)
+	})
+
+	test('SetSensorCompensationTemperature encodes negative compensation', () => {
+		expect(commandBuilder.build('SetSensorCompensationTemperature', { temperature: -2.1 })).toStrictEqual(
+			new BaseCommand('SetSensorCompensationTemperature', 0x55, '01', '15'),
+		)
+	})
+
+	test('Invalid SetSensorCompensationTemperature throws validation error', () => {
+		expect(() => commandBuilder.build('SetSensorCompensationTemperature', { temperature: 99 })).toThrow(CustomError)
+	})
+
+	test('GetSensorCompensationTemperature emits get command', () => {
+		expect(commandBuilder.build('GetSensorCompensationTemperature')).toStrictEqual(
+			new BaseCommand('GetSensorCompensationTemperature', 0x56),
+		)
+	})
+
+	test('SetTemperatureMeasurementPeriod encodes period in minutes', () => {
+		expect(commandBuilder.build('SetTemperatureMeasurementPeriod', { period: 10 })).toStrictEqual(
+			new BaseCommand('SetTemperatureMeasurementPeriod', 0x5d, '0A'),
+		)
+	})
+
+	test('GetTemperatureMeasurementPeriod emits get command', () => {
+		expect(commandBuilder.build('GetTemperatureMeasurementPeriod')).toStrictEqual(
+			new BaseCommand('GetTemperatureMeasurementPeriod', 0x5e),
+		)
+	})
+
+	test('RestartDevice emits restart command', () => {
+		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
+	})
 })

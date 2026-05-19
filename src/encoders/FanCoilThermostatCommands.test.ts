@@ -30,6 +30,40 @@ describe('FanCoilThermostatCommands payload encoder', () => {
 		expect(commandBuilder.build('GetFctOperationalMode')).toStrictEqual(new BaseCommand('GetFctOperationalMode', 0x53))
 	})
 
+	test('GetTargetTemperature emits get command', () => {
+		expect(commandBuilder.build('GetTargetTemperature')).toStrictEqual(new BaseCommand('GetTargetTemperature', 0x2f))
+	})
+
+	test('SetExtTemperatureSensor1C encodes integer temperature', () => {
+		expect(commandBuilder.build('SetExtTemperatureSensor1C', { temperature: 20 })).toStrictEqual(
+			new BaseCommand('SetExtTemperatureSensor1C', 0x3b, '14'),
+		)
+	})
+
+	test('SetExtTemperatureSensor encodes temperature *10 as 2 bytes', () => {
+		expect(commandBuilder.build('SetExtTemperatureSensor', { temperature: 25.8 })).toStrictEqual(
+			new BaseCommand('SetExtTemperatureSensor', 0x3c, '0102'),
+		)
+	})
+
+	test('GetExtTemperatureSensor emits get command', () => {
+		expect(commandBuilder.build('GetExtTemperatureSensor')).toStrictEqual(
+			new BaseCommand('GetExtTemperatureSensor', 0x3e),
+		)
+	})
+
+	test('GetModeChangedByAutoChangeover emits get command', () => {
+		expect(commandBuilder.build('GetModeChangedByAutoChangeover')).toStrictEqual(
+			new BaseCommand('GetModeChangedByAutoChangeover', 0x74),
+		)
+	})
+
+	test('GetPowerModuleCommunicationStatus emits get command', () => {
+		expect(commandBuilder.build('GetPowerModuleCommunicationStatus')).toStrictEqual(
+			new BaseCommand('GetPowerModuleCommunicationStatus', 0x75),
+		)
+	})
+
 	test('SetValveOpenCloseTime encodes time', () => {
 		expect(commandBuilder.build('SetValveOpenCloseTime', { value: 15 })).toStrictEqual(
 			new BaseCommand('SetValveOpenCloseTime', 0x31, '0F'),

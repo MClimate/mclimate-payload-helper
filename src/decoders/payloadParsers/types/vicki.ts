@@ -15,6 +15,8 @@ export type VickiKeepAliveData = {
 	attachedBackplate: boolean
 	perceiveAsOnline: boolean
 	antiFreezeProtection: boolean
+	d2dCommunicationReliable: boolean
+	batteryTooLow: boolean
 	valveOpenness: number
 	targetTemperatureFloat?: string
 }

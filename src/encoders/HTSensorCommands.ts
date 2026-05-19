@@ -61,4 +61,54 @@ export class HTSensorCommands extends GeneralCommands {
 	static getHumidityCompensation() {
 		return new BaseCommand('GetHumidityCompensation', 0x34)
 	}
+
+	static setD2dCommunicationState(params: HTSensorCommandTypes.SetD2dCommunicationStateParams) {
+		try {
+			DeviceCommandSchemas.HTSensorCommandSchemas.setD2dCommunicationState.parse(params)
+			return new BaseCommand('SetD2dCommunicationState', 0xa9, params.enabled ? '01' : '00')
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetD2dCommunicationState execution',
+					command: 'SetD2dCommunicationState',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetD2dCommunicationState execution',
+					command: 'SetD2dCommunicationState',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getD2dCommunicationState() {
+		return new BaseCommand('GetD2dCommunicationState', 0xaa)
+	}
+
+	static setD2dCommunicationPeriod(params: HTSensorCommandTypes.SetD2dCommunicationPeriodParams) {
+		try {
+			DeviceCommandSchemas.HTSensorCommandSchemas.setD2dCommunicationPeriod.parse(params)
+			return new BaseCommand('SetD2dCommunicationPeriod', 0xab, decToHex(params.period))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetD2dCommunicationPeriod execution',
+					command: 'SetD2dCommunicationPeriod',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetD2dCommunicationPeriod execution',
+					command: 'SetD2dCommunicationPeriod',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getD2dCommunicationPeriod() {
+		return new BaseCommand('GetD2dCommunicationPeriod', 0xac)
+	}
 }

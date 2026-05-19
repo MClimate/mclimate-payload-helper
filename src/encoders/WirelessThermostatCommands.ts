@@ -251,6 +251,66 @@ export class WirelessThermostatCommands extends GeneralCommands {
 	static getTargetTemperatureStep() {
 		return new BaseCommand('GetTargetTemperatureStep', 0x53)
 	}
+
+	static setSensorCompensationTemperature(
+		params: WirelessThermostatCommandTypes.SetSensorCompensationTemperatureParams,
+	) {
+		try {
+			DeviceCommandSchemas.WirelessThermostatCommandSchemas.setSensorCompensationTemperature.parse(params)
+			const { temperature } = params
+			const sign = temperature < 0 ? 1 : 0
+			const magnitude = Math.round(Math.abs(temperature) * 10)
+			return new BaseCommand('SetSensorCompensationTemperature', 0x55, decToHex(sign), decToHex(magnitude))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetSensorCompensationTemperature execution',
+					command: 'SetSensorCompensationTemperature',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetSensorCompensationTemperature execution',
+					command: 'SetSensorCompensationTemperature',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getSensorCompensationTemperature() {
+		return new BaseCommand('GetSensorCompensationTemperature', 0x56)
+	}
+
+	static setTemperatureMeasurementPeriod(params: WirelessThermostatCommandTypes.SetTemperatureMeasurementPeriodParams) {
+		try {
+			DeviceCommandSchemas.WirelessThermostatCommandSchemas.setTemperatureMeasurementPeriod.parse(params)
+			const { period } = params
+			return new BaseCommand('SetTemperatureMeasurementPeriod', 0x5d, decToHex(period))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetTemperatureMeasurementPeriod execution',
+					command: 'SetTemperatureMeasurementPeriod',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetTemperatureMeasurementPeriod execution',
+					command: 'SetTemperatureMeasurementPeriod',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getTemperatureMeasurementPeriod() {
+		return new BaseCommand('GetTemperatureMeasurementPeriod', 0x5e)
+	}
+
+	static restartDevice() {
+		return new BaseCommand('RestartDevice', 0xa5)
+	}
 }
 
 applyMixins(WirelessThermostatCommands, [TemperatureCommonCommands, DisplayCommands, PIRCommands, ChildLockCommands])
