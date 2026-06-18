@@ -141,6 +141,88 @@ export class PirMiniCommands extends GeneralCommands {
 		return new BaseCommand('GetPIRDemoMode', 0x3d)
 	}
 
+	static setPIROperationMode(params: PirMiniCommandTypes.SetPIROperationModeParams) {
+		try {
+			DeviceCommandSchemas.PirMiniCommandSchemas.setPIROperationMode.parse(params)
+			const { mode } = params
+			return new BaseCommand('SetPIROperationMode', 0x3e, decToHex(mode))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetPIROperationMode execution',
+					command: 'SetPIROperationMode',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetPIROperationMode execution',
+					command: 'SetPIROperationMode',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getPIROperationMode() {
+		return new BaseCommand('GetPIROperationMode', 0x3f)
+	}
+
+	static setPIRBlindTime(params: PirMiniCommandTypes.SetPIRBlindTimeParams) {
+		try {
+			DeviceCommandSchemas.PirMiniCommandSchemas.setPIRBlindTime.parse(params)
+			const { time } = params
+			// Convert time (seconds) to two bytes (high byte and low byte)
+			const highByte = (time >> 8) & 0xff
+			const lowByte = time & 0xff
+
+			return new BaseCommand('SetPIRBlindTime', 0x41, decToHex(highByte) + decToHex(lowByte))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetPIRBlindTime execution',
+					command: 'SetPIRBlindTime',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetPIRBlindTime execution',
+					command: 'SetPIRBlindTime',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getPIRBlindTime() {
+		return new BaseCommand('GetPIRBlindTime', 0x42)
+	}
+
+	static setPIRCounterResetFlag(params: PirMiniCommandTypes.SetPIRCounterResetFlagParams) {
+		try {
+			DeviceCommandSchemas.PirMiniCommandSchemas.setPIRCounterResetFlag.parse(params)
+			const { state } = params
+			return new BaseCommand('SetPIRCounterResetFlag', 0x43, decToHex(state))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetPIRCounterResetFlag execution',
+					command: 'SetPIRCounterResetFlag',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetPIRCounterResetFlag execution',
+					command: 'SetPIRCounterResetFlag',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getPIRCounterResetFlag() {
+		return new BaseCommand('GetPIRCounterResetFlag', 0x44)
+	}
+
 	static restartDevice() {
 		return new BaseCommand('RestartDevice', 0xa5)
 	}

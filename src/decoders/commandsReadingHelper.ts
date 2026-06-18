@@ -1333,6 +1333,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 2
 							const data = { integralValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.PirMini) {
+							command_len = 1
+							const data = { pirOperationMode: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 1
 							const data = { pirSensorSensitivity: parseInt(commands[i + 1], 16) }
@@ -1352,9 +1356,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '40':
 				{
 					try {
-						command_len = 1
-						const data = { piRunPeriod: parseInt(commands[i + 1], 16) }
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						if (deviceType === DeviceType.PirMini) {
+							command_len = 0
+							const data = { event: 'pirTrigger' }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else {
+							command_len = 1
+							const data = { piRunPeriod: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '40'`,
@@ -1386,9 +1396,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '42':
 				{
 					try {
-						command_len = 1
-						const data = { tempHysteresis: parseInt(commands[i + 1], 16) / 10 }
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						if (deviceType === DeviceType.PirMini) {
+							command_len = 2
+							const data = { pirBlindTime: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else {
+							command_len = 1
+							const data = { tempHysteresis: parseInt(commands[i + 1], 16) / 10 }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '42'`,
@@ -1420,9 +1436,15 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '44':
 				{
 					try {
-						command_len = 2
-						const data = { extSensorTemperature: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						if (deviceType === DeviceType.PirMini) {
+							command_len = 1
+							const data = { pirCounterResetFlag: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else {
+							command_len = 2
+							const data = { extSensorTemperature: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '44'`,

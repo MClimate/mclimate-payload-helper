@@ -36,6 +36,7 @@ export const pirMiniPayloadParser = (hexData: string) => {
 			// Bytes 4-5: Light sensor data (lux)
 			// Byte 4: Light sensor data bits [15:8]
 			// Byte 5: Light sensor data bits [7:0]
+			// Sensor values: 0x0000–0xFFFA valid range; 0xFFFF disabled; 0xFFFC–0xFFFE sensor error
 			keepaliveData.lux = (bytes[4] << 8) | bytes[5]
 
 			// Byte 6: Battery Voltage

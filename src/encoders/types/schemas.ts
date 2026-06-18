@@ -226,6 +226,16 @@ export const PirMiniEnums = {
 		0: 'Disabled',
 		1: 'Enabled',
 	} satisfies NumberEnum<0 | 1>,
+	setPIROperationMode: {
+		0: 'Occupancy Mode',
+		1: 'Triggered Occupancy Mode',
+		2: 'Trigger Mode',
+		3: 'Count Mode',
+	} satisfies NumberEnum<0 | 1 | 2 | 3>,
+	setPIRCounterResetFlag: {
+		0: 'Disabled',
+		1: 'Enabled',
+	} satisfies NumberEnum<0 | 1>,
 } as const
 
 /* ---------------------------------------GENERAL COMMANDS--------------------------------------- */
@@ -2254,6 +2264,27 @@ const PirMiniCommandSchemas = {
 	getPIRDemoMode: z.object({
 		commandNumber: z.string().optional().default('3d'),
 	}),
+	setPIROperationMode: z.object({
+		mode: z.number().int().min(0).max(3), // 0: Occupancy, 1: Triggered Occupancy, 2: Trigger, 3: Count
+		commandNumber: z.string().optional().default('3e'),
+	}),
+	getPIROperationMode: z.object({
+		commandNumber: z.string().optional().default('3f'),
+	}),
+	setPIRBlindTime: z.object({
+		time: z.number().int().min(10).max(65535), // in seconds, 1s resolution
+		commandNumber: z.string().optional().default('41'),
+	}),
+	getPIRBlindTime: z.object({
+		commandNumber: z.string().optional().default('42'),
+	}),
+	setPIRCounterResetFlag: z.object({
+		state: z.number().min(0).max(1), // 0: disabled, 1: enabled
+		commandNumber: z.string().optional().default('43'),
+	}),
+	getPIRCounterResetFlag: z.object({
+		commandNumber: z.string().optional().default('44'),
+	}),
 	restartDevice: z.object({
 		commandNumber: z.string().optional().default('a5'),
 	}),
@@ -2270,6 +2301,12 @@ export namespace PirMiniCommandTypes {
 	export type GetOccupancyTimeoutParams = z.infer<typeof PirMiniCommandSchemas.getOccupancyTimeout>
 	export type SetPIRDemoModeParams = z.infer<typeof PirMiniCommandSchemas.setPIRDemoMode>
 	export type GetPIRDemoModeParams = z.infer<typeof PirMiniCommandSchemas.getPIRDemoMode>
+	export type SetPIROperationModeParams = z.infer<typeof PirMiniCommandSchemas.setPIROperationMode>
+	export type GetPIROperationModeParams = z.infer<typeof PirMiniCommandSchemas.getPIROperationMode>
+	export type SetPIRBlindTimeParams = z.infer<typeof PirMiniCommandSchemas.setPIRBlindTime>
+	export type GetPIRBlindTimeParams = z.infer<typeof PirMiniCommandSchemas.getPIRBlindTime>
+	export type SetPIRCounterResetFlagParams = z.infer<typeof PirMiniCommandSchemas.setPIRCounterResetFlag>
+	export type GetPIRCounterResetFlagParams = z.infer<typeof PirMiniCommandSchemas.getPIRCounterResetFlag>
 	export type RestartDeviceParams = z.infer<typeof PirMiniCommandSchemas.restartDevice>
 }
 

@@ -1074,6 +1074,70 @@ describe('PirMini payload decoder', () => {
 			pirTriggerCount: 18,
 		})
 	})
+	test('PIR trigger event (0x40) with keepalive', () => {
+		expect(uplinkPayloadParser('400102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
+			event: 'pirTrigger',
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			lux: 993,
+			batteryVoltage: 3.36,
+			occupied: true,
+			pirTriggerCount: 18,
+		})
+	})
+	test('Get PIR operation mode response (0x3F) with keepalive', () => {
+		expect(uplinkPayloadParser('3F030102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
+			pirOperationMode: 3,
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			lux: 993,
+			batteryVoltage: 3.36,
+			occupied: true,
+			pirTriggerCount: 18,
+		})
+	})
+	test('Get PIR blind time response (0x42) with keepalive', () => {
+		expect(uplinkPayloadParser('4200B40102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
+			pirBlindTime: 180,
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			lux: 993,
+			batteryVoltage: 3.36,
+			occupied: true,
+			pirTriggerCount: 18,
+		})
+	})
+	test('Get PIR counter reset flag response (0x44) with keepalive', () => {
+		expect(uplinkPayloadParser('44000102809903E1CC010012', DeviceType.PirMini)).toStrictEqual({
+			pirCounterResetFlag: 0,
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			lux: 993,
+			batteryVoltage: 3.36,
+			occupied: true,
+			pirTriggerCount: 18,
+		})
+	})
+	test('keepalive with light sensor disabled value (0xFFFF)', () => {
+		expect(uplinkPayloadParser('01028880FFFFC80101AF', DeviceType.PirMini)).toStrictEqual({
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			lux: 65535,
+			batteryVoltage: 3.33,
+			occupied: true,
+			pirTriggerCount: 431,
+		})
+	})
+	test('keepalive with light sensor error value (0xFFFC)', () => {
+		expect(uplinkPayloadParser('01028880FFFCC80101AF', DeviceType.PirMini)).toStrictEqual({
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			lux: 65532,
+			batteryVoltage: 3.33,
+			occupied: true,
+			pirTriggerCount: 431,
+		})
+	})
 })
 describe('MultiSensor payload decoder', () => {
 	test('simple keepalive', () => {

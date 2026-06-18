@@ -40,6 +40,36 @@ describe('PirMiniCommands payload encoder', () => {
 		)
 	})
 
+	test('SetPIROperationMode encodes Count Mode', () => {
+		expect(commandBuilder.build('SetPIROperationMode', { mode: 3 })).toStrictEqual(
+			new BaseCommand('SetPIROperationMode', 0x3e, '03'),
+		)
+	})
+
+	test('GetPIROperationMode emits get command', () => {
+		expect(commandBuilder.build('GetPIROperationMode')).toStrictEqual(new BaseCommand('GetPIROperationMode', 0x3f))
+	})
+
+	test('SetPIRBlindTime encodes seconds into two bytes', () => {
+		expect(commandBuilder.build('SetPIRBlindTime', { time: 180 })).toStrictEqual(
+			new BaseCommand('SetPIRBlindTime', 0x41, '00B4'),
+		)
+	})
+
+	test('GetPIRBlindTime emits get command', () => {
+		expect(commandBuilder.build('GetPIRBlindTime')).toStrictEqual(new BaseCommand('GetPIRBlindTime', 0x42))
+	})
+
+	test('SetPIRCounterResetFlag encodes disabled flag', () => {
+		expect(commandBuilder.build('SetPIRCounterResetFlag', { state: 0 })).toStrictEqual(
+			new BaseCommand('SetPIRCounterResetFlag', 0x43, '00'),
+		)
+	})
+
+	test('GetPIRCounterResetFlag emits get command', () => {
+		expect(commandBuilder.build('GetPIRCounterResetFlag')).toStrictEqual(new BaseCommand('GetPIRCounterResetFlag', 0x44))
+	})
+
 	test('RestartDevice emits restart command', () => {
 		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})
@@ -54,5 +84,17 @@ describe('PirMiniCommands payload encoder', () => {
 
 	test('Invalid SetLightSensorState throws validation error', () => {
 		expect(() => commandBuilder.build('SetLightSensorState', { state: 2 })).toThrow(CustomError)
+	})
+
+	test('Invalid SetPIROperationMode throws validation error', () => {
+		expect(() => commandBuilder.build('SetPIROperationMode', { mode: 4 })).toThrow(CustomError)
+	})
+
+	test('Invalid SetPIRBlindTime throws validation error', () => {
+		expect(() => commandBuilder.build('SetPIRBlindTime', { time: 5 })).toThrow(CustomError)
+	})
+
+	test('Invalid SetPIRCounterResetFlag throws validation error', () => {
+		expect(() => commandBuilder.build('SetPIRCounterResetFlag', { state: 2 })).toThrow(CustomError)
 	})
 })
