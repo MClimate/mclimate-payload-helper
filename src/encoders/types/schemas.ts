@@ -2251,7 +2251,7 @@ const PirMiniCommandSchemas = {
 		commandNumber: z.string().optional().default('37'),
 	}),
 	setOccupancyTimeout: z.object({
-		timeout: z.number().min(0).max(65535),
+		timeout: z.number().int().min(1).max(65535), // in minutes, 1min resolution
 		commandNumber: z.string().optional().default('38'),
 	}),
 	getOccupancyTimeout: z.object({

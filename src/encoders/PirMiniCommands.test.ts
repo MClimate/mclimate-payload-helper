@@ -40,6 +40,12 @@ describe('PirMiniCommands payload encoder', () => {
 		)
 	})
 
+	test('SetPIROperationMode encodes Triggered Occupancy Mode', () => {
+		expect(commandBuilder.build('SetPIROperationMode', { mode: 2 })).toStrictEqual(
+			new BaseCommand('SetPIROperationMode', 0x3e, '02'),
+		)
+	})
+
 	test('SetPIROperationMode encodes Count Mode', () => {
 		expect(commandBuilder.build('SetPIROperationMode', { mode: 3 })).toStrictEqual(
 			new BaseCommand('SetPIROperationMode', 0x3e, '03'),
