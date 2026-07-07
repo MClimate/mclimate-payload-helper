@@ -3,10 +3,13 @@ import { DeviceType } from '@/decoders/payloadParsers/types'
 import { byteArrayParser } from '@/helpers'
 import { CustomError } from '@/utils'
 
+type LuxStatus = 'ok' | 'disabled' | 'sensor_error'
+
 interface PirMiniData {
 	sensorTemperature?: number
 	relativeHumidity?: number
 	lux?: number
+	luxStatus?: LuxStatus
 	batteryVoltage?: number
 	occupied?: boolean
 	pirTriggerCount?: number
@@ -37,7 +40,18 @@ export const pirMiniPayloadParser = (hexData: string) => {
 			// Byte 4: Light sensor data bits [15:8]
 			// Byte 5: Light sensor data bits [7:0]
 			// Sensor values: 0x0000–0xFFFA valid range; 0xFFFF disabled; 0xFFFC–0xFFFE sensor error
-			keepaliveData.lux = (bytes[4] << 8) | bytes[5]
+			const rawLux = (bytes[4] << 8) | bytes[5]
+			if (rawLux <= 0xfffa) {
+				keepaliveData.lux = rawLux
+				keepaliveData.luxStatus = 'ok'
+			} else if (rawLux === 0xffff) {
+				keepaliveData.lux = 0
+				keepaliveData.luxStatus = 'disabled'
+			} else {
+				// 0xFFFB–0xFFFE: sensor error
+				keepaliveData.lux = 0
+				keepaliveData.luxStatus = 'sensor_error'
+			}
 
 			// Byte 6: Battery Voltage
 			// Battery voltage [mV] = ((XX * 2200) / 255) + 1600
