@@ -2310,6 +2310,27 @@ export namespace PirMiniCommandTypes {
 	export type RestartDeviceParams = z.infer<typeof PirMiniCommandSchemas.restartDevice>
 }
 
+/* --------------------------------------- HT MINI COMMANDS --------------------------------------- */
+const HTMiniCommandSchemas = {
+	...GeneralCommandSchemas,
+	setLedBrightness: z.object({
+		value: z.number().int().min(0).max(100),
+		commandNumber: z.string().optional().default('21'),
+	}),
+	getLedBrightness: z.object({
+		commandNumber: z.string().optional().default('22'),
+	}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
+}
+
+export namespace HTMiniCommandTypes {
+	export type SetLedBrightnessParams = z.infer<typeof HTMiniCommandSchemas.setLedBrightness>
+	export type GetLedBrightnessParams = z.infer<typeof HTMiniCommandSchemas.getLedBrightness>
+	export type RestartDeviceParams = z.infer<typeof HTMiniCommandSchemas.restartDevice>
+}
+
 /* --------------------------------------- EXPORT ALL SCHEMA GROUPS --------------------------------------- */
 export const DeviceCommandSchemas = {
 	GeneralCommandSchemas,
@@ -2338,4 +2359,5 @@ export const DeviceCommandSchemas = {
 	MelissaCommandSchemas,
 	MultiSensorCommandSchemas,
 	PirMiniCommandSchemas,
+	HTMiniCommandSchemas,
 }

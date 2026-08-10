@@ -21,4 +21,5 @@ export enum DeviceType {
 	HTPirLite = 'ht_pir_lite',
 	MultiSensor = 'multisensor',
 	PirMini = 'pir_mini',
+	HTMini = 'ht_mini',
 }

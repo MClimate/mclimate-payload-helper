@@ -22,6 +22,7 @@ import {
 	htPirLitePayloadParser,
 	multisensorPayloadParser,
 	pirMiniPayloadParser,
+	htMiniPayloadParser,
 } from '@/decoders/payloadParsers'
 
 export const uplinkPayloadParser = (hexData: string, deviceType: DeviceType) => {
@@ -70,6 +71,8 @@ export const uplinkPayloadParser = (hexData: string, deviceType: DeviceType) => 
 			return multisensorPayloadParser(hexData)
 		case DeviceType.PirMini:
 			return pirMiniPayloadParser(hexData)
+		case DeviceType.HTMini:
+			return htMiniPayloadParser(hexData)
 		default:
 			// Q: is this OK?
 			return vickiPayloadParser(hexData) // Default case if deviceType is not recognized

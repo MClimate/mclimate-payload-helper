@@ -1161,6 +1161,93 @@ describe('PirMini payload decoder', () => {
 		})
 	})
 })
+describe('HTMini payload decoder', () => {
+	test('simple keepalive(doc)', () => {
+		expect(uplinkPayloadParser('01028880C8', DeviceType.HTMini)).toStrictEqual({
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('simple keepalive', () => {
+		expect(uplinkPayloadParser('01028099E1', DeviceType.HTMini)).toStrictEqual({
+			sensorTemperature: 24,
+			relativeHumidity: 59.77,
+			batteryVoltage: 3.54,
+		})
+	})
+	test('keepalive with response of preloaded code', () => {
+		expect(uplinkPayloadParser('120A01028880C8', DeviceType.HTMini)).toStrictEqual({
+			keepAliveTime: 10,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('device version response (0x04) with keepalive', () => {
+		expect(uplinkPayloadParser('04121101028880C8', DeviceType.HTMini)).toStrictEqual({
+			deviceVersions: { hardware: 12, software: 11 },
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('uplink type response (0x1B) with keepalive', () => {
+		expect(uplinkPayloadParser('1B0101028880C8', DeviceType.HTMini)).toStrictEqual({
+			uplinkType: '01',
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('join retry period response (0x19) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('19C601028880C8', DeviceType.HTMini)).toStrictEqual({
+			joinRetryPeriod: 16.5,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('watchdog params response (0x1D) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('1D020C01028880C8', DeviceType.HTMini)).toStrictEqual({
+			watchDogParams: { wdpC: 2, wdpUc: 12 },
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('LED brightness response (0x22) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('222F01028880C8', DeviceType.HTMini)).toStrictEqual({
+			ledBrightness: 47,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('LoRaWAN region response (0xA4) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('A40001028880C8', DeviceType.HTMini)).toStrictEqual({
+			region: 0,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('multiple command responses with keepalive', () => {
+		expect(uplinkPayloadParser('120A1B00222F01028880C8', DeviceType.HTMini)).toStrictEqual({
+			keepAliveTime: 10,
+			uplinkType: '00',
+			ledBrightness: 47,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+		})
+	})
+	test('command response without keepalive', () => {
+		expect(uplinkPayloadParser('222F', DeviceType.HTMini)).toStrictEqual({
+			ledBrightness: 47,
+		})
+	})
+})
 describe('MultiSensor payload decoder', () => {
 	test('simple keepalive', () => {
 		expect(uplinkPayloadParser('820F17CB2DA80D0600040A3A01DD03', DeviceType.MultiSensor)).toStrictEqual({

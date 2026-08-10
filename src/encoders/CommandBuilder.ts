@@ -22,6 +22,7 @@ import {
 	MelissaCommands,
 	MultiSensorCommands,
 	PirMiniCommands,
+	HTMiniCommands,
 } from '@/encoders'
 
 import { CustomError, toCamelCase } from '@/utils'
@@ -54,6 +55,7 @@ export class CommandBuilder {
 			melissa_lorawan: MelissaCommands,
 			multisensor: MultiSensorCommands,
 			pir_mini: PirMiniCommands,
+			ht_mini: HTMiniCommands,
 		}
 	}
 
