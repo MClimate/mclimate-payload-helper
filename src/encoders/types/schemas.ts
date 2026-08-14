@@ -134,6 +134,10 @@ export const FanCoilThermostatEnums = {
 		1: 'Keep on target reach',
 		2: 'Fan always on',
 	} satisfies NumberEnum,
+	setDisplayColorMode: {
+		0: 'Light',
+		1: 'Dark',
+	} satisfies NumberEnum<0 | 1>,
 	setUserInterfaceLanguage: {
 		0: 'English',
 		1: 'French',
@@ -1423,6 +1427,13 @@ const FanCoilThermostatCommandSchemas = {
 	getExternalTemperatureSensorError: z.object({
 		commandNumber: z.string().optional().default('7d'),
 	}),
+	setDisplayColorMode: z.object({
+		value: z.number().min(0).max(1), // 0: Light (default), 1: Dark
+		commandNumber: z.string().optional().default('7e'),
+	}),
+	getDisplayColorMode: z.object({
+		commandNumber: z.string().optional().default('7f'),
+	}),
 	setUserInterfaceLanguage: z.object({
 		value: z.number().min(0).max(3), // 0: English, 1: French, 2: German, 3: Spanish
 		commandNumber: z.string().optional().default('9a'),
@@ -1482,6 +1493,7 @@ export namespace FanCoilThermostatCommandTypes {
 	>
 	export type SetFanOffDelayTimeParams = z.infer<typeof FanCoilThermostatCommandSchemas.setFanOffDelayTime>
 	export type SetAdditionalFanModeParams = z.infer<typeof FanCoilThermostatCommandSchemas.setAdditionalFanMode>
+	export type SetDisplayColorModeParams = z.infer<typeof FanCoilThermostatCommandSchemas.setDisplayColorMode>
 	export type SetUserInterfaceLanguageParams = z.infer<typeof FanCoilThermostatCommandSchemas.setUserInterfaceLanguage>
 	export type SetExtTemperatureSensor1CParams = z.infer<typeof FanCoilThermostatCommandSchemas.setExtTemperatureSensor1C>
 	export type SetExtTemperatureSensorParams = z.infer<typeof FanCoilThermostatCommandSchemas.setExtTemperatureSensor>

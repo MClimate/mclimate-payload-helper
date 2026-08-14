@@ -617,6 +617,47 @@ describe('FCT payload decoder', () => {
 			fctOperationalMode: 2,
 		})
 	})
+
+	test('GetTargetTemperature response decodes 2 bytes at 0.1C resolution (doc example 0x2F0102)', () => {
+		expect(uplinkPayloadParser('2F0102', DeviceType.FanCoilThermostat)).toStrictEqual({
+			targetTemperature: 25.8,
+		})
+	})
+
+	test('GetDeviceStatus response decodes deviceStatus (doc example 0x6701)', () => {
+		expect(uplinkPayloadParser('6701', DeviceType.FanCoilThermostat)).toStrictEqual({
+			deviceStatus: 1,
+		})
+	})
+
+	test('GetDisplayColorMode response decodes displayColorMode (doc example 0x7F01)', () => {
+		expect(uplinkPayloadParser('7F01', DeviceType.FanCoilThermostat)).toStrictEqual({
+			displayColorMode: 1,
+		})
+	})
+
+	test('2-byte target temperature answer keeps the following commands in sync', () => {
+		expect(uplinkPayloadParser('2F01027F0167015302', DeviceType.FanCoilThermostat)).toStrictEqual({
+			targetTemperature: 25.8,
+			displayColorMode: 1,
+			deviceStatus: 1,
+			fctOperationalMode: 2,
+		})
+	})
+
+	test('display color mode response with appended keepalive', () => {
+		expect(uplinkPayloadParser('7F0101026A4C00DC0100070001', DeviceType.FanCoilThermostat)).toStrictEqual({
+			displayColorMode: 1,
+			sensorTemperature: 21.8,
+			relativeHumidity: 29.69,
+			targetTemperature: 22,
+			operationalMode: 1,
+			displayedFanSpeed: 0,
+			actualFanSpeed: 7,
+			valveStatus: 0,
+			deviceStatus: 1,
+		})
+	})
 })
 
 describe('CO2 Display payload decoder', () => {

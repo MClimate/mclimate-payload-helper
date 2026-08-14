@@ -232,6 +232,26 @@ describe('FanCoilThermostatCommands payload encoder', () => {
 		)
 	})
 
+	test('SetDisplayColorMode encodes dark mode (doc example 0x7E01)', () => {
+		expect(commandBuilder.build('SetDisplayColorMode', { value: 1 })).toStrictEqual(
+			new BaseCommand('SetDisplayColorMode', 0x7e, '01'),
+		)
+	})
+
+	test('SetDisplayColorMode encodes light mode', () => {
+		expect(commandBuilder.build('SetDisplayColorMode', { value: 0 })).toStrictEqual(
+			new BaseCommand('SetDisplayColorMode', 0x7e, '00'),
+		)
+	})
+
+	test('GetDisplayColorMode emits get command', () => {
+		expect(commandBuilder.build('GetDisplayColorMode')).toStrictEqual(new BaseCommand('GetDisplayColorMode', 0x7f))
+	})
+
+	test('Invalid SetDisplayColorMode throws validation error', () => {
+		expect(() => commandBuilder.build('SetDisplayColorMode', { value: 2 })).toThrow(CustomError)
+	})
+
 	test('RestartDevice emits restart command', () => {
 		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})

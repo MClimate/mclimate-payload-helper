@@ -897,6 +897,32 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		return new BaseCommand('GetExternalTemperatureSensorError', 0x7d)
 	}
 
+	static setDisplayColorMode(params: FanCoilThermostatCommandTypes.SetDisplayColorModeParams) {
+		try {
+			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setDisplayColorMode.parse(params)
+			const { value } = params
+			return new BaseCommand('SetDisplayColorMode', 0x7e, decToHex(value))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during SetDisplayColorMode execution',
+					command: 'SetDisplayColorMode',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during SetDisplayColorMode execution',
+					command: 'SetDisplayColorMode',
+					originalError: e as Error,
+				})
+			}
+		}
+	}
+
+	static getDisplayColorMode() {
+		return new BaseCommand('GetDisplayColorMode', 0x7f)
+	}
+
 	static setUserInterfaceLanguage(params: FanCoilThermostatCommandTypes.SetUserInterfaceLanguageParams) {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setUserInterfaceLanguage.parse(params)

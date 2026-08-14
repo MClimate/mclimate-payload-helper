@@ -1020,6 +1020,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						) {
 							command_len = 1
 							data = { uplinkSendingOnButtonPress: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.FanCoilThermostat) {
+							// FCT answers with 2 bytes at 0.1°C resolution
+							command_len = 2
+							data = { targetTemperature: ((parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)) / 10 }
 						} else {
 							command_len = 1
 							data = { targetTemperature: parseInt(commands[i + 1], 16) }
@@ -2099,6 +2103,26 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					}
 				}
 				break
+			case '67':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 1
+							data = { deviceStatus: parseInt(commands[i + 1], 16) }
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '67'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
 			case '69':
 				{
 					try {
@@ -2436,6 +2460,26 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '7d'`,
+							hexData,
+							command,
+							deviceType,
+							originalError: e as Error,
+						})
+					}
+				}
+				break
+			case '7f':
+				{
+					try {
+						let data
+						if (deviceType === DeviceType.FanCoilThermostat) {
+							command_len = 1
+							data = { displayColorMode: parseInt(commands[i + 1], 16) }
+						}
+						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+					} catch (e) {
+						throw new CustomError({
+							message: `Failed to process command '7f'`,
 							hexData,
 							command,
 							deviceType,
