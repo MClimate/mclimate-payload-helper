@@ -292,6 +292,38 @@ describe('Vicki payload decoder', () => {
 		})
 	})
 
+	test('crystal oscillator error (0xa6) takes no argument and keeps the trailing keepalive intact', () => {
+		expect(uplinkPayloadParser('a68116b09b181822e030', DeviceType.Vicki)).toStrictEqual({
+			crystalOscillatorError: true,
+			reason: 129,
+			targetTemperature: 22,
+			sensorTemperature: 26.058854775123265,
+			relativeHumidity: 60.546875,
+			motorRange: 536,
+			motorPosition: 536,
+			batteryVoltage: 3.4000000000000004,
+			openWindow: false,
+			highMotorConsumption: false,
+			lowMotorConsumption: false,
+			brokenSensor: false,
+			childLock: false,
+			calibrationFailed: false,
+			attachedBackplate: true,
+			perceiveAsOnline: true,
+			antiFreezeProtection: false,
+			d2dCommunicationReliable: false,
+			batteryTooLow: false,
+			targetTemperatureFloat: '22.00',
+			valveOpenness: 0,
+		})
+	})
+
+	test('crystal oscillator error (0xa6) alone', () => {
+		expect(uplinkPayloadParser('a6', DeviceType.Vicki)).toStrictEqual({
+			crystalOscillatorError: true,
+		})
+	})
+
 	test('keepalive with d2dCommunicationReliable bit set (byte 8 bit 2)', () => {
 		// byte 8 = 0x34 = 0b00110100 → bit 2 = 1 → d2dCommunicationReliable: true
 		expect(uplinkPayloadParser('811BAF4BAB2A129034', DeviceType.Vicki)).toStrictEqual({

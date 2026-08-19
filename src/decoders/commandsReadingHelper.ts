@@ -2614,7 +2614,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case 'a6':
 				{
 					try {
-						command_len = 1
+						command_len = 0
 						const data = { crystalOscillatorError: true }
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
