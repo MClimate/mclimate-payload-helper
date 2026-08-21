@@ -30,7 +30,13 @@ describe('TValveCommands payload encoder', () => {
 
 	test('SetManualControl encodes open/close bits', () => {
 		expect(commandBuilder.build('SetManualControl', { enableOpen: true, enableClose: false })).toStrictEqual(
-			new BaseCommand('SetManualControl', 0x05, '00000001'),
+			new BaseCommand('SetManualControl', 0x05, '1'),
+		)
+	})
+
+	test('SetManualControl encodes both open and close bits as a single hex byte', () => {
+		expect(commandBuilder.build('SetManualControl', { enableOpen: true, enableClose: true })).toStrictEqual(
+			new BaseCommand('SetManualControl', 0x05, '3'),
 		)
 	})
 

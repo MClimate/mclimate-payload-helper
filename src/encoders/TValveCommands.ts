@@ -110,7 +110,8 @@ export class TValveCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setManualControl.parse(params)
 			const { enableOpen, enableClose } = params
-			const byte = '000000' + (enableClose ? '1' : '0') + (enableOpen ? '1' : '0')
+			const bits = '000000' + (enableClose ? '1' : '0') + (enableOpen ? '1' : '0')
+			const byte = parseInt(bits, 2).toString(16)
 			return new BaseCommand('SetManualControl', 0x05, byte)
 		} catch (e) {
 			if (e instanceof ZodError) {
