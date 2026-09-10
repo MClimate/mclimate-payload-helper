@@ -2141,20 +2141,6 @@ export namespace Co2PirLiteCommandTypes {
 	export type RestartDeviceParams = z.infer<typeof Co2PirLiteCommandSchemas.restartDevice>
 }
 
-/* --------------------------------------- Melissa --------------------------------------- */
-const MelissaCommandSchemas = {
-	...GeneralCommandSchemas,
-	setIrCodeRecording: z.object({
-		time: z.number().min(0).max(255),
-		position: z.number().min(0).max(10),
-		commandNumber: z.string().optional().default('09'),
-	}),
-}
-
-export namespace MelissaCommandTypes {
-	export type SetIrCodeRecordingParams = z.infer<typeof MelissaCommandSchemas.setIrCodeRecording>
-}
-
 /* --------------------------------------- MULTISENSOR COMMANDS --------------------------------------- */
 const MultiSensorCommandSchemas = {
 	...GeneralCommandSchemas,
@@ -2320,6 +2306,107 @@ export namespace PirMiniCommandTypes {
 	export type SetPIRCounterResetFlagParams = z.infer<typeof PirMiniCommandSchemas.setPIRCounterResetFlag>
 	export type GetPIRCounterResetFlagParams = z.infer<typeof PirMiniCommandSchemas.getPIRCounterResetFlag>
 	export type RestartDeviceParams = z.infer<typeof PirMiniCommandSchemas.restartDevice>
+}
+
+/* --------------------------------------- Melissa (LoRaWAN) --------------------------------------- */
+// IR workflow commands are Melissa specific. PIR / light-sensor commands share the PIR Mini codes
+// (LED brightness is not supported); PIR sensitivity uses Melissa specific codes 0x45 / 0x46.
+const MelissaCommandSchemas = {
+	...GeneralCommandSchemas,
+	// 0x05 - preload one chunk of LZ77-compressed IR code data at a buffer offset
+	sendIrCodeData: z.object({
+		offset: z.number().int().min(0).max(65535),
+		data: z
+			.string()
+			.regex(/^([0-9A-Fa-f]{2})+$/, 'Must be a hex string of whole bytes')
+			.refine((hex) => hex.length / 2 + 2 <= 255, 'Too many bytes: offset (2) + data must fit in one length byte'),
+		commandNumber: z.string().optional().default('05'),
+	}),
+	// 0x06 - get the buffer offset where the next chunk shall be written
+	getIrCodeBufferOffset: z.object({
+		commandNumber: z.string().optional().default('06'),
+	}),
+	// 0x07 - reset the buffer offset (forget preloaded / recorded code)
+	resetIrCodeBufferOffset: z.object({
+		commandNumber: z.string().optional().default('07'),
+	}),
+	// 0x08 - emit and/or store the preloaded code; position (1-10) is required when storing
+	emitPreloadedIrCode: z
+		.object({
+			mode: z.number().int().min(0).max(2), // 0: emit only, 1: emit and store, 2: store only
+			position: z.number().int().min(0).max(10).optional().default(0), // memory slot 1-10
+			commandNumber: z.string().optional().default('08'),
+		})
+		.refine(({ mode, position }) => mode === 0 || position >= 1, {
+			message: 'position (1-10) is required when mode is 1 or 2',
+			path: ['position'],
+		}),
+	// 0x09 - listen for an IR code; time in minutes (0 = 10 min), position 1-10 (0 = do not store)
+	setIrCodeRecording: z.object({
+		time: z.number().int().min(0).max(255),
+		position: z.number().int().min(0).max(10),
+		commandNumber: z.string().optional().default('09'),
+	}),
+	// 0x0A - get recorded IR code size and bytes already sent to the server
+	getRecordedIrCodeStatus: z.object({
+		commandNumber: z.string().optional().default('0a'),
+	}),
+	// 0x0B - read recorded IR code data from a buffer offset
+	getRecordedIrCodeData: z.object({
+		offset: z.number().int().min(0).max(65535),
+		commandNumber: z.string().optional().default('0b'),
+	}),
+	// 0x0C - load a code stored in internal memory; mode 0: emit + preload for reading, 1: preload only
+	loadStoredIrCode: z.object({
+		mode: z.number().int().min(0).max(1),
+		position: z.number().int().min(1).max(10),
+		commandNumber: z.string().optional().default('0c'),
+	}),
+	// shared with PIR Mini (same command codes)
+	setLightSensorState: PirMiniCommandSchemas.setLightSensorState,
+	getLightSensorState: PirMiniCommandSchemas.getLightSensorState,
+	setPIRSensorState: PirMiniCommandSchemas.setPIRSensorState,
+	getPIRSensorState: PirMiniCommandSchemas.getPIRSensorState,
+	setOccupancyTimeout: PirMiniCommandSchemas.setOccupancyTimeout,
+	getOccupancyTimeout: PirMiniCommandSchemas.getOccupancyTimeout,
+	setPIRDemoMode: PirMiniCommandSchemas.setPIRDemoMode,
+	getPIRDemoMode: PirMiniCommandSchemas.getPIRDemoMode,
+	setPIROperationMode: PirMiniCommandSchemas.setPIROperationMode,
+	getPIROperationMode: PirMiniCommandSchemas.getPIROperationMode,
+	setPIRBlindTime: PirMiniCommandSchemas.setPIRBlindTime,
+	getPIRBlindTime: PirMiniCommandSchemas.getPIRBlindTime,
+	setPIRCounterResetFlag: PirMiniCommandSchemas.setPIRCounterResetFlag,
+	getPIRCounterResetFlag: PirMiniCommandSchemas.getPIRCounterResetFlag,
+	restartDevice: PirMiniCommandSchemas.restartDevice,
+	// 0x45 / 0x46 - PIR sensitivity (same range as Wireless Thermostat, Melissa default 30)
+	setPIRSensorSensitivity: z.object({
+		sensitivity: z.number().int().min(12).max(255),
+		commandNumber: z.string().optional().default('45'),
+	}),
+	getPIRSensorSensitivity: z.object({
+		commandNumber: z.string().optional().default('46'),
+	}),
+}
+
+export namespace MelissaCommandTypes {
+	export type SendIrCodeDataParams = z.infer<typeof MelissaCommandSchemas.sendIrCodeData>
+	export type GetIrCodeBufferOffsetParams = z.infer<typeof MelissaCommandSchemas.getIrCodeBufferOffset>
+	export type ResetIrCodeBufferOffsetParams = z.infer<typeof MelissaCommandSchemas.resetIrCodeBufferOffset>
+	export type EmitPreloadedIrCodeParams = z.input<typeof MelissaCommandSchemas.emitPreloadedIrCode>
+	export type SetIrCodeRecordingParams = z.infer<typeof MelissaCommandSchemas.setIrCodeRecording>
+	export type GetRecordedIrCodeStatusParams = z.infer<typeof MelissaCommandSchemas.getRecordedIrCodeStatus>
+	export type GetRecordedIrCodeDataParams = z.infer<typeof MelissaCommandSchemas.getRecordedIrCodeData>
+	export type LoadStoredIrCodeParams = z.infer<typeof MelissaCommandSchemas.loadStoredIrCode>
+	export type SetLightSensorStateParams = z.infer<typeof MelissaCommandSchemas.setLightSensorState>
+	export type SetPIRSensorStateParams = z.infer<typeof MelissaCommandSchemas.setPIRSensorState>
+	export type SetOccupancyTimeoutParams = z.infer<typeof MelissaCommandSchemas.setOccupancyTimeout>
+	export type SetPIRDemoModeParams = z.infer<typeof MelissaCommandSchemas.setPIRDemoMode>
+	export type SetPIROperationModeParams = z.infer<typeof MelissaCommandSchemas.setPIROperationMode>
+	export type SetPIRBlindTimeParams = z.infer<typeof MelissaCommandSchemas.setPIRBlindTime>
+	export type SetPIRCounterResetFlagParams = z.infer<typeof MelissaCommandSchemas.setPIRCounterResetFlag>
+	export type SetPIRSensorSensitivityParams = z.infer<typeof MelissaCommandSchemas.setPIRSensorSensitivity>
+	export type GetPIRSensorSensitivityParams = z.infer<typeof MelissaCommandSchemas.getPIRSensorSensitivity>
+	export type RestartDeviceParams = z.infer<typeof MelissaCommandSchemas.restartDevice>
 }
 
 /* --------------------------------------- HT MINI COMMANDS --------------------------------------- */

@@ -1006,44 +1006,189 @@ describe('ADS payload decoder', () => {
 	})
 })
 describe('Melissa payload decoder', () => {
-	test('simple keepalive', () => {
-		expect(uplinkPayloadParser('01027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
-			sensorTemperature: 23.8,
-			relativeHumidity: 27.34,
+	// Protocol 1.0 example: 29.0°C, 32.4% RH, IR recording requested + occupied + batteries, 1530 lux, 291 PIR counts, 3408 mV
+	const KA_BATTERY = '0102B253E005FA012371'
+	const KA_BATTERY_DATA = {
+		sensorTemperature: 29,
+		relativeHumidity: 32.42,
+		isIrCodeRecordingRequested: true,
+		occupied: true,
+		powerSource: 'battery',
+		lorawanClass: 'A',
+		lux: 1530,
+		pirTriggerCount: 291,
+		batteryVoltage: 3.408,
+	}
+	// USB powered (class C), nothing flagged, 5280 mV
+	const KA_USB = '01027E460000000000E6'
+	const KA_USB_DATA = {
+		sensorTemperature: 23.8,
+		relativeHumidity: 27.34,
+		isIrCodeRecordingRequested: false,
+		occupied: false,
+		powerSource: 'usb',
+		lorawanClass: 'C',
+		lux: 0,
+		pirTriggerCount: 0,
+		batteryVoltage: 5.28,
+	}
+
+	test('keep-alive (protocol 1.0 example, batteries / class A)', () => {
+		expect(uplinkPayloadParser(KA_BATTERY, DeviceType.MelissaLorawan)).toStrictEqual(KA_BATTERY_DATA)
+	})
+	test('keep-alive on USB power / class C', () => {
+		expect(uplinkPayloadParser(KA_USB, DeviceType.MelissaLorawan)).toStrictEqual(KA_USB_DATA)
+	})
+	test('status byte bits decode independently', () => {
+		expect(uplinkPayloadParser('01027E46400000000000E6', DeviceType.MelissaLorawan)).toMatchObject({
 			isIrCodeRecordingRequested: false,
+			occupied: true,
+			powerSource: 'usb',
+			lorawanClass: 'C',
+		})
+		expect(uplinkPayloadParser('01027E46A00000000000E6', DeviceType.MelissaLorawan)).toMatchObject({
+			isIrCodeRecordingRequested: true,
+			occupied: false,
+			powerSource: 'battery',
+			lorawanClass: 'A',
 		})
 	})
-	test('keepalive with response of preloaded code', () => {
-		expect(uplinkPayloadParser('06004201027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
-			sensorTemperature: 23.8,
-			relativeHumidity: 27.34,
-			isIrCodeRecordingRequested: false,
-			preloadedCode: { codeAddress: 66, codeAddressRaw: '0042' },
+
+	/* ------------------------------ IR workflow responses ------------------------------ */
+
+	test('buffer offset response (0x06) with keep-alive (protocol 1.4 flow)', () => {
+		expect(uplinkPayloadParser('06002F' + KA_BATTERY, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_BATTERY_DATA,
+			preloadedCode: { codeAddress: 47, codeAddressRaw: '002F' },
 		})
 	})
-	test('keepalive with response of recorded code', () => {
-		expect(uplinkPayloadParser('0a0020002001027E4600', DeviceType.MelissaLorawan)).toStrictEqual({
-			sensorTemperature: 23.8,
-			relativeHumidity: 27.34,
-			isIrCodeRecordingRequested: false,
-			recordedIrInfo: { recordedIrCodeSize: 32, bytesAlreadySent: '0020' },
+	test('buffer offset response (0x06) without keep-alive', () => {
+		expect(uplinkPayloadParser('060038', DeviceType.MelissaLorawan)).toStrictEqual({
+			preloadedCode: { codeAddress: 56, codeAddressRaw: '0038' },
 		})
 	})
-	test('keepalive with response of transfered code', () => {
+	test('recorded IR code status (0x0A) with keep-alive (protocol 1.7 flow)', () => {
+		expect(uplinkPayloadParser('0A00460000' + KA_BATTERY, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_BATTERY_DATA,
+			recordedIrInfo: { recordedIrCodeSize: 70, bytesAlreadySent: 0 },
+		})
+	})
+	test('recorded IR code status (0x0A) reports bytes already sent as a number', () => {
+		expect(uplinkPayloadParser('0a00200020' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			recordedIrInfo: { recordedIrCodeSize: 32, bytesAlreadySent: 32 },
+		})
+	})
+	test('recorded IR code data (0x0B), first chunk of 47 bytes (protocol 1.7 flow)', () => {
+		const chunk = '000408050805080507050805030A04090408040804080409000A0A00070A09040D0400042C0A000406070004300006'
+		expect(chunk.length).toBe(47 * 2)
+		expect(uplinkPayloadParser('0B310000' + chunk + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			irCodeData: { chunkSize: 47, address: 0, chunkData: chunk },
+		})
+	})
+	test('recorded IR code data (0x0B), second chunk at offset 47 (protocol 1.7 flow)', () => {
+		const chunk = '2E0004200004040900051E00054A00044C00080800080A'
+		expect(uplinkPayloadParser('0B19002F' + chunk + KA_BATTERY, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_BATTERY_DATA,
+			irCodeData: { chunkSize: 23, address: 47, chunkData: chunk },
+		})
+	})
+
+	/* ------------------------------ PIR / light sensor responses (PIR Mini codes) ------------------------------ */
+
+	test('light sensor state response (0x1F)', () => {
+		expect(uplinkPayloadParser('1F01' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			lightSensorState: 1,
+		})
+	})
+	test('PIR sensor state response (0x37)', () => {
+		expect(uplinkPayloadParser('3701' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			pirSensorState: 1,
+		})
+	})
+	test('occupancy timeout response (0x39)', () => {
+		expect(uplinkPayloadParser('39000A' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			occupancyTimeout: 10,
+		})
+	})
+	test('PIR demo mode response (0x3D)', () => {
+		expect(uplinkPayloadParser('3D01' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			pirDemoMode: 1,
+		})
+	})
+	test('PIR operation mode response (0x3F)', () => {
+		expect(uplinkPayloadParser('3F02' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			pirOperationMode: 2,
+		})
+	})
+	test('PIR blind time response (0x42)', () => {
+		expect(uplinkPayloadParser('42003C' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			pirBlindTime: 60,
+		})
+	})
+	test('PIR counter reset flag response (0x44)', () => {
+		expect(uplinkPayloadParser('4401' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			pirCounterResetFlag: 1,
+		})
+	})
+	test('PIR sensitivity response (0x46, Melissa specific code)', () => {
+		expect(uplinkPayloadParser('461E' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			pirSensorSensitivity: 30,
+		})
+	})
+
+	/* ------------------------------ PIR events ------------------------------ */
+
+	test('occupied event (0x3A) with keep-alive', () => {
+		expect(uplinkPayloadParser('3A' + KA_BATTERY, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_BATTERY_DATA,
+			event: 'occupied',
+		})
+	})
+	test('unoccupied event (0x3B) with keep-alive', () => {
+		expect(uplinkPayloadParser('3B' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			event: 'unoccupied',
+		})
+	})
+	test('PIR trigger event (0x40) with keep-alive', () => {
+		expect(uplinkPayloadParser('40' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			event: 'pirTrigger',
+		})
+	})
+	test('event without keep-alive', () => {
+		expect(uplinkPayloadParser('3A', DeviceType.MelissaLorawan)).toStrictEqual({ event: 'occupied' })
+	})
+
+	/* ------------------------------ General and combined responses ------------------------------ */
+
+	test('general responses: device versions (0x04), keep-alive period (0x12), uplink type (0x1B)', () => {
+		expect(uplinkPayloadParser('040107' + '120A' + '1B01' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			deviceVersions: { hardware: 1, software: 7 },
+			keepAliveTime: 10,
+			uplinkType: '01',
+		})
+	})
+	test('multiple PIR responses with keep-alive', () => {
 		expect(
-			uplinkPayloadParser(
-				'0b2200000063320612062e062e000606000508120004040008080005180008081100050c01027E4600',
-				DeviceType.MelissaLorawan,
-			),
+			uplinkPayloadParser('1F01' + '3701' + '39000A' + '461E' + KA_BATTERY, DeviceType.MelissaLorawan),
 		).toStrictEqual({
-			sensorTemperature: 23.8,
-			relativeHumidity: 27.34,
-			isIrCodeRecordingRequested: false,
-			irCodeData: {
-				chunkSize: 32,
-				address: 0,
-				chunkData: '0063320612062e062e000606000508120004040008080005180008081100050c',
-			},
+			...KA_BATTERY_DATA,
+			lightSensorState: 1,
+			pirSensorState: 1,
+			occupancyTimeout: 10,
+			pirSensorSensitivity: 30,
 		})
 	})
 })

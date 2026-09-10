@@ -209,7 +209,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.MelissaLorawan) {
 							command_len = 4
 							const recordedIrCodeSize = (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16)
-							const bytesAlreadySent = `${commands[i + 3]}${commands[i + 4]}`
+							const bytesAlreadySent = (parseInt(commands[i + 3], 16) << 8) | parseInt(commands[i + 4], 16)
 							data = { recordedIrInfo: { recordedIrCodeSize, bytesAlreadySent } }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						}
@@ -596,7 +596,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 1
 							const data = { primaryOperationalMode: commands[i + 1] }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
-						} else if (deviceType === DeviceType.PirMini) {
+						} else if (deviceType === DeviceType.PirMini || deviceType === DeviceType.MelissaLorawan) {
 							command_len = 1
 							const data = { lightSensorState: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1228,7 +1228,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '3a':
 				{
 					try {
-						if (deviceType === DeviceType.PirMini) {
+						if (deviceType === DeviceType.PirMini || deviceType === DeviceType.MelissaLorawan) {
 							const data = { event: 'occupied' }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 							command_len = 0
@@ -1290,7 +1290,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							const ki = parseInt(`${commands[i + 1]}${commands[i + 2]}${commands[i + 3]}`, 16) / 131072
 							const data = { integralGain: Number(ki).toFixed(5) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
-						} else if (deviceType === DeviceType.PirMini) {
+						} else if (deviceType === DeviceType.PirMini || deviceType === DeviceType.MelissaLorawan) {
 							command_len = 1
 							const data = { pirDemoMode: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1337,7 +1337,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 2
 							const data = { integralValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) / 10 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
-						} else if (deviceType === DeviceType.PirMini) {
+						} else if (deviceType === DeviceType.PirMini || deviceType === DeviceType.MelissaLorawan) {
 							command_len = 1
 							const data = { pirOperationMode: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1360,7 +1360,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '40':
 				{
 					try {
-						if (deviceType === DeviceType.PirMini) {
+						if (deviceType === DeviceType.PirMini || deviceType === DeviceType.MelissaLorawan) {
 							command_len = 0
 							const data = { event: 'pirTrigger' }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1400,7 +1400,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '42':
 				{
 					try {
-						if (deviceType === DeviceType.PirMini) {
+						if (deviceType === DeviceType.PirMini || deviceType === DeviceType.MelissaLorawan) {
 							command_len = 2
 							const data = { pirBlindTime: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1440,7 +1440,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '44':
 				{
 					try {
-						if (deviceType === DeviceType.PirMini) {
+						if (deviceType === DeviceType.PirMini || deviceType === DeviceType.MelissaLorawan) {
 							command_len = 1
 							const data = { pirCounterResetFlag: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -1486,12 +1486,18 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '46':
 				{
 					try {
-						command_len = 3
-						const enabled = !!parseInt(commands[i + 1], 16)
-						const duration = parseInt(commands[i + 2], 16) * 5
-						const delta = parseInt(commands[i + 3], 16) / 10
-						const data = { openWindowPrecisely: { enabled: enabled, duration: duration, delta: delta } }
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						if (deviceType === DeviceType.MelissaLorawan) {
+							command_len = 1
+							const data = { pirSensorSensitivity: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else {
+							command_len = 3
+							const enabled = !!parseInt(commands[i + 1], 16)
+							const duration = parseInt(commands[i + 2], 16) * 5
+							const delta = parseInt(commands[i + 3], 16) / 10
+							const data = { openWindowPrecisely: { enabled: enabled, duration: duration, delta: delta } }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '46'`,
