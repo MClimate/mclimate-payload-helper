@@ -42,11 +42,17 @@ export const tFloodPayloadParser = (hexData: string) => {
 
 		if (hexData) {
 			if (hexData.length > 6) {
-				const data = commandsReadingHelper(hexData, 6, DeviceType.TFlood)
+				// command responses are prepended to the 3-byte keepalive; parse only the
+				// command part so keepalive bytes (e.g. 0x0A, 0x4A) aren't read as command ids
+				const data = commandsReadingHelper(hexData.slice(0, -6), 6, DeviceType.TFlood) as
+					| Record<string, unknown>
+					| undefined
+				if (data && 'decodeKeepalive' in data) {
+					delete data.decodeKeepalive
+				}
 				Object.assign(deviceData, { ...deviceData }, { ...data })
 				// get only keepalive from device response
 				const keepaliveData = hexData.slice(-6)
-				// let dataToPass = keepaliveData.match(/.{1,2}/g).map(byte => { return parseInt(byte, 16) });
 				handleKeepAliveData(keepaliveData)
 			} else {
 				handleKeepAliveData(hexData)

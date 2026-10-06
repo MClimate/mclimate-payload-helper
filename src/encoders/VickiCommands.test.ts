@@ -7,7 +7,19 @@ describe('VickiCommands payload encoder', () => {
 	test('SetOpenWindow encodes enabled, close time, motor position and delta', () => {
 		expect(
 			commandBuilder.build('SetOpenWindow', { enabled: true, delta: 5, closeTime: 30, motorPosition: 300 }),
-		).toStrictEqual(new BaseCommand('SetOpenWindow', 0x06, '01', '06', '2C', '15', '5'))
+		).toStrictEqual(new BaseCommand('SetOpenWindow', 0x06, '01', '06', '2C', '15'))
+	})
+
+	test('SetOpenWindow matches the docs example 0x0601041C23 (5 bytes, delta packed into byte 4)', () => {
+		expect(
+			commandBuilder.build('SetOpenWindow', { enabled: true, closeTime: 20, delta: 3, motorPosition: 540 }).toHex(),
+		).toBe('0601041C23')
+	})
+
+	test('SetOpenWindow pads byte 4 when motor position fits in the low byte', () => {
+		expect(
+			commandBuilder.build('SetOpenWindow', { enabled: true, closeTime: 20, delta: 3, motorPosition: 200 }).toHex(),
+		).toBe('060104C803')
 	})
 
 	test('SetInternalAlgoParams encodes period and P values', () => {
@@ -199,14 +211,32 @@ describe('VickiCommands payload encoder', () => {
 		)
 	})
 
-	test('SetAntiFreezeParams encodes temperatures *10', () => {
+	test('SetAntiFreezeParams encodes thresholds *10 and target temperature in whole °C', () => {
 		expect(
 			commandBuilder.build('SetAntiFreezeParams', {
 				activatedTemperature: 5,
 				deactivatedTemperature: 6,
 				targetTemperature: 7,
 			}),
-		).toStrictEqual(new BaseCommand('SetAntiFreezeParams', 0x49, '32', '3C', '46'))
+		).toStrictEqual(new BaseCommand('SetAntiFreezeParams', 0x49, '32', '3C', '07'))
+	})
+
+	test('SetAntiFreezeParams matches the docs example 0x493C5A07', () => {
+		expect(
+			commandBuilder
+				.build('SetAntiFreezeParams', { activatedTemperature: 6, deactivatedTemperature: 9, targetTemperature: 7 })
+				.toHex(),
+		).toBe('493C5A07')
+	})
+
+	test('SetAntiFreezeParams rejects a non-integer target temperature (1°C resolution)', () => {
+		expect(() =>
+			commandBuilder.build('SetAntiFreezeParams', {
+				activatedTemperature: 6,
+				deactivatedTemperature: 9,
+				targetTemperature: 7.5,
+			}),
+		).toThrow(CustomError)
 	})
 
 	test('SetMaxAllowedIntegralValue encodes value *10', () => {

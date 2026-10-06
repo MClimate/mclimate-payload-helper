@@ -23,9 +23,8 @@ export class VickiCommands extends GeneralCommands {
 				0x06,
 				decToHex(enabledValue),
 				decToHex(closeTimeValue),
-				decToHex(motorPositionLow, true),
-				decToHex((motorPositionHigh << 4) | deltaValue, false),
-				decToHex(deltaValue, false),
+				decToHex(motorPositionLow),
+				decToHex((motorPositionHigh << 4) | deltaValue),
 			)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -645,7 +644,7 @@ export class VickiCommands extends GeneralCommands {
 				0x49,
 				decToHex(params.activatedTemperature * 10),
 				decToHex(params.deactivatedTemperature * 10),
-				decToHex(params.targetTemperature * 10),
+				decToHex(params.targetTemperature),
 			)
 		} catch (e) {
 			if (e instanceof ZodError) {

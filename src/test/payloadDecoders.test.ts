@@ -375,6 +375,41 @@ describe('Vicki payload decoder', () => {
 			valveOpenness: 23,
 		})
 	})
+
+	test('internal algo params response (0x16) consumes 3 bytes and keeps the trailing keepalive intact', () => {
+		const keepalive = {
+			reason: 129,
+			targetTemperature: 27,
+			sensorTemperature: 25.88238397927527,
+			relativeHumidity: 29.296875,
+			motorRange: 554,
+			motorPosition: 427,
+			batteryVoltage: 2.9,
+			openWindow: false,
+			highMotorConsumption: false,
+			lowMotorConsumption: false,
+			brokenSensor: false,
+			childLock: false,
+			calibrationFailed: false,
+			attachedBackplate: true,
+			perceiveAsOnline: true,
+			antiFreezeProtection: false,
+			d2dCommunicationReliable: false,
+			batteryTooLow: false,
+			targetTemperatureFloat: '27.00',
+			valveOpenness: 23,
+		}
+		// docs example response 0x16141111: Talg = 20 min, Pfirst/last = 17, Pnext = 17
+		expect(uplinkPayloadParser('16141111811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual({
+			internalAlgoParams: { period: 20, pFirstLast: 17, pNext: 17 },
+			...keepalive,
+		})
+		// pNext = 0x80 must not be read as a command id
+		expect(uplinkPayloadParser('16004080811BAF4BAB2A129030', DeviceType.Vicki)).toStrictEqual({
+			internalAlgoParams: { period: 0, pFirstLast: 64, pNext: 128 },
+			...keepalive,
+		})
+	})
 })
 
 describe('HT payload decoder', () => {
@@ -906,6 +941,51 @@ describe('T-Flood payload decoder', () => {
 			flood: false,
 			battery: 3.04,
 			temperature: 20,
+		})
+	})
+	test('command responses do not parse the keepalive header (0x0a) as a command', () => {
+		expect(uplinkPayloadParser('090114010abe10', DeviceType.TFlood)).toStrictEqual({
+			floodEventSendTime: 1,
+			floodEventUplinkType: 1,
+			reason: 'keepalive',
+			boxTamper: true,
+			flood: true,
+			battery: 3.04,
+			temperature: 16,
+		})
+	})
+	test('command responses do not parse the keepalive header (0x4a) as anti-freeze params', () => {
+		expect(uplinkPayloadParser('0603070215090112000a14014abe0f', DeviceType.TFlood)).toStrictEqual({
+			alarmDuration: 3,
+			deviceVersions: { hardware: 2, software: 15 },
+			floodEventSendTime: 1,
+			keepAliveTime: 10,
+			floodEventUplinkType: 1,
+			reason: 'floodDetected',
+			boxTamper: true,
+			flood: true,
+			battery: 3.04,
+			temperature: 15,
+		})
+	})
+	test('command response with docs keepalive 0x42C21A', () => {
+		expect(uplinkPayloadParser('090242c21a', DeviceType.TFlood)).toStrictEqual({
+			floodEventSendTime: 2,
+			reason: 'floodDetected',
+			boxTamper: false,
+			flood: true,
+			battery: 3.104,
+			temperature: 26,
+		})
+	})
+	test('command response does not leak the internal decodeKeepalive flag', () => {
+		expect(uplinkPayloadParser('1B0000be10', DeviceType.TFlood)).toStrictEqual({
+			uplinkType: '00',
+			reason: 'keepalive',
+			boxTamper: false,
+			flood: false,
+			battery: 3.04,
+			temperature: 16,
 		})
 	})
 })

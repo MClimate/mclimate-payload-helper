@@ -624,7 +624,7 @@ const VickiCommandSchemas = {
 	setAntiFreezeParams: z.object({
 		activatedTemperature: z.number().min(0).max(25),
 		deactivatedTemperature: z.number().min(0).max(25),
-		targetTemperature: z.number().min(0).max(30),
+		targetTemperature: z.number().int().min(0).max(30),
 		commandNumber: z.string().optional().default('49'),
 	}),
 	getAntiFreezeParams: z.object({

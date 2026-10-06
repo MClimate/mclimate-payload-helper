@@ -440,7 +440,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							const periodInMinutes = (commandResponse * 5) / 60
 							data = { joinRetryPeriod: periodInMinutes }
 						} else {
-							command_len = 2
+							command_len = 3
 							data = {
 								internalAlgoParams: {
 									period: parseInt(commands[i + 1], 16),
