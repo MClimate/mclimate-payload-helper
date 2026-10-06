@@ -56,6 +56,19 @@ describe('TValveCommands payload encoder', () => {
 		)
 	})
 
+	test('SetWorkingVoltage accepts the fw 1.7 floor of 1820 mV (0x1C)', () => {
+		expect(commandBuilder.build('SetWorkingVoltage', { voltage: 1820 }).toHex()).toBe('091C')
+	})
+
+	test('SetWorkingVoltage rounds values off the 8 mV grid to a whole byte', () => {
+		expect(commandBuilder.build('SetWorkingVoltage', { voltage: 1850 }).toHex()).toBe('091F')
+		expect(commandBuilder.build('SetWorkingVoltage', { voltage: 2500 }).toHex()).toBe('0971')
+	})
+
+	test('SetWorkingVoltage below 1820 mV throws validation error', () => {
+		expect(() => commandBuilder.build('SetWorkingVoltage', { voltage: 1819 })).toThrow(CustomError)
+	})
+
 	test('SetValveState encodes valve state', () => {
 		expect(commandBuilder.build('SetValveState', { state: 1 })).toStrictEqual(
 			new BaseCommand('SetValveState', 0x0c, '01'),

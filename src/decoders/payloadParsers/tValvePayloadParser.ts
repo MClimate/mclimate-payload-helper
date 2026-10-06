@@ -20,6 +20,7 @@ export const tValvePayloadParser = (hexData: string) => {
 		const longPackage = (byteArray: number[]) => {
 			const keepaliveData = {
 				reason: messageTypes[(byteArray[0] >> 5) & 0b111], // Extract bits 7:5 using right shift and mask
+				batteryTooLow: !!(byteArray[0] & (1 << 4)), // Extract bit 4 (fw >= 1.7, reserved/0 before)
 				boxTamper: !!(byteArray[0] & (1 << 3)), // Extract bit 3
 				floodDetectionWireState: !!(byteArray[0] & (1 << 2)), // Extract bit 2
 				flood: !!(byteArray[0] & (1 << 1)), // Extract bit 1

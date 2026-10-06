@@ -186,7 +186,8 @@ export class TValveCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setWorkingVoltage.parse(params)
 			let { voltage } = params
-			voltage = (voltage - 1600) / 8
+			// 8 mV resolution: round so values off the grid (e.g. 1820, 1850) still encode a whole byte
+			voltage = Math.round((voltage - 1600) / 8)
 			return new BaseCommand('SetWorkingVoltage', 0x09, decToHex(voltage))
 		} catch (e) {
 			if (e instanceof ZodError) {

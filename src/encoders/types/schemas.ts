@@ -1070,7 +1070,7 @@ const TValveCommandSchemas = {
 		commandNumber: z.string().optional().default('02'),
 	}),
 	setWorkingVoltage: z.object({
-		voltage: z.number().min(1840).max(2500),
+		voltage: z.number().min(1820).max(2500),
 		commandNumber: z.string().optional().default('09'),
 	}),
 	getWorkingVoltage: z.object({

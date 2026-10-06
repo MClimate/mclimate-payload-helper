@@ -898,6 +898,7 @@ describe('T-Valve payload decoder', () => {
 	test('long keepalive', () => {
 		expect(uplinkPayloadParser('646304089f', DeviceType.TValve)).toStrictEqual({
 			reason: 'controlButtonPressed',
+			batteryTooLow: false,
 			boxTamper: false,
 			floodDetectionWireState: true,
 			flood: false,
@@ -920,6 +921,46 @@ describe('T-Valve payload decoder', () => {
 				enableOpen: true,
 			},
 			battery: 2.872,
+		})
+	})
+	test('long keepalive with dangerous low battery bit set (fw >= 1.7, byte 0 bit 4)', () => {
+		// byte 0 = 0x74 = 0b01110100 → reason 011, bit 4 = 1 → batteryTooLow: true
+		expect(uplinkPayloadParser('746304089f', DeviceType.TValve)).toStrictEqual({
+			reason: 'controlButtonPressed',
+			batteryTooLow: true,
+			boxTamper: false,
+			floodDetectionWireState: true,
+			flood: false,
+			magnet: false,
+			alarmValidated: false,
+			manualOpenIndicator: true,
+			manualCloseIndicator: true,
+			closeTime: 4,
+			openTime: 8,
+			deviceVersions: { hardware: 0, software: 3 },
+			openCloseTime: { closingTime: 4, openingTime: 8 },
+			manualControl: { enableClose: true, enableOpen: true },
+			battery: 2.872,
+		})
+	})
+	test('long keepalive with batteryTooLow and appended working voltage response at the fw 1.7 floor (0x1C)', () => {
+		expect(uplinkPayloadParser('10620000A4111C', DeviceType.TValve)).toStrictEqual({
+			reason: 'keepalive',
+			batteryTooLow: true,
+			boxTamper: false,
+			floodDetectionWireState: false,
+			flood: false,
+			magnet: false,
+			alarmValidated: false,
+			manualOpenIndicator: true,
+			manualCloseIndicator: true,
+			closeTime: 0,
+			openTime: 0,
+			deviceVersions: { hardware: 0, software: 2 },
+			openCloseTime: { closingTime: 0, openingTime: 0 },
+			manualControl: { enableClose: true, enableOpen: true },
+			battery: 2.912,
+			workingVoltage: 1824,
 		})
 	})
 })
