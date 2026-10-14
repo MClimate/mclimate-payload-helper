@@ -442,7 +442,7 @@ const VickiCommandSchemas = {
 	setOpenWindow: z.object({
 		enabled: z.boolean(),
 		delta: z.number().min(0).max(15),
-		closeTime: z.number().min(0).max(51),
+		closeTime: z.number().int().min(0).max(1275).multipleOf(5), // Minutes, sent in 5-minute increments (1 byte)
 		motorPosition: z.number().int().min(0).max(800),
 		commandNumber: z.string().optional().default('06'),
 	}),
@@ -571,7 +571,7 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('34'),
 	}),
 	setProportionalGain: z.object({
-		proportionalGain: z.number().int().min(0).max(127),
+		proportionalGain: z.number().min(0).max(0xffffff / 131072), // Sent as gain * 131072 in 3 bytes, so max ≈ 127.99999
 		commandNumber: z.string().optional().default('37'),
 	}),
 	getProportionalGain: z.object({
@@ -582,7 +582,7 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('3c'),
 	}),
 	setIntegralGain: z.object({
-		integralGain: z.number().int().min(0).max(127),
+		integralGain: z.number().min(0).max(0xffffff / 131072), // Sent as gain * 131072 in 3 bytes, so max ≈ 127.99999
 		commandNumber: z.string().optional().default('3e'),
 	}),
 	getIntegralGain: z.object({
@@ -607,7 +607,7 @@ const VickiCommandSchemas = {
 	}),
 	setOpenWindowPrecisely: z.object({
 		enabled: z.boolean(),
-		duration: z.number().min(0).max(51),
+		duration: z.number().int().min(0).max(1275).multipleOf(5), // Minutes, sent in 5-minute increments (1 byte)
 		delta: z.number().min(0.1).max(15.0).multipleOf(0.1),
 		commandNumber: z.string().optional().default('45'),
 	}),
@@ -673,6 +673,7 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('59'),
 	}),
 	getHeatingEvent: z.object({
+		eventGroup: z.number().int().min(0).max(2).optional().default(0), // 0: events 0-7, 1: events 8-15, 2: events 16-19
 		commandNumber: z.string().optional().default('5a'),
 	}),
 	setHeatingEventState: z.object({
@@ -715,7 +716,7 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('60'),
 	}),
 	setAutomaticSetpointRestore: z.object({
-		time: z.number().int().min(0).max(255), // Time in 10-minute increments (0-2550 minutes), 0 disables the functionality
+		time: z.number().int().min(0).max(2550).multipleOf(10), // Minutes, sent in 10-minute increments; 0 disables the functionality
 		commandNumber: z.string().optional().default('61'),
 	}),
 	getAutomaticSetpointRestore: z.object({
@@ -758,8 +759,11 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('64'),
 	}),
 	setLedDisplayTempUnits: z.object({
-		value: z.number().min(0).max(2),
+		value: z.number().int().min(0).max(2),
 		commandNumber: z.string().optional().default('55'),
+	}),
+	getLedDisplayTempUnits: z.object({
+		commandNumber: z.string().optional().default('56'),
 	}),
 	setTargetTemperatureFahrenheit: z.object({
 		targetTemperature: z.number().int().min(41).max(86),
@@ -815,6 +819,7 @@ export namespace VickiCommandTypes {
 	>
 	export type SetTemperatureOffsetParams = z.infer<typeof VickiCommandSchemas.setTemperatureOffset>
 	export type SetHeatingEventParams = z.infer<typeof VickiCommandSchemas.setHeatingEvent>
+	export type GetHeatingEventParams = z.input<typeof VickiCommandSchemas.getHeatingEvent>
 	export type SetHeatingEventStateParams = z.infer<typeof VickiCommandSchemas.setHeatingEventState>
 	export type SetTimeRequestByMACcommandParams = z.infer<typeof VickiCommandSchemas.setTimeRequestByMACcommand>
 	export type SetHeatingScheduleParams = z.infer<typeof VickiCommandSchemas.setHeatingSchedule>
@@ -1018,12 +1023,47 @@ const Relay16DryCommandSchemas = {
 	getOverheatingEvents: z.object({
 		commandNumber: z.string().optional().default('60'),
 	}),
+	getOverheatingRecoveryTime: z.object({
+		commandNumber: z.string().optional().default('70'),
+	}),
 }
 
 // ------------------------------------------------ T-VALVE COMMANDS ------------------------------------------------
 
+// T-Valve uses its own codes for the general network commands (07, 15-1A), so these
+// replace the GeneralCommandSchemas entries with the same method names
+const TValveNetworkCommandSchemas = {
+	setKeepAlive: z.object({
+		time: z.number().min(1).max(255),
+		commandNumber: z.string().optional().default('07'),
+	}),
+	setJoinRetryPeriod: z.object({
+		period: z.number().min(1).max(21),
+		commandNumber: z.string().optional().default('15'),
+	}),
+	getJoinRetryPeriod: z.object({
+		commandNumber: z.string().optional().default('16'),
+	}),
+	setUplinkType: z.object({
+		type: z.enum(['01', '00']), // 01: confirmedUplinks, 00: unconfirmedUplinks
+		commandNumber: z.string().optional().default('17'),
+	}),
+	getUplinkType: z.object({
+		commandNumber: z.string().optional().default('18'),
+	}),
+	setWatchDogParams: z.object({
+		confirmedUplinks: z.number().min(0).max(255),
+		unconfirmedUplinks: z.number().min(0).max(255),
+		commandNumber: z.string().optional().default('19'),
+	}),
+	getWatchDogParams: z.object({
+		commandNumber: z.string().optional().default('1a'),
+	}),
+}
+
 const TValveCommandSchemas = {
 	...GeneralCommandSchemas,
+	...TValveNetworkCommandSchemas,
 	setOpenCloseTime: z.object({
 		openingTime: z.number().min(1).max(255),
 		closingTime: z.number().min(1).max(255),
@@ -1039,11 +1079,11 @@ const TValveCommandSchemas = {
 		commandNumber: z.string().optional().default('02'),
 	}),
 	setBuzzer: z.object({
-		volume: z.number().min(1).max(255),
-		frequency: z.number().min(1).max(255),
-		activeTime: z.number().min(1).max(255),
-		onTime: z.number().min(1).max(255),
-		offTime: z.number().min(1).max(255),
+		volume: z.number().int().min(0).max(15), // 0x0 min - 0xE max, 0xF turns the buzzer off
+		frequency: z.number().int().min(0).max(10), // 1 kHz + 0.5 kHz steps, up to 6 kHz
+		activeTime: z.number().int().min(0).max(255), // seconds, 0: until stopped
+		onTime: z.number().int().min(10).max(2550).multipleOf(10), // ms, sent in 10 ms steps
+		offTime: z.number().int().min(10).max(2550).multipleOf(10), // ms, sent in 10 ms steps
 		commandNumber: z.string().optional().default('03'),
 	}),
 	setEmergencyOpenings: z.object({
@@ -1065,10 +1105,7 @@ const TValveCommandSchemas = {
 	getFloodAlarmTime: z.object({
 		commandNumber: z.string().optional().default('10'),
 	}),
-	setKeepAliveTValve: z.object({
-		time: z.number().min(1).max(255),
-		commandNumber: z.string().optional().default('02'),
-	}),
+	setKeepAliveTValve: TValveNetworkCommandSchemas.setKeepAlive,
 	setWorkingVoltage: z.object({
 		voltage: z.number().min(1820).max(2500),
 		commandNumber: z.string().optional().default('09'),
@@ -1100,25 +1137,13 @@ const TValveCommandSchemas = {
 	getDeviceFloodSensor: z.object({
 		commandNumber: z.string().optional().default('13'),
 	}),
-	setJoinRetryPeriodTValve: z.object({
-		period: z.number().min(1).max(21),
-		commandNumber: z.string().optional().default('10'),
-	}),
-	setUplinkTypeTValve: z.object({
-		type: z.enum(['01', '00']), // 01: confirmedUplinks, 00: unconfirmedUplinks
-		commandNumber: z.string().optional().default('11'),
-	}),
+	setJoinRetryPeriodTValve: TValveNetworkCommandSchemas.setJoinRetryPeriod,
+	setUplinkTypeTValve: TValveNetworkCommandSchemas.setUplinkType,
 	deactivateDevice: z.object({
 		commandNumber: z.string().optional().default('0b'),
 	}),
-	setWatchDogTValveParams: z.object({
-		confirmedUplinks: z.number().min(0).max(255),
-		unconfirmedUplinks: z.number().min(0).max(255),
-		commandNumber: z.string().optional().default('1c'),
-	}),
-	getWatchDogTValveParams: z.object({
-		commandNumber: z.string().optional(),
-	}),
+	setWatchDogTValveParams: TValveNetworkCommandSchemas.setWatchDogParams,
+	getWatchDogTValveParams: TValveNetworkCommandSchemas.getWatchDogParams,
 	requestFullData: z.object({
 		commandNumber: z.string().optional().default('08'),
 	}),
@@ -1204,7 +1229,7 @@ const FanCoilThermostatCommandSchemas = {
 	}),
 	setTargetTemperature: z.object({
 		targetTemperature: z.number().min(5).max(99),
-		commandNumber: z.string().optional().default('0e'),
+		commandNumber: z.string().optional().default('2e'),
 	}),
 	setValveOpenCloseTime: z.object({
 		value: z.number().min(1).max(255),
@@ -1527,7 +1552,7 @@ const WirelessThermostatCommandSchemas = {
 	...ChildLockCommandSchemas,
 	setTargetTemperature: z.object({
 		targetTemperature: z.number().min(5).max(99),
-		commandNumber: z.string().optional().default('0e'),
+		commandNumber: z.string().optional().default('2e'),
 	}),
 	getTargetTemperature: z.object({
 		commandNumber: z.string().optional().default('2f'),
@@ -1569,10 +1594,10 @@ const WirelessThermostatCommandSchemas = {
 	}),
 	setTemperatureHysteresis: z.object({
 		hysteresis: z.number().min(0.1).max(25.5).multipleOf(0.1),
-		commandNumber: z.string().optional().default('43'),
+		commandNumber: z.string().optional().default('4e'),
 	}),
 	getTemperatureHysteresis: z.object({
-		commandNumber: z.string().optional().default('42'),
+		commandNumber: z.string().optional().default('4f'),
 	}),
 	setTargetTemperaturePrecisely: z.object({
 		targetTemperature: z.number().min(5).max(99).multipleOf(0.1),
@@ -1583,10 +1608,10 @@ const WirelessThermostatCommandSchemas = {
 	}),
 	setTargetTemperatureStep: z.object({
 		value: z.number().min(0.1).max(10).multipleOf(0.1),
-		commandNumber: z.string().optional().default('03'),
+		commandNumber: z.string().optional().default('52'),
 	}),
 	getTargetTemperatureStep: z.object({
-		commandNumber: z.string().optional().default('05'),
+		commandNumber: z.string().optional().default('53'),
 	}),
 	setSensorCompensationTemperature: z.object({
 		temperature: z.number().min(-5).max(5).multipleOf(0.1),
@@ -1667,14 +1692,14 @@ const CO2SensorCommandSchemas = {
 	}),
 	setBuzzerNotification: z.object({
 		duration_good_beeping: z.number().min(0).max(255),
-		duration_good_loud: z.number().min(0).max(255),
-		duration_good_silent: z.number().min(0).max(255),
+		duration_good_loud: z.number().int().min(0).max(2550).multipleOf(10), // ms, sent in 10 ms steps
+		duration_good_silent: z.number().int().min(0).max(2550).multipleOf(10), // ms, sent in 10 ms steps
 		duration_medium_beeping: z.number().min(0).max(255),
-		duration_medium_loud: z.number().min(0).max(255),
-		duration_medium_silent: z.number().min(0).max(255),
+		duration_medium_loud: z.number().int().min(0).max(2550).multipleOf(10), // ms, sent in 10 ms steps
+		duration_medium_silent: z.number().int().min(0).max(2550).multipleOf(10), // ms, sent in 10 ms steps
 		duration_bad_beeping: z.number().min(0).max(255),
-		duration_bad_loud: z.number().min(0).max(255),
-		duration_bad_silent: z.number().min(0).max(255),
+		duration_bad_loud: z.number().int().min(0).max(2550).multipleOf(10), // ms, sent in 10 ms steps
+		duration_bad_silent: z.number().int().min(0).max(2550).multipleOf(10), // ms, sent in 10 ms steps
 		commandNumber: z.string().optional().default('26'),
 	}),
 	getBuzzerNotification: z.object({
@@ -1684,15 +1709,15 @@ const CO2SensorCommandSchemas = {
 		red_good: z.number().min(0).max(255),
 		green_good: z.number().min(0).max(255),
 		blue_good: z.number().min(0).max(255),
-		duration_good: z.number().min(0).max(255),
+		duration_good: z.number().int().min(0).max(655350).multipleOf(10), // ms, sent in 10 ms steps
 		red_medium: z.number().min(0).max(255),
 		green_medium: z.number().min(0).max(255),
 		blue_medium: z.number().min(0).max(255),
-		duration_medium: z.number().min(0).max(255),
+		duration_medium: z.number().int().min(0).max(655350).multipleOf(10), // ms, sent in 10 ms steps
 		red_bad: z.number().min(0).max(255),
 		green_bad: z.number().min(0).max(255),
 		blue_bad: z.number().min(0).max(255),
-		duration_bad: z.number().min(0).max(255),
+		duration_bad: z.number().int().min(0).max(655350).multipleOf(10), // ms, sent in 10 ms steps
 		commandNumber: z.string().optional().default('28'),
 	}),
 	getCo2Led: z.object({
@@ -1853,7 +1878,7 @@ const HTSensorCommandSchemas = {
 	}),
 	setHumidityCompensation: z.object({
 		negativeCompensation: z.boolean(), // true: negative compensation, false: positive compensation
-		compensation: z.number().min(0).max(255).multipleOf(0.1),
+		compensation: z.number().int().min(0).max(99), // whole %RH
 		commandNumber: z.string().optional().default('33'),
 	}),
 	getHumidityCompensation: z.object({
@@ -1908,17 +1933,17 @@ const TFloodCommandSchemas = {
 	}),
 	setFloodAlarmTime: z.object({
 		time: z.number().min(0).max(255),
-		commandNumber: z.string().optional().default('06'),
+		commandNumber: z.string().optional().default('04'),
 	}),
 	getFloodAlarmTime: z.object({
-		commandNumber: z.string().optional().default('10'),
+		commandNumber: z.string().optional().default('06'),
 	}),
 	setKeepAlive: z.object({
 		time: z.number().min(1).max(14400),
-		commandNumber: z.string().optional().default('02'),
+		commandNumber: z.string().optional().default('05'),
 	}),
 	getDeviceVersion: z.object({
-		commandNumber: z.string().optional().default('04'),
+		commandNumber: z.string().optional().default('07'),
 	}),
 	setFloodEventSendTime: z.object({
 		time: z.number().min(0).max(255),

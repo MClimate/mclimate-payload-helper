@@ -105,4 +105,10 @@ describe('WirelessThermostatCommands payload encoder', () => {
 	test('RestartDevice emits restart command', () => {
 		expect(commandBuilder.build('RestartDevice')).toStrictEqual(new BaseCommand('RestartDevice', 0xa5))
 	})
+
+	test('SetTargetTemperature rounds off-grid values to 0.1 °C instead of emitting invalid hex', () => {
+		expect(commandBuilder.build('SetTargetTemperature', { targetTemperature: 21.56 })).toStrictEqual(
+			new BaseCommand('SetTargetTemperature', 0x50, '00D8'),
+		)
+	})
 })

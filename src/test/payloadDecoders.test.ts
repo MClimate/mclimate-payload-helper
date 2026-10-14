@@ -584,6 +584,37 @@ describe('Open/Close payload decoder', () => {
 			notificationBlindTime: 0,
 		})
 	})
+	test('keepalive with negative temperature flag (byte 2 bit 3)', () => {
+		expect(uplinkPayloadParser('01AB08321B5CAE01', DeviceType.OpenCloseSensor)).toStrictEqual({
+			event: 'keepalive',
+			status: 1,
+			counter: 1793198,
+			batteryVoltage: 2.97,
+			thermistorProperlyConnected: true,
+			sensorTemperature: -5,
+		})
+	})
+	test('status only uses bit 0 of byte 7 (bits 7:1 are reserved)', () => {
+		expect(uplinkPayloadParser('01AB00D91B5CAEFF', DeviceType.OpenCloseSensor)).toStrictEqual({
+			event: 'keepalive',
+			status: 1,
+			counter: 1793198,
+			batteryVoltage: 2.97,
+			thermistorProperlyConnected: true,
+			sensorTemperature: 21.7,
+		})
+	})
+	test('push button event (0x21) with response of commands', () => {
+		expect(uplinkPayloadParser('120A21AB00D91B5CAE01', DeviceType.OpenCloseSensor)).toStrictEqual({
+			keepAliveTime: 10,
+			event: 'push button',
+			status: 1,
+			counter: 1793198,
+			batteryVoltage: 2.97,
+			thermistorProperlyConnected: true,
+			sensorTemperature: 21.7,
+		})
+	})
 })
 
 describe('Wireless Thermostat payload decoder', () => {
@@ -1029,6 +1060,45 @@ describe('T-Flood payload decoder', () => {
 			temperature: 16,
 		})
 	})
+	test('0x01 read device parameters reply (docs example 0x42C21A15)', () => {
+		expect(uplinkPayloadParser('42C21A15', DeviceType.TFlood)).toStrictEqual({
+			reason: 'floodDetected',
+			boxTamper: false,
+			flood: true,
+			battery: 3.104,
+			temperature: 26,
+			deviceVersions: { software: 15 },
+		})
+	})
+	test('0x01 reply is not decoded as a command plus a shifted keepalive', () => {
+		expect(uplinkPayloadParser('00BE1817', DeviceType.TFlood)).toStrictEqual({
+			reason: 'keepalive',
+			boxTamper: false,
+			flood: false,
+			battery: 3.04,
+			temperature: 24,
+			deviceVersions: { software: 17 },
+		})
+	})
+	test('keepalive temperature sign bit (fw >= 1.5)', () => {
+		expect(uplinkPayloadParser('00BE85', DeviceType.TFlood)).toStrictEqual({
+			reason: 'keepalive',
+			boxTamper: false,
+			flood: false,
+			battery: 3.04,
+			temperature: -5,
+		})
+	})
+	test('command response with a negative keepalive temperature', () => {
+		expect(uplinkPayloadParser('060600BE85', DeviceType.TFlood)).toStrictEqual({
+			alarmDuration: 6,
+			reason: 'keepalive',
+			boxTamper: false,
+			flood: false,
+			battery: 3.04,
+			temperature: -5,
+		})
+	})
 })
 
 describe('ASPM payload decoder', () => {
@@ -1090,6 +1160,21 @@ describe('ASPM payload decoder', () => {
 			acVoltage: 231,
 			acCurrent: 6482,
 			relayState: true,
+		})
+	})
+	test('overcurrent/overpower recovery temperatures use the sign bit (fw >= 1.3)', () => {
+		expect(uplinkPayloadParser('72827385011C034A241805D9E7195201', DeviceType.Relay16)).toStrictEqual({
+			overcurrentRecoveryTemp: -2,
+			overpowerRecoveryTemp: -5,
+			internalTemperature: 28,
+			energy: 55190.552,
+			power: 1497,
+			acVoltage: 231,
+			acCurrent: 6482,
+			relayState: true,
+		})
+		expect(uplinkPayloadParser('723E011C034A241805D9E7195201', DeviceType.Relay16)).toMatchObject({
+			overcurrentRecoveryTemp: 62,
 		})
 	})
 })

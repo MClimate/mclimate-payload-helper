@@ -49,4 +49,13 @@ describe('Relay16DryCommands payload encoder', () => {
 	test('Invalid SetRelayTimerInSeconds throws validation error', () => {
 		expect(() => commandBuilder.build('SetRelayTimerInSeconds', { state: 0, time: 70000 })).toThrow(CustomError)
 	})
+
+	test('only the overheating recovery time is available (no overvoltage/overcurrent/overpower on 16ADS)', () => {
+		expect(commandBuilder.build('GetOverheatingRecoveryTime')).toStrictEqual(
+			new BaseCommand('GetOverheatingRecoveryTime', 0x70),
+		)
+		expect(() => commandBuilder.build('GetOvervoltageRecoveryTime')).toThrow(CustomError)
+		expect(() => commandBuilder.build('GetOvercurrentRecoveryTemp')).toThrow(CustomError)
+		expect(() => commandBuilder.build('GetOverpowerRecoveryTemp')).toThrow(CustomError)
+	})
 })

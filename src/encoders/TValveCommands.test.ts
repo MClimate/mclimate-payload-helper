@@ -118,4 +118,27 @@ describe('TValveCommands payload encoder', () => {
 	test('DeactivateDevice emits deactivate command', () => {
 		expect(commandBuilder.build('DeactivateDevice')).toStrictEqual(new BaseCommand('DeactivateDevice', 0x0b))
 	})
+
+	test('SetBuzzer encodes the docs example 0x03EA050A0A', () => {
+		expect(
+			commandBuilder.build('SetBuzzer', { volume: 14, frequency: 10, activeTime: 5, onTime: 100, offTime: 100 }),
+		).toStrictEqual(new BaseCommand('SetBuzzer', 0x03, 'ea', '05', '0A', '0A'))
+	})
+
+	test('SetBuzzer rejects values that do not fit the nibbles or the 10 ms grid', () => {
+		const valid = { volume: 8, frequency: 4, activeTime: 10, onTime: 20, offTime: 30 }
+		expect(() => commandBuilder.build('SetBuzzer', { ...valid, volume: 16 })).toThrow(CustomError)
+		expect(() => commandBuilder.build('SetBuzzer', { ...valid, frequency: 11 })).toThrow(CustomError)
+		expect(() => commandBuilder.build('SetBuzzer', { ...valid, onTime: 15 })).toThrow(CustomError)
+	})
+
+	test('SetJoinRetryPeriod rounds to the 5 s grid instead of emitting invalid hex', () => {
+		expect(commandBuilder.build('SetJoinRetryPeriod', { period: 1.1 })).toStrictEqual(
+			new BaseCommand('SetJoinRetryPeriod', 0x15, '0D'),
+		)
+	})
+
+	test('GetDeviceVersion is not supported (0x04 is SetEmergencyOpenings on T-Valve)', () => {
+		expect(() => commandBuilder.build('GetDeviceVersion')).toThrow(CustomError)
+	})
 })

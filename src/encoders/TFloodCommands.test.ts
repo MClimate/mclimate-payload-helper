@@ -6,7 +6,7 @@ describe('TFloodCommands payload encoder', () => {
 
 	test('SetFloodAlarmTime encodes alarm time', () => {
 		expect(commandBuilder.build('SetFloodAlarmTime', { time: 10 })).toStrictEqual(
-			new BaseCommand('SetFloodAlarmTime', 0x04, 'a'),
+			new BaseCommand('SetFloodAlarmTime', 0x04, '0A'),
 		)
 	})
 
@@ -18,7 +18,7 @@ describe('TFloodCommands payload encoder', () => {
 
 	test('SetFloodEventSendTime encodes send time', () => {
 		expect(commandBuilder.build('SetFloodEventSendTime', { time: 30 })).toStrictEqual(
-			new BaseCommand('SetFloodEventSendTime', 0x08, '1e'),
+			new BaseCommand('SetFloodEventSendTime', 0x08, '1E'),
 		)
 	})
 

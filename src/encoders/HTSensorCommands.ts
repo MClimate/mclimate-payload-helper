@@ -13,7 +13,7 @@ export class HTSensorCommands extends GeneralCommands {
 				'SetTemperatureCompensation',
 				0x31,
 				negativeCompensation ? '01' : '00',
-				decToHex(compensation * 10),
+				decToHex(Math.round(compensation * 10)),
 			)
 		} catch (e) {
 			if (e instanceof ZodError) {

@@ -259,4 +259,10 @@ describe('FanCoilThermostatCommands payload encoder', () => {
 	test('Invalid SetTargetTemperatureStep throws validation error', () => {
 		expect(() => commandBuilder.build('SetTargetTemperatureStep', { value: 0 })).toThrow(CustomError)
 	})
+
+	test('SetTargetTemperature rounds off-grid values to 0.1 °C instead of emitting invalid hex', () => {
+		expect(commandBuilder.build('SetTargetTemperature', { targetTemperature: 21.56 })).toStrictEqual(
+			new BaseCommand('SetTargetTemperature', 0x2e, '00D8'),
+		)
+	})
 })

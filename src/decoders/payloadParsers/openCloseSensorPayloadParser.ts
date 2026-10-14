@@ -24,7 +24,8 @@ export const openCloseSensorPayloadParser = (hexData: string) => {
 			const batteryVoltage = calculateBatteryVoltage(bytes[1]) / 1000
 			const batteryVoltageFormatted = Number(batteryVoltage.toFixed(2))
 
-			// Byte 2: Thermistor operational status and temperature data (bits 9:8)
+			// Byte 2: Temperature sign, thermistor operational status and temperature data (bits 9:8)
+			const temperatureNegative = (bytes[2] & 0x08) !== 0 // Bit 3
 			const thermistorConnected = (bytes[2] & 0x04) === 0 // Bit 2
 			const temperatureHighBits = bytes[2] & 0x03 // Bits 1:0
 
@@ -32,13 +33,13 @@ export const openCloseSensorPayloadParser = (hexData: string) => {
 			const temperatureLowBits = bytes[3]
 			const temperatureRaw = (temperatureHighBits << 8) | temperatureLowBits
 			const temperatureCelsius = calculateTemperature(temperatureRaw)
-			const sensorTemperature = Number(temperatureCelsius.toFixed(2))
+			const sensorTemperature = Number((temperatureNegative ? 0 - temperatureCelsius : temperatureCelsius).toFixed(2))
 
 			// Byte 4-6: Counter data
 			const counter = (bytes[4] << 16) | (bytes[5] << 8) | bytes[6]
 
-			// Byte 7: Status and event code
-			const status = bytes[7]
+			// Byte 7: Sensor status (bit 0, 1: open), bits 7:1 are reserved
+			const status = bytes[7] & 0x01
 			const events: Record<string, KeepaliveEvent> = { '01': 'keepalive', '32': 'reed switch', '33': 'push button' }
 			const eventKey = bytes[0].toString().padStart(2, '0')
 			const event = events[eventKey]

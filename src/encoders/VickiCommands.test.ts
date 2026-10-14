@@ -22,6 +22,26 @@ describe('VickiCommands payload encoder', () => {
 		).toBe('060104C803')
 	})
 
+	test('SetOpenWindow matches the docs example 0x060104C213', () => {
+		expect(
+			commandBuilder.build('SetOpenWindow', { enabled: true, closeTime: 20, delta: 3, motorPosition: 450 }).toHex(),
+		).toBe('060104C213')
+	})
+
+	test('SetOpenWindow takes close times up to 1275 minutes in 5-minute steps', () => {
+		expect(
+			commandBuilder.build('SetOpenWindow', { enabled: true, closeTime: 1275, delta: 3, motorPosition: 450 }).toHex(),
+		).toBe('0601FFC213')
+		expect(
+			commandBuilder.build('SetOpenWindow', { enabled: true, closeTime: 60, delta: 3, motorPosition: 450 }).toHex(),
+		).toBe('06010CC213')
+		for (const closeTime of [12, 22.5, 1280]) {
+			expect(() =>
+				commandBuilder.build('SetOpenWindow', { enabled: true, closeTime, delta: 3, motorPosition: 450 }),
+			).toThrow(CustomError)
+		}
+	})
+
 	test('SetInternalAlgoParams encodes period and P values', () => {
 		expect(commandBuilder.build('SetInternalAlgoParams', { period: 2, pFirstLast: 3, pNext: 4 })).toStrictEqual(
 			new BaseCommand('SetInternalAlgoParams', 0x0c, '02', '03', '04'),
@@ -175,6 +195,19 @@ describe('VickiCommands payload encoder', () => {
 		)
 	})
 
+	test('SetProportionalGain accepts fractional gains (docs example Kp 2.74688 -> 0x37057E67)', () => {
+		expect(commandBuilder.build('SetProportionalGain', { proportionalGain: 2.74688 }).toHex()).toBe('37057E67')
+	})
+
+	test('SetProportionalGain accepts gains up to the 3-byte limit and rejects anything above', () => {
+		expect(commandBuilder.build('SetProportionalGain', { proportionalGain: 0xffffff / 131072 }).toHex()).toBe(
+			'37FFFFFF',
+		)
+		for (const proportionalGain of [-0.1, 127.999999, 128]) {
+			expect(() => commandBuilder.build('SetProportionalGain', { proportionalGain })).toThrow(CustomError)
+		}
+	})
+
 	test('SetExternalTemperatureFloat encodes temperature *10', () => {
 		expect(commandBuilder.build('SetExternalTemperatureFloat', { temp: 12.3 })).toStrictEqual(
 			new BaseCommand('SetExternalTemperatureFloat', 0x3c, '007B'),
@@ -185,6 +218,19 @@ describe('VickiCommands payload encoder', () => {
 		expect(commandBuilder.build('SetIntegralGain', { integralGain: 2 })).toStrictEqual(
 			new BaseCommand('SetIntegralGain', 0x3e, '040000'),
 		)
+	})
+
+	test('SetIntegralGain accepts fractional gains (docs example Ki 0.412678)', () => {
+		// 0.412678 * 131072 = 54090.53: the docs truncate to 0x00D34A, the encoder rounds to the nearest step (0x00D34B)
+		expect(commandBuilder.build('SetIntegralGain', { integralGain: 0.412678 }).toHex()).toBe('3E00D34B')
+		expect(commandBuilder.build('SetIntegralGain', { integralGain: 0.412674 }).toHex()).toBe('3E00D34A')
+	})
+
+	test('SetIntegralGain accepts gains up to the 3-byte limit and rejects anything above', () => {
+		expect(commandBuilder.build('SetIntegralGain', { integralGain: 0xffffff / 131072 }).toHex()).toBe('3EFFFFFF')
+		for (const integralGain of [-0.1, 127.999999, 128]) {
+			expect(() => commandBuilder.build('SetIntegralGain', { integralGain })).toThrow(CustomError)
+		}
 	})
 
 	test('SetPiRunPeriod encodes period', () => {
@@ -203,6 +249,26 @@ describe('VickiCommands payload encoder', () => {
 		expect(commandBuilder.build('SetOpenWindowPrecisely', { enabled: true, duration: 25, delta: 1.5 })).toStrictEqual(
 			new BaseCommand('SetOpenWindowPrecisely', 0x45, '01', '05', '0F'),
 		)
+	})
+
+	test('SetOpenWindowPrecisely matches the docs example 0x4501060D', () => {
+		expect(commandBuilder.build('SetOpenWindowPrecisely', { enabled: true, duration: 30, delta: 1.3 }).toHex()).toBe(
+			'4501060D',
+		)
+	})
+
+	test('SetOpenWindowPrecisely takes durations up to 1275 minutes in 5-minute steps', () => {
+		expect(commandBuilder.build('SetOpenWindowPrecisely', { enabled: true, duration: 1275, delta: 1.3 }).toHex()).toBe(
+			'4501FF0D',
+		)
+		expect(commandBuilder.build('SetOpenWindowPrecisely', { enabled: true, duration: 120, delta: 1.3 }).toHex()).toBe(
+			'4501180D',
+		)
+		for (const duration of [12, 22.5, 1280]) {
+			expect(() => commandBuilder.build('SetOpenWindowPrecisely', { enabled: true, duration, delta: 1.3 })).toThrow(
+				CustomError,
+			)
+		}
 	})
 
 	test('SetForceAttach encodes enabled flag', () => {
@@ -288,6 +354,23 @@ describe('VickiCommands payload encoder', () => {
 		).toStrictEqual(new BaseCommand('SetHeatingEvent', 0x59, '00', '08', '01', '0102', '1F'))
 	})
 
+	test('GetHeatingEvent sends the event group byte (docs examples 0x5A00, 0x5A02)', () => {
+		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 0 }).toHex()).toBe('5A00')
+		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 1 }).toHex()).toBe('5A01')
+		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 2 }).toHex()).toBe('5A02')
+	})
+
+	test('GetHeatingEvent defaults to group 0 so callers without params still get a valid request', () => {
+		expect(commandBuilder.build('GetHeatingEvent', {}).toHex()).toBe('5A00')
+		expect(commandBuilder.build('GetHeatingEvent').toHex()).toBe('5A00')
+	})
+
+	test('GetHeatingEvent rejects groups outside 0-2', () => {
+		for (const eventGroup of [-1, 1.5, 3]) {
+			expect(() => commandBuilder.build('GetHeatingEvent', { eventGroup })).toThrow(CustomError)
+		}
+	})
+
 	test('SetHeatingEventState encodes event index and state', () => {
 		expect(commandBuilder.build('SetHeatingEventState', { eventIndex: 16, active: true })).toStrictEqual(
 			new BaseCommand('SetHeatingEventState', 0x6b, '10', '01'),
@@ -365,5 +448,22 @@ describe('VickiCommands payload encoder', () => {
 		expect(() =>
 			commandBuilder.build('SetOpenWindow', { enabled: true, delta: -1, closeTime: 1, motorPosition: 1 }),
 		).toThrow(CustomError)
+	})
+
+	test('SetTargetTemperature rounds off-grid values to 0.1 °C instead of emitting invalid hex', () => {
+		expect(commandBuilder.build('SetTargetTemperature', { targetTemperature: 21.56 })).toStrictEqual(
+			new BaseCommand('SetTargetTemperature', 0x51, '00D8'),
+		)
+	})
+
+	test('SetLedDisplayTempUnits rejects non-integer values', () => {
+		expect(() => commandBuilder.build('SetLedDisplayTempUnits', { value: 1.5 })).toThrow(CustomError)
+	})
+
+	test('SetAutomaticSetpointRestore takes minutes up to 2550 in 10-minute steps', () => {
+		expect(commandBuilder.build('SetAutomaticSetpointRestore', { time: 2550 })).toStrictEqual(
+			new BaseCommand('SetAutomaticSetpointRestore', 0x61, 'FF'),
+		)
+		expect(() => commandBuilder.build('SetAutomaticSetpointRestore', { time: 255 })).toThrow(CustomError)
 	})
 })

@@ -55,4 +55,13 @@ describe('HTSensorCommands payload encoder', () => {
 			new BaseCommand('GetD2dCommunicationPeriod', 0xac),
 		)
 	})
+
+	test('SetHumidityCompensation takes whole %RH up to 99', () => {
+		expect(
+			commandBuilder.build('SetHumidityCompensation', { negativeCompensation: true, compensation: 99 }),
+		).toStrictEqual(new BaseCommand('SetHumidityCompensation', 0x33, '01', '63'))
+		expect(() =>
+			commandBuilder.build('SetHumidityCompensation', { negativeCompensation: false, compensation: 3.5 }),
+		).toThrow(CustomError)
+	})
 })

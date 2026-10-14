@@ -23,12 +23,14 @@ export const tFloodPayloadParser = (hexData: string) => {
 				Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 			}
 			const longPackage = (byteArray: string[]) => {
+				// bit 7 is the sign (fw >= 1.5), bits 6:0 the temperature in °C
+				const temperature = parseInt(byteArray[2].slice(1), 2)
 				const keepaliveData = {
 					reason: messageTypes[parseInt(byteArray[0].slice(0, 3), 2)],
 					boxTamper: toBool(byteArray[0][4]),
 					flood: toBool(byteArray[0][6]),
 					battery: (parseInt(byteArray[1], 2) * 16) / 1000,
-					temperature: parseInt(byteArray[2], 2),
+					temperature: byteArray[2][0] === '1' ? 0 - temperature : temperature,
 				}
 				Object.assign(deviceData, { ...deviceData }, { ...keepaliveData })
 			}
@@ -41,7 +43,12 @@ export const tFloodPayloadParser = (hexData: string) => {
 		}
 
 		if (hexData) {
-			if (hexData.length > 6) {
+			if (hexData.length === 8) {
+				// 0x01 "read device parameters" reply: keepalive bytes plus the firmware version, with no command
+				// byte in front (command responses are at least 2 bytes, so they never make a 4-byte payload)
+				handleKeepAliveData(hexData.slice(0, 6))
+				Object.assign(deviceData, { deviceVersions: { software: Number(hexData.slice(6)) } })
+			} else if (hexData.length > 6) {
 				// command responses are prepended to the 3-byte keepalive; parse only the
 				// command part so keepalive bytes (e.g. 0x0A, 0x4A) aren't read as command ids
 				const data = commandsReadingHelper(hexData.slice(0, -6), 6, DeviceType.TFlood) as

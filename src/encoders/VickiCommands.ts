@@ -108,7 +108,7 @@ export class VickiCommands extends GeneralCommands {
 			const { targetTemperature } = params
 
 			if (isFloat(targetTemperature)) {
-				return new BaseCommand('SetTargetTemperature', 0x51, dec2hex(targetTemperature * 10))
+				return new BaseCommand('SetTargetTemperature', 0x51, dec2hex(Math.round(targetTemperature * 10)))
 			} else {
 				return new BaseCommand('SetTargetTemperature', 0x0e, decToHex(targetTemperature))
 			}
@@ -478,7 +478,7 @@ export class VickiCommands extends GeneralCommands {
 	static setExternalTemperatureFloat(params: VickiCommandTypes.SetExternalTemperatureFloatParams) {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setExternalTemperatureFloat.parse(params)
-			return new BaseCommand('SetExternalTemperatureFloat', 0x3c, dec2hex(params.temp * 10))
+			return new BaseCommand('SetExternalTemperatureFloat', 0x3c, dec2hex(Math.round(params.temp * 10)))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -554,7 +554,7 @@ export class VickiCommands extends GeneralCommands {
 	static setTemperatureHysteresis(params: VickiCommandTypes.SetTemperatureHysteresisParams) {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setTemperatureHysteresis.parse(params)
-			return new BaseCommand('SetTemperatureHysteresis', 0x43, decToHex(params.hysteresis * 10))
+			return new BaseCommand('SetTemperatureHysteresis', 0x43, decToHex(Math.round(params.hysteresis * 10)))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -642,8 +642,8 @@ export class VickiCommands extends GeneralCommands {
 			return new BaseCommand(
 				'SetAntiFreezeParams',
 				0x49,
-				decToHex(params.activatedTemperature * 10),
-				decToHex(params.deactivatedTemperature * 10),
+				decToHex(Math.round(params.activatedTemperature * 10)),
+				decToHex(Math.round(params.deactivatedTemperature * 10)),
 				decToHex(params.targetTemperature),
 			)
 		} catch (e) {
@@ -670,7 +670,7 @@ export class VickiCommands extends GeneralCommands {
 	static setMaxAllowedIntegralValue(params: VickiCommandTypes.SetMaxAllowedIntegralValueParams) {
 		try {
 			DeviceCommandSchemas.VickiCommandSchemas.setMaxAllowedIntegralValue.parse(params)
-			return new BaseCommand('SetMaxAllowedIntegralValue', 0x4c, dec2hex(params.value * 10))
+			return new BaseCommand('SetMaxAllowedIntegralValue', 0x4c, dec2hex(Math.round(params.value * 10)))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -850,7 +850,7 @@ export class VickiCommands extends GeneralCommands {
 			const { eventIndex, startHour, startMinute, targetTemperature, daysActive } = params
 			// Target temperature is in Celsius degrees multiplied by 10, as per the documentation
 			// 5900080101021F
-			const tempValue = targetTemperature * 10
+			const tempValue = Math.round(targetTemperature * 10)
 			// Calculate days active bitmap: bit 0 (LSB) = Monday, bit 6 = Sunday
 			const daysActiveValue =
 				(daysActive.monday ? 1 : 0) |
@@ -886,8 +886,26 @@ export class VickiCommands extends GeneralCommands {
 		}
 	}
 
-	static getHeatingEvent() {
-		return new BaseCommand('GetHeatingEvent', 0x5a)
+	static getHeatingEvent(params: VickiCommandTypes.GetHeatingEventParams = {}) {
+		try {
+			// The device ignores 0x5A without the group byte (0: events 0-7, 1: events 8-15, 2: events 16-19)
+			const { eventGroup } = DeviceCommandSchemas.VickiCommandSchemas.getHeatingEvent.parse(params)
+			return new BaseCommand('GetHeatingEvent', 0x5a, decToHex(eventGroup))
+		} catch (e) {
+			if (e instanceof ZodError) {
+				throw new CustomError({
+					message: 'Zod validation error during GetHeatingEvent execution',
+					command: 'GetHeatingEvent',
+					originalError: e,
+				})
+			} else {
+				throw new CustomError({
+					message: 'Error during GetHeatingEvent execution',
+					command: 'GetHeatingEvent',
+					originalError: e as Error,
+				})
+			}
+		}
 	}
 
 	static setHeatingEventState(params: VickiCommandTypes.SetHeatingEventStateParams) {
@@ -1079,7 +1097,7 @@ export class VickiCommands extends GeneralCommands {
 
 			// Convert temperature to the required format: multiply by 10 to get an integer value
 			// Example: 21.5°C becomes 215
-			const tempValue = params.targetTemperature * 10
+			const tempValue = Math.round(params.targetTemperature * 10)
 			return new BaseCommand('SetOfflineTargetTemperature', 0x65, dec2hex(tempValue))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -1139,12 +1157,12 @@ export class VickiCommands extends GeneralCommands {
 
 			// Convert each temperature to a value multiplied by 10
 			// and use dec2hex to convert to MSB/LSB hex values
-			const level0 = dec2hex(params.level0 * 10)
-			const level1 = dec2hex(params.level1 * 10)
-			const level2 = dec2hex(params.level2 * 10)
-			const level3 = dec2hex(params.level3 * 10)
-			const level4 = dec2hex(params.level4 * 10)
-			const level5 = dec2hex(params.level5 * 10)
+			const level0 = dec2hex(Math.round(params.level0 * 10))
+			const level1 = dec2hex(Math.round(params.level1 * 10))
+			const level2 = dec2hex(Math.round(params.level2 * 10))
+			const level3 = dec2hex(Math.round(params.level3 * 10))
+			const level4 = dec2hex(Math.round(params.level4 * 10))
+			const level5 = dec2hex(Math.round(params.level5 * 10))
 
 			return new BaseCommand(
 				'SetTemperatureLevels',

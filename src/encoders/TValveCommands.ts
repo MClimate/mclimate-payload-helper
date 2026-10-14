@@ -312,7 +312,7 @@ export class TValveCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.TValveCommandSchemas.setJoinRetryPeriodTValve.parse(params)
 			const { period } = params
-			const periodToPass = (period * 60) / 5
+			const periodToPass = Math.round((period * 60) / 5)
 			return new BaseCommand('SetJoinRetryPeriod', 0x15, decToHex(periodToPass))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -389,5 +389,14 @@ export class TValveCommands extends GeneralCommands {
 
 	static deactivateDevice() {
 		return new BaseCommand('DeactivateDevice', 0x0b)
+	}
+
+	// T-Valve has no version request: the inherited 0x04 is SetEmergencyOpenings on this device,
+	// and the firmware version arrives in the long keepalive (RequestFullData)
+	static getDeviceVersion(): never {
+		throw new CustomError({
+			message: 'GetDeviceVersion is not supported by T-Valve, use RequestFullData to read the firmware version',
+			command: 'GetDeviceVersion',
+		})
 	}
 }

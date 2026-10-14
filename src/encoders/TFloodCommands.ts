@@ -1,6 +1,6 @@
 import { BaseCommand, GeneralCommands } from '@/encoders'
 import { ZodError } from 'zod'
-import { CustomError, dec2hex } from '@/utils'
+import { CustomError, dec2hex, decToHex } from '@/utils'
 import { TFloodCommandTypes, DeviceCommandSchemas } from '@/encoders/types'
 
 export class TFloodCommands extends GeneralCommands {
@@ -12,7 +12,7 @@ export class TFloodCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.TFloodCommandSchemas.setFloodAlarmTime.parse(params)
 			const { time } = params
-			return new BaseCommand('SetFloodAlarmTime', 0x04, time.toString(16))
+			return new BaseCommand('SetFloodAlarmTime', 0x04, decToHex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -64,7 +64,7 @@ export class TFloodCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.TFloodCommandSchemas.setFloodEventSendTime.parse(params)
 			const { time } = params
-			return new BaseCommand('SetFloodEventSendTime', 0x08, time.toString(16))
+			return new BaseCommand('SetFloodEventSendTime', 0x08, decToHex(time))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({

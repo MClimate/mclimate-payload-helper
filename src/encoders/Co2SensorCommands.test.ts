@@ -76,4 +76,57 @@ describe('CO2SensorCommands payload encoder', () => {
 			CustomError,
 		)
 	})
+
+	test('SetBuzzerNotification encodes the docs example 0x26000000026550046550', () => {
+		expect(
+			commandBuilder.build('SetBuzzerNotification', {
+				duration_good_beeping: 0,
+				duration_good_loud: 0,
+				duration_good_silent: 0,
+				duration_medium_beeping: 2,
+				duration_medium_loud: 1010,
+				duration_medium_silent: 800,
+				duration_bad_beeping: 4,
+				duration_bad_loud: 1010,
+				duration_bad_silent: 800,
+			}),
+		).toStrictEqual(new BaseCommand('SetBuzzerNotification', 0x26, '00', '00', '00', '02', '65', '50', '04', '65', '50'))
+	})
+
+	test('SetCo2Led encodes the docs example durations (210 ms / 4020 ms)', () => {
+		expect(
+			commandBuilder.build('SetCo2Led', {
+				red_good: 0,
+				green_good: 2,
+				blue_good: 0,
+				duration_good: 210,
+				red_medium: 3,
+				green_medium: 3,
+				blue_medium: 0,
+				duration_medium: 4020,
+				red_bad: 3,
+				green_bad: 0,
+				blue_bad: 0,
+				duration_bad: 4020,
+			}),
+		).toStrictEqual(
+			new BaseCommand('SetCo2Led', 0x28, '00', '02', '00', '0015', '03', '03', '00', '0192', '03', '00', '00', '0192'),
+		)
+	})
+
+	test('durations sent in 10 ms steps reject values off the 10 ms grid', () => {
+		expect(() =>
+			commandBuilder.build('SetBuzzerNotification', {
+				duration_good_beeping: 1,
+				duration_good_loud: 25,
+				duration_good_silent: 30,
+				duration_medium_beeping: 2,
+				duration_medium_loud: 40,
+				duration_medium_silent: 50,
+				duration_bad_beeping: 3,
+				duration_bad_loud: 60,
+				duration_bad_silent: 70,
+			}),
+		).toThrow(CustomError)
+	})
 })

@@ -16,7 +16,7 @@ export class WirelessThermostatCommands extends GeneralCommands {
 			DeviceCommandSchemas.WirelessThermostatCommandSchemas.setTargetTemperature.parse(params)
 			const { targetTemperature } = params
 			if (isFloat(targetTemperature)) {
-				return new BaseCommand('SetTargetTemperature', 0x50, dec2hex(targetTemperature * 10))
+				return new BaseCommand('SetTargetTemperature', 0x50, dec2hex(Math.round(targetTemperature * 10)))
 			} else {
 				return new BaseCommand('SetTargetTemperature', 0x2e, decToHex(targetTemperature))
 			}
@@ -175,7 +175,7 @@ export class WirelessThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.WirelessThermostatCommandSchemas.setTemperatureHysteresis.parse(params)
 			let { hysteresis } = params
-			hysteresis = hysteresis * 10
+			hysteresis = Math.round(hysteresis * 10)
 			return new BaseCommand('SetTemperatureHysteresis', 0x4e, decToHex(hysteresis))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -202,7 +202,7 @@ export class WirelessThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.WirelessThermostatCommandSchemas.setTargetTemperaturePrecisely.parse(params)
 			let { targetTemperature } = params
-			targetTemperature = targetTemperature * 10
+			targetTemperature = Math.round(targetTemperature * 10)
 			return new BaseCommand('SetTargetTemperaturePrecisely', 0x50, dec2hex(targetTemperature))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -229,7 +229,7 @@ export class WirelessThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.WirelessThermostatCommandSchemas.setTargetTemperatureStep.parse(params)
 			let { value } = params
-			value = value * 10
+			value = Math.round(value * 10)
 			return new BaseCommand('SetTargetTemperatureStep', 0x52, decToHex(value))
 		} catch (e) {
 			if (e instanceof ZodError) {

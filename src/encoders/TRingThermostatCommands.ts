@@ -8,8 +8,8 @@ export class TringThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.TringThermostatCommandSchemas.setThermostatTarget.parse(params)
 			const { target } = params
-			const temp2 = `${dec2hex(target * 10).substr(0, 2)}`
-			const temp1 = `${dec2hex(target * 10).substr(2, 2)}`
+			const temp2 = `${dec2hex(Math.round(target * 10)).substr(0, 2)}`
+			const temp1 = `${dec2hex(Math.round(target * 10)).substr(2, 2)}`
 			return new BaseCommand('SetThermostatTarget', 0x01, decToHex(0), decToHex(0), decToHex(0), temp1, temp2)
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -32,8 +32,8 @@ export class TringThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.TringThermostatCommandSchemas.setThermostatConfig.parse(params)
 			const { time, temp_span, temp_sampling, target } = params
-			const temp2 = `${dec2hex(target * 10).substr(0, 2)}`
-			const temp1 = `${dec2hex(target * 10).substr(2, 2)}`
+			const temp2 = `${dec2hex(Math.round(target * 10)).substr(0, 2)}`
+			const temp1 = `${dec2hex(Math.round(target * 10)).substr(2, 2)}`
 			return new BaseCommand(
 				'SetThermostatConfig',
 				0x02,

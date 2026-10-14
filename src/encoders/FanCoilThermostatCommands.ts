@@ -8,7 +8,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setTargetTemperatureStep.parse(params)
 			const { value } = params
-			return new BaseCommand('SetTargetTemperatureStep', 0x03, decToHex(value * 10))
+			return new BaseCommand('SetTargetTemperatureStep', 0x03, decToHex(Math.round(value * 10)))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -112,7 +112,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setTargetTemperature.parse(params)
 			const { targetTemperature } = params
-			return new BaseCommand('SetTargetTemperature', 0x2e, dec2hex(targetTemperature * 10))
+			return new BaseCommand('SetTargetTemperature', 0x2e, dec2hex(Math.round(targetTemperature * 10)))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -266,7 +266,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setEcmVoltageRange.parse(params)
 			const { min, max } = params
-			return new BaseCommand('SetEcmVoltageRange', 0x48, decToHex(min * 10), decToHex(max * 10))
+			return new BaseCommand('SetEcmVoltageRange', 0x48, decToHex(Math.round(min * 10)), decToHex(Math.round(max * 10)))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -478,7 +478,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 			// 00: Positive compensation, 01: Negative compensation
 			const compensationByte = compensation === 0 ? 0 : 1
 			// Use absolute value of temperature * 10 for the temperature byte
-			const temperatureByte = Math.abs(temperature * 10)
+			const temperatureByte = Math.round(Math.abs(temperature) * 10)
 			return new BaseCommand('SetTempSensorCompensation', 0x5a, decToHex(compensationByte), decToHex(temperatureByte))
 		} catch (e) {
 			if (e instanceof ZodError) {
@@ -692,7 +692,7 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 		try {
 			DeviceCommandSchemas.FanCoilThermostatCommandSchemas.setDeltaTemperature1.parse(params)
 			const { value } = params
-			return new BaseCommand('SetDeltaTemperature1', 0x6a, decToHex(value * 10))
+			return new BaseCommand('SetDeltaTemperature1', 0x6a, decToHex(Math.round(value * 10)))
 		} catch (e) {
 			if (e instanceof ZodError) {
 				throw new CustomError({
@@ -721,8 +721,8 @@ export class FanCoilThermostatCommands extends GeneralCommands {
 			return new BaseCommand(
 				'SetDeltaTemperature2and3',
 				0x6c,
-				decToHex(deltaTemperature2 * 10),
-				decToHex(deltaTemperature3 * 10),
+				decToHex(Math.round(deltaTemperature2 * 10)),
+				decToHex(Math.round(deltaTemperature3 * 10)),
 			)
 		} catch (e) {
 			if (e instanceof ZodError) {

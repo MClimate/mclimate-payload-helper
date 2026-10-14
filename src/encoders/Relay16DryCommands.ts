@@ -14,4 +14,7 @@ delMethods(Relay16DryCommands, [
 	'getOvervoltageEvents',
 	'getOvercurrentEvents',
 	'getOverpowerEvents',
+	'getOvervoltageRecoveryTime',
+	'getOvercurrentRecoveryTemp',
+	'getOverpowerRecoveryTemp',
 ])

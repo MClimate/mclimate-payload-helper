@@ -11,6 +11,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 		return byte.toString(2).padStart(8, '0')
 	}
 
+	// bit 7 is the sign, bits 6:0 the magnitude
+	const signedMagnitudeByte = (byte: number) => {
+		return byte & 0x80 ? 0 - (byte & 0x7f) : byte
+	}
+
 	const decodeKeepalive = (commands: string[], payloadLength: number, deviceType: DeviceType) => {
 		let decodeKeepalive = false
 		const potentialKeepAlive = commands.slice(-payloadLength / 2)
@@ -666,7 +671,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 1
 							const data = { hallEnabled: parseInt(commands[i + 1], 16) === 1 }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
-						} else if (deviceType !== DeviceType.OpenCloseSensor) {
+						} else if (deviceType === DeviceType.OpenCloseSensor) {
+							// push-button event header: the rest of the payload is the keepalive
+							command_len = payloadLength / 2
+							const data = { decodeKeepalive: true }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else {
 							command_len = 2
 							const data = { autoZeroValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -2280,7 +2290,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							data = { dewPointSensorStatus: parseInt(commands[i + 1], 16) }
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 1
-							data = { overcurrentRecoveryTemp: parseInt(commands[i + 1], 16) }
+							data = { overcurrentRecoveryTemp: signedMagnitudeByte(parseInt(commands[i + 1], 16)) }
 						} else if (deviceType === DeviceType.Vicki) {
 							command_len = 2
 							data = {
@@ -2308,7 +2318,7 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							data = { filterAlarm: parseInt(commands[i + 1], 16) }
 						} else if (deviceType === DeviceType.Relay16) {
 							command_len = 1
-							data = { overpowerRecoveryTemp: parseInt(commands[i + 1], 16) }
+							data = { overpowerRecoveryTemp: signedMagnitudeByte(parseInt(commands[i + 1], 16)) }
 						}
 						Object.assign(resultToPass, { ...resultToPass }, { ...data })
 					} catch (e) {
