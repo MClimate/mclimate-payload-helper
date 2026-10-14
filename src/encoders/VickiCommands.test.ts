@@ -200,9 +200,7 @@ describe('VickiCommands payload encoder', () => {
 	})
 
 	test('SetProportionalGain accepts gains up to the 3-byte limit and rejects anything above', () => {
-		expect(commandBuilder.build('SetProportionalGain', { proportionalGain: 0xffffff / 131072 }).toHex()).toBe(
-			'37FFFFFF',
-		)
+		expect(commandBuilder.build('SetProportionalGain', { proportionalGain: 0xffffff / 131072 }).toHex()).toBe('37FFFFFF')
 		for (const proportionalGain of [-0.1, 127.999999, 128]) {
 			expect(() => commandBuilder.build('SetProportionalGain', { proportionalGain })).toThrow(CustomError)
 		}
@@ -222,12 +220,17 @@ describe('VickiCommands payload encoder', () => {
 
 	test('SetIntegralGain accepts fractional gains (docs example Ki 0.412678)', () => {
 		// 0.412678 * 131072 = 54090.53: the docs truncate to 0x00D34A, the encoder rounds to the nearest step (0x00D34B)
-		expect(commandBuilder.build('SetIntegralGain', { integralGain: 0.412678 }).toHex()).toBe('3E00D34B')
-		expect(commandBuilder.build('SetIntegralGain', { integralGain: 0.412674 }).toHex()).toBe('3E00D34A')
+		expect(commandBuilder.build('SetIntegralGain', { integralGain: 0.412678 }).toHex().toUpperCase()).toBe('3E00D34B')
+		expect(commandBuilder.build('SetIntegralGain', { integralGain: 0.412674 }).toHex().toUpperCase()).toBe('3E00D34A')
 	})
 
 	test('SetIntegralGain accepts gains up to the 3-byte limit and rejects anything above', () => {
-		expect(commandBuilder.build('SetIntegralGain', { integralGain: 0xffffff / 131072 }).toHex()).toBe('3EFFFFFF')
+		expect(
+			commandBuilder
+				.build('SetIntegralGain', { integralGain: 0xffffff / 131072 })
+				.toHex()
+				.toUpperCase(),
+		).toBe('3EFFFFFF')
 		for (const integralGain of [-0.1, 127.999999, 128]) {
 			expect(() => commandBuilder.build('SetIntegralGain', { integralGain })).toThrow(CustomError)
 		}
@@ -355,14 +358,14 @@ describe('VickiCommands payload encoder', () => {
 	})
 
 	test('GetHeatingEvent sends the event group byte (docs examples 0x5A00, 0x5A02)', () => {
-		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 0 }).toHex()).toBe('5A00')
-		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 1 }).toHex()).toBe('5A01')
-		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 2 }).toHex()).toBe('5A02')
+		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 0 }).toHex().toUpperCase()).toBe('5A00')
+		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 1 }).toHex().toUpperCase()).toBe('5A01')
+		expect(commandBuilder.build('GetHeatingEvent', { eventGroup: 2 }).toHex().toUpperCase()).toBe('5A02')
 	})
 
 	test('GetHeatingEvent defaults to group 0 so callers without params still get a valid request', () => {
-		expect(commandBuilder.build('GetHeatingEvent', {}).toHex()).toBe('5A00')
-		expect(commandBuilder.build('GetHeatingEvent').toHex()).toBe('5A00')
+		expect(commandBuilder.build('GetHeatingEvent', {}).toHex().toUpperCase()).toBe('5A00')
+		expect(commandBuilder.build('GetHeatingEvent').toHex().toUpperCase()).toBe('5A00')
 	})
 
 	test('GetHeatingEvent rejects groups outside 0-2', () => {

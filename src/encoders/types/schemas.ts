@@ -435,6 +435,9 @@ export namespace DisplayCommandTypes {
 
 /* ---------------------------------------VICKI COMMANDS--------------------------------------- */
 
+// PI gains are sent as gain * 131072 in 3 bytes, so the largest encodable gain is 0xFFFFFF / 131072 (≈ 127.99999)
+const VICKI_PI_GAIN_MAX = 0xffffff / 131072
+
 const VickiCommandSchemas = {
 	...GeneralCommandSchemas,
 	...TemperatureCommandSchemas,
@@ -571,7 +574,7 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('34'),
 	}),
 	setProportionalGain: z.object({
-		proportionalGain: z.number().min(0).max(0xffffff / 131072), // Sent as gain * 131072 in 3 bytes, so max ≈ 127.99999
+		proportionalGain: z.number().min(0).max(VICKI_PI_GAIN_MAX),
 		commandNumber: z.string().optional().default('37'),
 	}),
 	getProportionalGain: z.object({
@@ -582,7 +585,7 @@ const VickiCommandSchemas = {
 		commandNumber: z.string().optional().default('3c'),
 	}),
 	setIntegralGain: z.object({
-		integralGain: z.number().min(0).max(0xffffff / 131072), // Sent as gain * 131072 in 3 bytes, so max ≈ 127.99999
+		integralGain: z.number().min(0).max(VICKI_PI_GAIN_MAX),
 		commandNumber: z.string().optional().default('3e'),
 	}),
 	getIntegralGain: z.object({
