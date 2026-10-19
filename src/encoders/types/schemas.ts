@@ -2384,11 +2384,16 @@ const MelissaCommandSchemas = {
 		offset: z.number().int().min(0).max(65535),
 		commandNumber: z.string().optional().default('0b'),
 	}),
-	// 0x0C - load a code stored in internal memory; mode 0: emit + preload for reading, 1: preload only
+	// 0x0C - load a code stored in internal memory
+	// mode 0: emit + preload for reading, 1: preload for reading only, 2: emit only (device answers 0x0F once)
 	loadStoredIrCode: z.object({
-		mode: z.number().int().min(0).max(1),
+		mode: z.number().int().min(0).max(2),
 		position: z.number().int().min(1).max(10),
 		commandNumber: z.string().optional().default('0c'),
+	}),
+	// 0x13 - get the size of the code stored at each internal memory position (1-10)
+	getStoredIrCodeSizes: z.object({
+		commandNumber: z.string().optional().default('13'),
 	}),
 	// shared with PIR Mini (same command codes)
 	setLightSensorState: PirMiniCommandSchemas.setLightSensorState,

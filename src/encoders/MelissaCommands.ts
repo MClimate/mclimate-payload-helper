@@ -7,7 +7,7 @@ import { ZodError } from 'zod'
 /**
  * Melissa LoRaWAN commands.
  *
- * IR workflow commands (0x05 - 0x0C) are Melissa specific. The PIR / light-sensor commands
+ * IR workflow commands (0x05 - 0x0C, 0x13) are Melissa specific. The PIR / light-sensor commands
  * (0x1E/0x1F, 0x36 - 0x44) and RestartDevice (0xA5) share the PIR Mini command codes and are
  * mixed in from PirMiniCommands; LED brightness (0x21/0x22) is not supported by Melissa and is
  * removed. PIR sensitivity uses Melissa specific codes (0x45/0x46).
@@ -121,7 +121,11 @@ export class MelissaCommands extends GeneralCommands {
 		}
 	}
 
-	/** 0x0C - load the IR code stored at `position`. mode: 0 emit it and preload for reading, 1 preload for reading only. */
+	/**
+	 * 0x0C - load the IR code stored at `position`.
+	 * mode: 0 emit it and preload for reading, 1 preload for reading only, 2 emit only
+	 * (the device then notifies once with 0x0F, appended to the next keep-alive).
+	 */
 	static loadStoredIrCode(params: MelissaCommandTypes.LoadStoredIrCodeParams) {
 		try {
 			DeviceCommandSchemas.MelissaCommandSchemas.loadStoredIrCode.parse(params)
@@ -142,6 +146,11 @@ export class MelissaCommands extends GeneralCommands {
 				})
 			}
 		}
+	}
+
+	/** 0x13 - read the size of the code stored at each internal memory position (1-10); 0 = empty slot. */
+	static getStoredIrCodeSizes() {
+		return new BaseCommand('GetStoredIrCodeSizes', 0x13)
 	}
 
 	/** 0x45 - PIR sensitivity (same semantics as Wireless Thermostat 0x3E, Melissa default is 30). */

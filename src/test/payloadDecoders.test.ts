@@ -1301,6 +1301,32 @@ describe('Melissa payload decoder', () => {
 		})
 	})
 
+	/* ------------------------------ Internal memory (0x0C mode 2 / 0x13) ------------------------------ */
+
+	test('stored code emitted notification (0x0F) with keep-alive', () => {
+		expect(uplinkPayloadParser('0F' + KA_USB, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_USB_DATA,
+			event: 'storedIrCodeEmitted',
+		})
+	})
+	test('stored code emitted notification (0x0F) without keep-alive', () => {
+		expect(uplinkPayloadParser('0F', DeviceType.MelissaLorawan)).toStrictEqual({ event: 'storedIrCodeEmitted' })
+	})
+	// Protocol example: 122 B at position 1, 420 B at position 10, the rest empty
+	const STORED_SIZES = '13' + '007A' + '0000'.repeat(8) + '01A4'
+	const STORED_SIZES_DATA = [122, 0, 0, 0, 0, 0, 0, 0, 0, 420]
+	test('stored code sizes (0x13), protocol example', () => {
+		expect(uplinkPayloadParser(STORED_SIZES, DeviceType.MelissaLorawan)).toStrictEqual({
+			storedIrCodeSizes: STORED_SIZES_DATA,
+		})
+	})
+	test('stored code sizes (0x13) with keep-alive', () => {
+		expect(uplinkPayloadParser(STORED_SIZES + KA_BATTERY, DeviceType.MelissaLorawan)).toStrictEqual({
+			...KA_BATTERY_DATA,
+			storedIrCodeSizes: STORED_SIZES_DATA,
+		})
+	})
+
 	/* ------------------------------ PIR / light sensor responses (PIR Mini codes) ------------------------------ */
 
 	test('light sensor state response (0x1F)', () => {

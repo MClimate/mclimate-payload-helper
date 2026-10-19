@@ -292,9 +292,16 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 			case '0f':
 				{
 					try {
-						command_len = 1
-						const data = { emergencyOpenings: parseInt(commands[i + 1], 16) }
-						Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						if (deviceType === DeviceType.MelissaLorawan) {
+							// no payload: the code emitted from internal memory by 0x0C mode 2 was sent
+							command_len = 0
+							const data = { event: 'storedIrCodeEmitted' }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else {
+							command_len = 1
+							const data = { emergencyOpenings: parseInt(commands[i + 1], 16) }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						}
 					} catch (e) {
 						throw new CustomError({
 							message: `Failed to process command '0f'`,
@@ -368,6 +375,14 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						if (deviceType === DeviceType.TValve) {
 							command_len = 1
 							data = { deviceFloodSensor: parseInt(commands[i + 1], 16) }
+						} else if (deviceType === DeviceType.MelissaLorawan) {
+							// 10 positions x 2 bytes (MSB, LSB): size of the code stored at positions 1-10, 0 = empty
+							command_len = 20
+							const storedIrCodeSizes: number[] = []
+							for (let p = 0; p < 10; p++) {
+								storedIrCodeSizes.push((parseInt(commands[i + 1 + p * 2], 16) << 8) | parseInt(commands[i + 2 + p * 2], 16))
+							}
+							data = { storedIrCodeSizes }
 						} else {
 							command_len = 4
 							const enabled = !!parseInt(commands[i + 1], 16)

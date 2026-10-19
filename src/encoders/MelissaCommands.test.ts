@@ -103,9 +103,21 @@ describe('MelissaCommands payload encoder', () => {
 		)
 	})
 
+	test('LoadStoredIrCode mode 2 emits only (protocol 1.8 update)', () => {
+		const command = commandBuilder.build('LoadStoredIrCode', { mode: 2, position: 3 })
+		expect(command).toStrictEqual(new BaseCommand('LoadStoredIrCode', 0x0c, '02', '03'))
+		expect(command.toHex()).toBe('0c0203')
+	})
+
 	test('LoadStoredIrCode rejects position 0 and unknown modes', () => {
 		expect(() => commandBuilder.build('LoadStoredIrCode', { mode: 0, position: 0 })).toThrow(CustomError)
-		expect(() => commandBuilder.build('LoadStoredIrCode', { mode: 2, position: 1 })).toThrow(CustomError)
+		expect(() => commandBuilder.build('LoadStoredIrCode', { mode: 3, position: 1 })).toThrow(CustomError)
+	})
+
+	test('GetStoredIrCodeSizes uses 0x13', () => {
+		const command = commandBuilder.build('GetStoredIrCodeSizes')
+		expect(command).toStrictEqual(new BaseCommand('GetStoredIrCodeSizes', 0x13))
+		expect(command.toHex()).toBe('13')
 	})
 
 	/* ------------------------------ PIR / light sensor (shared with PIR Mini) ------------------------------ */
