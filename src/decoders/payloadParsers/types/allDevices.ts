@@ -22,4 +22,5 @@ export enum DeviceType {
 	MultiSensor = 'multisensor',
 	PirMini = 'pir_mini',
 	HTMini = 'ht_mini',
+	CO2Mini = 'co2_mini',
 }

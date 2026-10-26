@@ -23,6 +23,7 @@ export {
 	HTPirLiteCommands,
 	PirMiniCommands,
 	HTMiniCommands,
+	CO2MiniCommands,
 } from '@/encoders'
 export {
 	DeviceCommandSchemas,

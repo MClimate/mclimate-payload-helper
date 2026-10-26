@@ -1698,6 +1698,152 @@ describe('HTMini payload decoder', () => {
 		})
 	})
 })
+describe('CO2Mini payload decoder', () => {
+	test('simple keepalive(doc)', () => {
+		expect(uplinkPayloadParser('01028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('keepalive ignores the RFU bits of byte 6', () => {
+		expect(uplinkPayloadParser('010299B3E1900F', DeviceType.CO2Mini)).toStrictEqual({
+			sensorTemperature: 26.5,
+			relativeHumidity: 69.92,
+			batteryVoltage: 3.54,
+			CO2: 400,
+		})
+	})
+	test('keepalive with the maximum 13-bit CO2 value', () => {
+		expect(uplinkPayloadParser('01028880C8FFF8', DeviceType.CO2Mini)).toStrictEqual({
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 8191,
+		})
+	})
+	test('keep-alive period response (0x12) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('120A01028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			keepAliveTime: 10,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('device version response (0x04) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('04111001028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			deviceVersions: { hardware: 11, software: 10 },
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('uplink type response (0x1B) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('1B0001028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			uplinkType: '00',
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('join retry period response (0x19) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('19C601028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			joinRetryPeriod: 16.5,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('watchdog params response (0x1D) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('1D020C01028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			watchDogParams: { wdpC: 2, wdpUc: 12 },
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('LED brightness response (0x22) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('222F01028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			ledBrightness: 47,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('CO2 measurement period response (0x25) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('250A0A0A01028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			measurementPeriod: { good_zone: 10, medium_zone: 10, bad_zone: 10 },
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('CO2 boundary levels response (0x27) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('27038405DC01028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			boundaryLevels: { good_medium: 900, medium_bad: 1500 },
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('CO2 auto-zero value response (0x29) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('29022101028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			autoZeroValue: 545,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('CO2 auto-zero period response (0x2B) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('2B4801028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			autoZeroPeriod: 72,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('LoRaWAN region response (0xA4) with keepalive(doc)', () => {
+		expect(uplinkPayloadParser('A40001028880C80B18', DeviceType.CO2Mini)).toStrictEqual({
+			region: 0,
+			sensorTemperature: 24.8,
+			relativeHumidity: 50,
+			batteryVoltage: 3.33,
+			CO2: 779,
+		})
+	})
+	test('get-all-settings response without keepalive', () => {
+		expect(
+			uplinkPayloadParser('0411101214190C1B011D020C222F250A0A0A27038405DC2902212BC0', DeviceType.CO2Mini),
+		).toStrictEqual({
+			deviceVersions: { hardware: 11, software: 10 },
+			keepAliveTime: 20,
+			joinRetryPeriod: 1,
+			uplinkType: '01',
+			watchDogParams: { wdpC: 2, wdpUc: 12 },
+			ledBrightness: 47,
+			measurementPeriod: { good_zone: 10, medium_zone: 10, bad_zone: 10 },
+			boundaryLevels: { good_medium: 900, medium_bad: 1500 },
+			autoZeroValue: 545,
+			autoZeroPeriod: 192,
+		})
+	})
+	test('command response without keepalive', () => {
+		expect(uplinkPayloadParser('27038405DC', DeviceType.CO2Mini)).toStrictEqual({
+			boundaryLevels: { good_medium: 900, medium_bad: 1500 },
+		})
+	})
+})
 describe('MultiSensor payload decoder', () => {
 	test('simple keepalive', () => {
 		expect(uplinkPayloadParser('820F17CB2DA80D0600040A3A01DD03', DeviceType.MultiSensor)).toStrictEqual({

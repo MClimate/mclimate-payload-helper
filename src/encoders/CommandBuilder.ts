@@ -23,6 +23,7 @@ import {
 	MultiSensorCommands,
 	PirMiniCommands,
 	HTMiniCommands,
+	CO2MiniCommands,
 } from '@/encoders'
 
 import { CustomError, toCamelCase } from '@/utils'
@@ -56,6 +57,7 @@ export class CommandBuilder {
 			multisensor: MultiSensorCommands,
 			pir_mini: PirMiniCommands,
 			ht_mini: HTMiniCommands,
+			co2_mini: CO2MiniCommands,
 		}
 	}
 

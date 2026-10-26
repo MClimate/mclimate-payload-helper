@@ -714,7 +714,11 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 							command_len = 2
 							const data = { onTime: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
-						} else if (deviceType === DeviceType.PirMini || deviceType === DeviceType.HTMini) {
+						} else if (
+							deviceType === DeviceType.PirMini ||
+							deviceType === DeviceType.HTMini ||
+							deviceType === DeviceType.CO2Mini
+						) {
 							command_len = 1
 							const data = { ledBrightness: parseInt(commands[i + 1], 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
@@ -872,6 +876,12 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 								microphoneSamplingPeriod: (parseInt(commands[i + 1], 16) << 8) | parseInt(commands[i + 2], 16),
 							}
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.CO2Mini) {
+							command_len = 4
+							const good_medium = parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16)
+							const medium_bad = parseInt(`${commands[i + 3]}${commands[i + 4]}`, 16)
+							const data = { boundaryLevels: { good_medium: Number(good_medium), medium_bad: Number(medium_bad) } }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 9
 							const duration_good_beeping = parseInt(commands[i + 1], 16)
@@ -928,6 +938,10 @@ export const commandsReadingHelper = (hexData: string, payloadLength: number, de
 						} else if (deviceType === DeviceType.MultiSensor) {
 							command_len = 1
 							const data = { gasEnabled: parseInt(commands[i + 1], 16) === 1 }
+							Object.assign(resultToPass, { ...resultToPass }, { ...data })
+						} else if (deviceType === DeviceType.CO2Mini) {
+							command_len = 2
+							const data = { autoZeroValue: parseInt(`${commands[i + 1]}${commands[i + 2]}`, 16) }
 							Object.assign(resultToPass, { ...resultToPass }, { ...data })
 						} else {
 							command_len = 15

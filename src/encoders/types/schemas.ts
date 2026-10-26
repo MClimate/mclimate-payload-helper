@@ -2463,6 +2463,64 @@ export namespace HTMiniCommandTypes {
 	export type RestartDeviceParams = z.infer<typeof HTMiniCommandSchemas.restartDevice>
 }
 
+/* --------------------------------------- CO2 MINI COMMANDS --------------------------------------- */
+// CO2 Mini reuses the CO2 Sensor command names but not its IDs: boundary levels are 0x26/0x27,
+// auto-zero value 0x28/0x29 and LED brightness 0x21/0x22 (0x21/0x22 are auto-zero/notify on co2_sensor).
+const CO2MiniCommandSchemas = {
+	...GeneralCommandSchemas,
+	setLedBrightness: z.object({
+		value: z.number().int().min(0).max(100),
+		commandNumber: z.string().optional().default('21'),
+	}),
+	getLedBrightness: z.object({
+		commandNumber: z.string().optional().default('22'),
+	}),
+	setCo2MeasurementPeriod: z.object({
+		good_zone: z.number().int().min(1).max(255),
+		medium_zone: z.number().int().min(1).max(255),
+		bad_zone: z.number().int().min(1).max(255),
+		commandNumber: z.string().optional().default('24'),
+	}),
+	getCo2MeasurementPeriod: z.object({
+		commandNumber: z.string().optional().default('25'),
+	}),
+	setCo2BoundaryLevels: z.object({
+		good_medium: z.number().int().min(400).max(5000),
+		medium_bad: z.number().int().min(400).max(5000),
+		commandNumber: z.string().optional().default('26'),
+	}),
+	getCo2BoundaryLevels: z.object({
+		commandNumber: z.string().optional().default('27'),
+	}),
+	setCo2AutoZeroValue: z.object({
+		ppm: z.number().int().min(0).max(1500),
+		commandNumber: z.string().optional().default('28'),
+	}),
+	getCo2AutoZeroValue: z.object({
+		commandNumber: z.string().optional().default('29'),
+	}),
+	setCo2AutoZeroPeriod: z.object({
+		hours: z.number().int().min(0).max(255),
+		commandNumber: z.string().optional().default('2a'),
+	}),
+	getCo2AutoZeroPeriod: z.object({
+		commandNumber: z.string().optional().default('2b'),
+	}),
+	restartDevice: z.object({
+		commandNumber: z.string().optional().default('a5'),
+	}),
+}
+
+export namespace CO2MiniCommandTypes {
+	export type SetLedBrightnessParams = z.infer<typeof CO2MiniCommandSchemas.setLedBrightness>
+	export type GetLedBrightnessParams = z.infer<typeof CO2MiniCommandSchemas.getLedBrightness>
+	export type SetCo2MeasurementPeriodParams = z.infer<typeof CO2MiniCommandSchemas.setCo2MeasurementPeriod>
+	export type SetCo2BoundaryLevelsParams = z.infer<typeof CO2MiniCommandSchemas.setCo2BoundaryLevels>
+	export type SetCo2AutoZeroValueParams = z.infer<typeof CO2MiniCommandSchemas.setCo2AutoZeroValue>
+	export type SetCo2AutoZeroPeriodParams = z.infer<typeof CO2MiniCommandSchemas.setCo2AutoZeroPeriod>
+	export type RestartDeviceParams = z.infer<typeof CO2MiniCommandSchemas.restartDevice>
+}
+
 /* --------------------------------------- EXPORT ALL SCHEMA GROUPS --------------------------------------- */
 export const DeviceCommandSchemas = {
 	GeneralCommandSchemas,
@@ -2492,4 +2550,5 @@ export const DeviceCommandSchemas = {
 	MultiSensorCommandSchemas,
 	PirMiniCommandSchemas,
 	HTMiniCommandSchemas,
+	CO2MiniCommandSchemas,
 }
